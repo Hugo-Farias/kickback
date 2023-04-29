@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "KickBack",
+  "version": "0.0.1",
+  "description": "Auto resume a kick.com vod from where you left off",
+  "action": {
+    "action_default": "src/main.tsx"
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content.tsx"],
+      "matches": ["https://*.kick.com/*"]
+    }
+  ]
+}
