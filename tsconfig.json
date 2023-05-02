@@ -20,5 +20,6 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "files": ["chrome"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
