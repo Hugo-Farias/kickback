@@ -1,10 +1,19 @@
-type detailsT = chrome.webNavigation.WebNavigationFramedCallbackDetails;
-type tabsT = chrome.tabs.Tab;
+interface UrlChangedMessage {
+  type: "urlChanged";
+  url: string;
+}
 
-chrome.webNavigation.onCompleted.addListener((details: detailsT) => {
-  // Send a message to the content script with the new URL
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs: tabsT[]) => {
-    if (tabs.length < 1) return null;
-    return chrome.tabs.sendMessage(tabs[0].id!, { url: details.url });
-  });
-});
+chrome.tabs.onUpdated.addListener(
+  (tabId: number, info: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => {
+    console.log(info.status);
+    if (
+      info.status === "complete" &&
+      tab.url &&
+      tab.url.includes("kick.com/video")
+    ) {
+      const message: UrlChangedMessage = { type: "urlChanged", url: tab.url };
+      setTimeout(() => chrome.tabs.sendMessage(tabId, message), 5000);
+      // chrome.tabs.sendMessage(tabId, message);
+    }
+  }
+);
