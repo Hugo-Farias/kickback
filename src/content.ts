@@ -1,7 +1,9 @@
 console.log("content.ts Loaded");
 
+// let video: HTMLVideoElement;
+
 function waitForVideo(callback) {
-  const observer = new MutationObserver((mutations) => {
+  const observer = new MutationObserver(() => {
     const videoElement = document.querySelector("video");
     if (videoElement) {
       observer.disconnect();
@@ -15,6 +17,11 @@ function waitForVideo(callback) {
   });
 }
 
+// waitForVideo((videoElement) => {
+//   // console.log(videoElement);
+//   video = videoElement;
+// });
+
 // sets video time
 const resumeVideo = function (
   videoEl: HTMLVideoElement,
@@ -23,23 +30,21 @@ const resumeVideo = function (
 ) {
   videoEl.currentTime = time;
 
-  console.log("videoDOM", videoEl.currentTime);
-
   if (play) videoEl.play();
 
-  let interval;
-
-  videoEl.addEventListener("play", () => {
-    console.log("Video is playing");
-    // interval = setInterval(() => {
-    //   console.log("setinterval");
-    // }, 10000);
-  });
-
-  videoEl.addEventListener("pause", () => {
-    console.log("Video is paused");
-    interval.clear;
-  });
+  // let interval;
+  //
+  // videoEl.addEventListener("play", () => {
+  //   console.log("Video is playing");
+  //   // interval = setInterval(() => {
+  //   //   console.log("setinterval");
+  //   // }, 10000);
+  // });
+  //
+  // videoEl.addEventListener("pause", () => {
+  //   console.log("Video is paused");
+  //   interval.clear;
+  // });
 };
 
 // const storeVideoTime = function (videoId: string) {
@@ -57,11 +62,11 @@ chrome.runtime.onMessage.addListener(
     sender: chrome.runtime.MessageSender,
     sendResponse: (response?: any) => void
   ) => {
-    if (message.type === "urlChanged") {
-      console.log("urlChanged");
-      waitForVideo((videoElement) => {
-        console.log("video loaded:", videoElement);
-      });
-    }
+    console.log(message);
+    if (message.type !== "urlChanged") return;
+
+    waitForVideo((element) => {
+      console.log(element);
+    });
   }
 );
