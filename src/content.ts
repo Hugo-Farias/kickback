@@ -1,17 +1,29 @@
-console.log("KickBack Loaded");
+console.log("content.ts Loaded");
 
-// window.onReady = () => {
-//   const video = document.getElementsByTagName("video")[0];
-//   console.log(video);
-// };
+function waitForVideo(callback) {
+  const observer = new MutationObserver((mutations) => {
+    const videoElement = document.querySelector("video");
+    if (videoElement) {
+      observer.disconnect();
+      callback(videoElement);
+    }
+  });
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+let video: HTMLVideoElement | null;
+
+waitForVideo((videoElement) => {
+  console.log("video loaded:", videoElement);
+  video = videoElement;
+});
 
 // sets video time
 const resumeVideo = function (time: number = 0, play: boolean = false) {
-  let video;
-  video = document.getElementsByTagName("video")[0];
-
-  // console.log("videoDOM", video);
-
   video.currentTime = time;
 
   console.log("videoDOM", video.currentTime);

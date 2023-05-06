@@ -3,7 +3,7 @@
   "name": "KickBack",
   "version": "0.0.1",
   "description": "Auto resume a kick.com vod from where you left off",
-  "permissions": ["tabs", "webNavigation"],
+  "permissions": ["tabs"],
   "background": {
     "service_worker": "src/background.ts"
   },
@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "js": ["src/contentTest.js"],
+      "js": ["src/content.ts"],
       "matches": ["https://*.kick.com/*"]
     }
   ]
