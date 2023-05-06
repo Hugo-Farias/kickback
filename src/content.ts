@@ -15,31 +15,28 @@ function waitForVideo(callback) {
   });
 }
 
-let video: HTMLVideoElement | null;
-
-waitForVideo((videoElement) => {
-  console.log("video loaded:", videoElement);
-  video = videoElement;
-});
-
 // sets video time
-const resumeVideo = function (time: number = 0, play: boolean = false) {
-  video.currentTime = time;
+const resumeVideo = function (
+  videoEl: HTMLVideoElement,
+  time: number = 0,
+  play: boolean = false
+) {
+  videoEl.currentTime = time;
 
-  console.log("videoDOM", video.currentTime);
+  console.log("videoDOM", videoEl.currentTime);
 
-  if (play) video.play();
+  if (play) videoEl.play();
 
   let interval;
 
-  video.addEventListener("play", () => {
+  videoEl.addEventListener("play", () => {
     console.log("Video is playing");
     // interval = setInterval(() => {
     //   console.log("setinterval");
     // }, 10000);
   });
 
-  video.addEventListener("pause", () => {
+  videoEl.addEventListener("pause", () => {
     console.log("Video is paused");
     interval.clear;
   });
@@ -61,7 +58,10 @@ chrome.runtime.onMessage.addListener(
     sendResponse: (response?: any) => void
   ) => {
     if (message.type === "urlChanged") {
-      resumeVideo(5000);
+      console.log("urlChanged");
+      waitForVideo((videoElement) => {
+        console.log("video loaded:", videoElement);
+      });
     }
   }
 );
