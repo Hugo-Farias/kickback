@@ -1,13 +1,41 @@
 console.log("KickBack Loaded");
 
-// sets video time
-const setVideoTime = function (time: number = 0) {
-  const video = document.getElementsByTagName("video")[0];
+// window.onReady = () => {
+//   const video = document.getElementsByTagName("video")[0];
+//   console.log(video);
+// };
 
-  video.currentTime = 10000;
+// sets video time
+const resumeVideo = function (time: number = 0, play: boolean = false) {
+  let video;
+  video = document.getElementsByTagName("video")[0];
+
+  // console.log("videoDOM", video);
+
+  video.currentTime = time;
 
   console.log("videoDOM", video.currentTime);
+
+  if (play) video.play();
+
+  let interval;
+
+  video.addEventListener("play", () => {
+    console.log("Video is playing");
+    // interval = setInterval(() => {
+    //   console.log("setinterval");
+    // }, 10000);
+  });
+
+  video.addEventListener("pause", () => {
+    console.log("Video is paused");
+    interval.clear;
+  });
 };
+
+// const storeVideoTime = function (videoId: string) {
+//   localStorage.setItem(videoId, video.currentTime + "");
+// };
 
 interface Message {
   type: "urlChanged";
@@ -20,9 +48,8 @@ chrome.runtime.onMessage.addListener(
     sender: chrome.runtime.MessageSender,
     sendResponse: (response?: any) => void
   ) => {
-    console.log(message.url);
     if (message.type === "urlChanged") {
-      setVideoTime();
+      resumeVideo(5000);
     }
   }
 );

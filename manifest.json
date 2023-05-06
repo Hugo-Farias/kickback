@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "js": ["src/content.ts"],
+      "js": ["src/contentTest.js"],
       "matches": ["https://*.kick.com/*"]
     }
   ]
