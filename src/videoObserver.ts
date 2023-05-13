@@ -1,12 +1,14 @@
 console.log("observer running");
 
 function waitForVideo(callback: (video: HTMLVideoElement) => void) {
+  if (!window.location.href.includes("video")) return;
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
         if (node instanceof HTMLVideoElement) {
           observer.disconnect();
           callback(node);
+          return null;
         }
       });
     });
@@ -35,8 +37,6 @@ chrome.runtime.onMessage.addListener(
     sendResponse: (response?: any) => void
   ) => {
     const currentUrl = window.location.href;
-
-    // console.log(currentUrl);
 
     if (!message.url.includes("video")) return;
 
