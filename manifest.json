@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "js": ["src/content.ts"],
+      "js": ["src/videoObserver.ts"],
       "matches": ["https://*.kick.com/*"]
     }
   ]

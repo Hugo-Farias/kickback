@@ -10,7 +10,14 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(
     if (url && url.includes("kick.com/video")) {
       const message: UrlChangedMessage = { type: "urlChanged", url: url };
       // setTimeout(() => chrome.tabs.sendMessage(tabId, message), 5000);
-      chrome.tabs.sendMessage(tabId, message);
+      chrome.tabs
+        .sendMessage(tabId, message)
+        .then((response) => {
+          console.log("Message sent successfully:", response);
+        })
+        .catch((error) => {
+          console.error("Error sending message:", error);
+        });
     }
   }
 );
