@@ -1,17 +1,19 @@
+import { Message } from "./typeDef";
+
 console.log("observer running");
 
-function waitForVideo(callback: (video: HTMLVideoElement) => void) {
-  if (!window.location.href.includes("video")) return;
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node instanceof HTMLVideoElement) {
-          observer.disconnect();
-          callback(node);
-          return null;
-        }
-      });
-    });
+// Wait for video element
+function waitForVideo(
+  callback: (video: HTMLVideoElement, urlId: string) => void
+) {
+  const url = window.location.href;
+  if (!url.includes("video")) return;
+  const observer = new MutationObserver(() => {
+    const videoElement = document.querySelector("video");
+    if (videoElement && videoElement.readyState >= 3) {
+      observer.disconnect();
+      callback(videoElement);
+    }
   });
 
   observer.observe(document.documentElement, {
@@ -20,42 +22,19 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
   });
 }
 
-waitForVideo((video) => {
-  console.log(video);
-  console.log(video.currentTime);
+// function to be called when video available
+const resume = function (videoEl: HTMLVideoElement) {
+  videoEl.currentTime = 1500;
+};
+
+waitForVideo((videoEl) => {
+  resume(videoEl);
 });
 
-interface Message {
-  type: "urlChanged";
-  url: string;
-}
+chrome.runtime.onMessage.addListener((message: Message) => {
+  if (!message.url.includes("video")) return;
 
-chrome.runtime.onMessage.addListener(
-  (
-    message: Message,
-    sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: any) => void
-  ) => {
-    const currentUrl = window.location.href;
-
-    if (!message.url.includes("video")) return;
-
-    waitForVideo((video) => {
-      console.log(video);
-      console.log(video.currentTime);
-    });
-  }
-);
-
-// let videoEl: HTMLVideoElement;
-//
-// const videoObserver = new MutationObserver((events) => {
-//   console.log(events);
-// });
-//
-// videoObserver.observe(videoEl);
-//
-// setTimeout(() => {
-//   videoEl = document.querySelector("video");
-//   console.log("-> videoEl", videoEl);
-// }, 4000);
+  waitForVideo((videoEl) => {
+    resume(videoEl);
+  });
+});
