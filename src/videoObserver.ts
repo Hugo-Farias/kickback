@@ -4,8 +4,7 @@ console.log("kickback running");
 
 let url: string = window.location.href;
 let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
-let testVideo: HTMLVideoElement;
-let storeInterval;
+let storeInterval: number;
 const intervalSecs = 10; // time in between storing current time to local storage in seconds
 const localStorageTimeStampName = "kbTimeStamps";
 
@@ -23,7 +22,8 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
   if (!url.includes("video")) return;
 
   const observer = new MutationObserver(() => {
-    const videoElement: HTMLVideoElement = document.querySelector(".vjs-tech");
+    const videoElement: HTMLVideoElement | null =
+      document.querySelector(".vjs-tech");
     if (videoElement && videoElement.readyState >= 3) {
       observer.disconnect();
       callback(videoElement);
@@ -39,50 +39,31 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime).toString();
-  const storage =
-    JSON.parse(localStorage.getItem(localStorageTimeStampName)) || {};
+  const storedData = localStorage!.getItem(localStorageTimeStampName);
+  const parsedData = storedData !== null ? JSON.parse(storedData) : {};
 
-  storage[urlId] = videoTime;
-  console.log("-> storage", storage);
+  parsedData[urlId] = videoTime;
 
-  localStorage.setItem(localStorageTimeStampName, JSON.stringify(storage));
+  localStorage.setItem(localStorageTimeStampName, JSON.stringify(parsedData));
 };
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when isn't needed
-const resume = function (videoEl) {
+const resume = function (videoEl: HTMLVideoElement) {
   const storage = localStorage.getItem(localStorageTimeStampName);
-  const storedTime = +JSON.parse(storage)[urlId];
+  const storedTime = storage ? +JSON.parse(storage)[urlId] : null;
 
   // const videoEl = document.querySelector("video");
 
-  console.log("-> storedTime", storedTime);
-
   videoEl.currentTime = storedTime ? storedTime : 0;
 
-  videoEl.addEventListener("play", onPlay.bind(this, videoEl));
+  videoEl.addEventListener("play", () => onPlay(videoEl));
 
   videoEl.addEventListener("pause", onPause);
 };
 
-// wait for video to be playing to store timestamp on interval remove interval on pause
-// const storeListeners = function (videoEl: HTMLVideoElement) {
-//   clearInterval(storeInterval);
-//
-//   videoEl.addEventListener("play", () => {
-//     console.log("play");
-//     storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
-//   });
-//
-//   videoEl.addEventListener("pause", () => {
-//     console.log("pause");
-//     clearInterval(storeInterval);
-//   });
-// };
-
 // init
-waitForVideo((videoEl) => {
+waitForVideo((videoEl: HTMLVideoElement) => {
   resume(videoEl);
-  testVideo = videoEl;
 });
 
 // Receive message from background and trigger every url updated event
@@ -93,11 +74,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
   urlId = url.replace("https://kick.com/video/", "");
   clearInterval(storeInterval);
 
-  // testVideo.removeEventListener("play", onPlay);
-  // testVideo.removeEventListener("pause", onPause);
-
-  waitForVideo((videoEl) => {
+  waitForVideo((videoEl: HTMLVideoElement) => {
     resume(videoEl);
-    testVideo = videoEl;
   });
 });

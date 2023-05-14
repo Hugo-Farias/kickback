@@ -8,7 +8,6 @@
     "service_worker": "src/background.ts"
   },
   "action": {
-    "action_default": "src/main.tsx",
     "default_title": "In construction"
   },
   "content_scripts": [
