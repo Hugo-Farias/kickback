@@ -8,8 +8,8 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(
 
     if (url && !url.includes("kick.com/video")) return;
 
-    // const message: Message = { type: "urlChanged", url: url };
+    const message: Message = { type: "urlChanged", url: url };
     // setTimeout(() => chrome.tabs.sendMessage(tabId, message), 5000);
-    chrome.tabs.sendMessage(tabId, "urlChanged");
+    chrome.tabs.sendMessage(tabId, message);
   }
 );

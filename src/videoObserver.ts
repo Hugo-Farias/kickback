@@ -1,15 +1,29 @@
-console.log("observer running");
+import { Message } from "./typeDef";
 
-const url = window.location.href;
-const urlId = url.replace("https://kick.com/video/", ""); // Current url video ID
-const intervalSecs = 3; // Interval to store current time to local storage
+console.log("kickback running");
+
+let url: string = window.location.href;
+let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
+let testVideo: HTMLVideoElement;
+let storeInterval;
+const intervalSecs = 10; // time in between storing current time to local storage in seconds
+const localStorageTimeStampName = "kbTimeStamps";
+
+const onPlay = function (videoEl: HTMLVideoElement) {
+  clearInterval(storeInterval);
+  storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
+};
+
+const onPause = function () {
+  clearInterval(storeInterval);
+};
 
 // Wait for video element
 function waitForVideo(callback: (video: HTMLVideoElement) => void) {
   if (!url.includes("video")) return;
 
   const observer = new MutationObserver(() => {
-    const videoElement = document.querySelector("video");
+    const videoElement: HTMLVideoElement = document.querySelector(".vjs-tech");
     if (videoElement && videoElement.readyState >= 3) {
       observer.disconnect();
       callback(videoElement);
@@ -22,42 +36,68 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
   });
 }
 
-// function to be called when video available
-const resume = function (videoEl: HTMLVideoElement) {
-  videoEl.currentTime = 1000;
-};
-
+// Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
-  const videoTime = videoEL.currentTime.toString();
+  const videoTime = Math.floor(videoEL.currentTime).toString();
+  const storage =
+    JSON.parse(localStorage.getItem(localStorageTimeStampName)) || {};
 
-  console.log(JSON.stringify({ [urlId]: [videoTime] }));
+  storage[urlId] = videoTime;
+  console.log("-> storage", storage);
 
-  localStorage.setItem(
-    "kbTimeStamps",
-    JSON.stringify({ [urlId]: [videoTime] })
-  );
+  localStorage.setItem(localStorageTimeStampName, JSON.stringify(storage));
 };
+
+// resumes video and sets listeners on play/pause, so it doesn't store it when isn't needed
+const resume = function (videoEl) {
+  const storage = localStorage.getItem(localStorageTimeStampName);
+  const storedTime = +JSON.parse(storage)[urlId];
+
+  // const videoEl = document.querySelector("video");
+
+  console.log("-> storedTime", storedTime);
+
+  videoEl.currentTime = storedTime ? storedTime : 0;
+
+  videoEl.addEventListener("play", onPlay.bind(this, videoEl));
+
+  videoEl.addEventListener("pause", onPause);
+};
+
+// wait for video to be playing to store timestamp on interval remove interval on pause
+// const storeListeners = function (videoEl: HTMLVideoElement) {
+//   clearInterval(storeInterval);
+//
+//   videoEl.addEventListener("play", () => {
+//     console.log("play");
+//     storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
+//   });
+//
+//   videoEl.addEventListener("pause", () => {
+//     console.log("pause");
+//     clearInterval(storeInterval);
+//   });
+// };
 
 // init
 waitForVideo((videoEl) => {
   resume(videoEl);
-
-  let storeInterval;
-
-  videoEl.addEventListener("play", () => {
-    storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
-  });
-
-  videoEl.addEventListener("pause", () => {
-    clearInterval(storeInterval);
-  });
+  testVideo = videoEl;
 });
 
 // Receive message from background and trigger every url updated event
-chrome.runtime.onMessage.addListener(() => {
-  if (!url.includes("video")) return;
+chrome.runtime.onMessage.addListener((message: Message) => {
+  if (!message.url.includes("video")) return;
+
+  url = window.location.href;
+  urlId = url.replace("https://kick.com/video/", "");
+  clearInterval(storeInterval);
+
+  // testVideo.removeEventListener("play", onPlay);
+  // testVideo.removeEventListener("pause", onPause);
 
   waitForVideo((videoEl) => {
     resume(videoEl);
+    testVideo = videoEl;
   });
 });
