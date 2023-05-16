@@ -1,14 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "KickBack",
+  "name": "KickBack Alpha",
   "version": "0.0.1",
   "description": "Auto resume a kick.com vod from where you left off",
   "permissions": ["tabs", "webNavigation"],
   "background": {
     "service_worker": "src/background.ts"
-  },
-  "action": {
-    "default_title": "In construction"
   },
   "content_scripts": [
     {

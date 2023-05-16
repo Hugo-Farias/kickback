@@ -5,7 +5,7 @@ console.log("kickback running");
 let url: string = window.location.href;
 let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
 let storeInterval: number;
-const intervalSecs = 10; // time in between storing current time to local storage in seconds
+const intervalSecs = 3; // time in between storing current time to local storage in seconds
 const localStorageTimeStampName = "kbTimeStamps";
 
 const onPlay = function (videoEl: HTMLVideoElement) {
@@ -37,10 +37,16 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 }
 
 // Stores current time to local storage
+//TODO add a limit of keys allowed in localStorage
+//TODO Remove key from storage if time is close to beginning or end of video
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime).toString();
   const storedData = localStorage!.getItem(localStorageTimeStampName);
   const parsedData = storedData !== null ? JSON.parse(storedData) : {};
+
+  console.log("-> parsedData", parsedData);
+
+  console.log(videoEL.duration);
 
   parsedData[urlId] = videoTime;
 
