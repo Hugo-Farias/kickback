@@ -1,10 +1,12 @@
 import { Message } from "./typeDef";
+import { deleteFromObject } from "./helper";
 
 console.log("kickback running");
 
 let url: string = window.location.href;
 let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
 let storeInterval: number;
+let videoLength;
 const intervalSecs = 3; // time in between storing current time to local storage in seconds
 const localStorageTimeStampName = "kbTimeStamps";
 
@@ -40,13 +42,19 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 //TODO add a limit of keys allowed in localStorage
 //TODO Remove key from storage if time is close to beginning or end of video
 const storeTime = function (videoEL: HTMLVideoElement) {
-  const videoTime = Math.floor(videoEL.currentTime).toString();
+  const videoTime = Math.floor(videoEL.currentTime);
   const storedData = localStorage!.getItem(localStorageTimeStampName);
   const parsedData = storedData !== null ? JSON.parse(storedData) : {};
 
+  console.log("-> videoTime", videoTime);
+  console.log("-> videoLength", videoLength);
   console.log("-> parsedData", parsedData);
 
-  console.log(videoEL.duration);
+  if (videoTime < 60 || videoTime > videoLength - 60) {
+    deleteFromObject(urlId, parsedData);
+    console.log("-> parsedData", parsedData);
+    return null;
+  }
 
   parsedData[urlId] = videoTime;
 
@@ -55,10 +63,9 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when isn't needed
 const resume = function (videoEl: HTMLVideoElement) {
+  videoLength = Math.floor(videoEl.duration);
   const storage = localStorage.getItem(localStorageTimeStampName);
   const storedTime = storage ? +JSON.parse(storage)[urlId] : null;
-
-  // const videoEl = document.querySelector("video");
 
   videoEl.currentTime = storedTime ? storedTime : 0;
 
