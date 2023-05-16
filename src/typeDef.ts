@@ -4,5 +4,11 @@ export interface Message {
 }
 
 export interface StoredTimeStamps {
-  string: number;
+  timestamps: { [key: string]: number };
+  lookup: Set<string>;
+}
+
+export interface LocalTimeStamps {
+  timestamps: { [key: string]: number };
+  lookup: string[];
 }
