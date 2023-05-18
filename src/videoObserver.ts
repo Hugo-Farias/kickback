@@ -56,22 +56,22 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 //TODO add a limit of keys allowed in localStorage
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
-  const convertedData = getData(localStorageName) as LocalStamps;
+  const data = getData(localStorageName) as LocalStamps;
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
-    deleteTimeStamp(urlId, convertedData);
-  } else if (!convertedData.lookup.has(urlId)) {
-    convertedData.lookup.add(urlId);
-    convertedData.timestamps = {
+    deleteTimeStamp(urlId, data);
+  } else if (!data.lookup.has(urlId)) {
+    data.lookup.add(urlId);
+    data.timestamps = {
       [urlId]: videoTime,
-      ...convertedData.timestamps,
+      ...data.timestamps,
     };
   } else {
-    convertedData.timestamps[urlId] = videoTime;
+    data.timestamps[urlId] = videoTime;
   }
 
-  storeData(localStorageName, convertedData);
+  storeData(localStorageName, data);
 };
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
