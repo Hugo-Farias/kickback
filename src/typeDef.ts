@@ -3,12 +3,12 @@ export interface Message {
   url: string;
 }
 
-export interface StoredTimeStamps {
+export interface LocalStamps {
   timestamps: { [key: string]: number };
   lookup: Set<string>;
 }
 
-export interface LocalTimeStamps {
+export interface StoredStamps {
   timestamps: { [key: string]: number };
   lookup: string[];
 }

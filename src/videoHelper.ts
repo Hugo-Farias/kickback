@@ -1,21 +1,21 @@
-import { LocalTimeStamps, StoredTimeStamps } from "./typeDef";
+import { LocalStamps, StoredStamps } from "./typeDef";
 import { deleteFromObject } from "./helper";
 
-export const convertData = function (data: LocalTimeStamps): StoredTimeStamps {
+export const convertData = function (data: StoredStamps): LocalStamps {
   return {
     timestamps: data.timestamps,
     lookup: new Set(data.lookup),
   };
 };
 
-export const deleteTimeStamp = function (urlId: string, obj: StoredTimeStamps) {
+export const deleteTimeStamp = function (urlId: string, obj: LocalStamps) {
   if (obj.lookup.size <= 0) return;
   deleteFromObject(urlId, obj.timestamps);
   obj.lookup.delete(urlId);
   // localStorage.setItem(localStorageTimeStampName, stringLook);
 };
 
-export const storeData = function (name: string, data: StoredTimeStamps) {
+export const storeData = function (name: string, data: LocalStamps) {
   localStorage.setItem(
     name,
     JSON.stringify({
@@ -23,4 +23,17 @@ export const storeData = function (name: string, data: StoredTimeStamps) {
       timestamps: data.timestamps,
     })
   );
+};
+
+export const getData = function (
+  name: string,
+  convert: boolean = true
+): LocalStamps | StoredStamps {
+  const data = localStorage!.getItem(name);
+  const parsedData =
+    data !== null ? JSON.parse(data) : { timestamps: {}, lookup: [] };
+
+  if (convert) return convertData(parsedData);
+
+  return parsedData;
 };
