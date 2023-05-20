@@ -5,6 +5,7 @@ import {
   getData,
   storeData,
 } from "./videoHelper";
+import { waitForElement } from "./helper";
 
 console.log("kickback running");
 
@@ -14,12 +15,12 @@ let storeInterval: number;
 let videoLength: number = 0;
 const timeStart = 60; //time to not store or delete when in range from start
 const timeEnd = 240; //time to not store or delete when in range from end
-const intervalSecs = 2; // time in between storing current time to local storage in seconds
+const intervalSecs = 10; // time in between storing current time to local storage in seconds
 const maxTimeStamps = 50;
 const localStorageName = "kbTimeStamps";
 
 const clearOldTS = function (obj: LocalStamps) {
-  const idsToBeDel = Array.from(obj.lookup).reverse().slice(2);
+  const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
   idsToBeDel.forEach((v) => deleteTimeStamp(v, obj));
   storeData(localStorageName, obj);
 };
@@ -34,26 +35,25 @@ const onPause = function () {
 };
 
 // Wait for video element
-function waitForVideo(callback: (video: HTMLVideoElement) => void) {
-  if (!url.includes("video")) return;
-
-  const observer = new MutationObserver(() => {
-    const videoElement: HTMLVideoElement | null =
-      document.querySelector(".vjs-tech");
-    if (videoElement && videoElement.readyState >= 3) {
-      observer.disconnect();
-      callback(videoElement);
-    }
-  });
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
-}
+// function waitForVideo(callback: (video: HTMLVideoElement) => void) {
+//   if (!url.includes("video")) return;
+//
+//   const observer = new MutationObserver(() => {
+//     const videoElement: HTMLVideoElement | null =
+//       document.querySelector(".vjs-tech");
+//     if (videoElement && videoElement.readyState >= 3) {
+//       observer.disconnect();
+//       callback(videoElement);
+//     }
+//   });
+//
+//   observer.observe(document.documentElement, {
+//     childList: true,
+//     subtree: true,
+//   });
+// }
 
 // Stores current time to local storage
-//TODO add a limit of keys allowed in localStorage
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
   const data = getData(localStorageName) as LocalStamps;
@@ -93,10 +93,10 @@ const resume = function (videoEl: HTMLVideoElement) {
   clearOldTS(convertData(data));
 };
 
+const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
+
 // init
-waitForVideo((videoEl: HTMLVideoElement) => {
-  resume(videoEl);
-});
+waitForElement(".vjs-tech", url, waitEl);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
@@ -106,7 +106,5 @@ chrome.runtime.onMessage.addListener((message: Message) => {
   urlId = url.replace("https://kick.com/video/", "");
   clearInterval(storeInterval);
 
-  waitForVideo((videoEl: HTMLVideoElement) => {
-    resume(videoEl);
-  });
+  waitForElement(".vjs-tech", url, waitEl);
 });

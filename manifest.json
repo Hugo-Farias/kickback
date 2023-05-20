@@ -9,7 +9,7 @@
   },
   "content_scripts": [
     {
-      "js": ["src/videoObserver.ts"],
+      "js": ["src/videoObserver.ts", "src/progressBar.ts"],
       "matches": ["https://*.kick.com/*"]
     }
   ]
