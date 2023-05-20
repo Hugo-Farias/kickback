@@ -5,7 +5,13 @@ import {
   getData,
   storeData,
 } from "./videoHelper";
-import { waitForElement } from "./helper";
+import {
+  intervalSecs,
+  localStorageName,
+  maxTimeStamps,
+  timeEnd,
+  timeStart,
+} from "./config";
 
 console.log("kickback running");
 
@@ -13,11 +19,6 @@ let url: string = window.location.href;
 let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
 let storeInterval: number;
 let videoLength: number = 0;
-const timeStart = 60; //time to not store or delete when in range from start
-const timeEnd = 240; //time to not store or delete when in range from end
-const intervalSecs = 10; // time in between storing current time to local storage in seconds
-const maxTimeStamps = 50;
-const localStorageName = "kbTimeStamps";
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -35,23 +36,23 @@ const onPause = function () {
 };
 
 // Wait for video element
-// function waitForVideo(callback: (video: HTMLVideoElement) => void) {
-//   if (!url.includes("video")) return;
-//
-//   const observer = new MutationObserver(() => {
-//     const videoElement: HTMLVideoElement | null =
-//       document.querySelector(".vjs-tech");
-//     if (videoElement && videoElement.readyState >= 3) {
-//       observer.disconnect();
-//       callback(videoElement);
-//     }
-//   });
-//
-//   observer.observe(document.documentElement, {
-//     childList: true,
-//     subtree: true,
-//   });
-// }
+function waitForVideo(callback: (video: HTMLVideoElement) => void) {
+  if (!url.includes("video")) return;
+
+  const observer = new MutationObserver(() => {
+    const videoElement: HTMLVideoElement | null =
+      document.querySelector(".vjs-tech");
+    if (videoElement && videoElement.readyState >= 4) {
+      observer.disconnect();
+      callback(videoElement);
+    }
+  });
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+}
 
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
@@ -96,7 +97,7 @@ const resume = function (videoEl: HTMLVideoElement) {
 const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
 
 // init
-waitForElement(".vjs-tech", url, waitEl);
+waitForVideo(waitEl);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
@@ -106,5 +107,5 @@ chrome.runtime.onMessage.addListener((message: Message) => {
   urlId = url.replace("https://kick.com/video/", "");
   clearInterval(storeInterval);
 
-  waitForElement(".vjs-tech", url, waitEl);
+  waitForVideo(waitEl);
 });
