@@ -4,15 +4,21 @@ export interface Message {
 }
 
 type timestamps = {
-  [key: string]: { curr: number; total: number; title: string };
+  [key: string]: {
+    curr: number;
+    total: number;
+    title: string;
+    streamer: string;
+    id: string;
+  };
 };
 
 export interface LocalStamps {
-  timestamps: { [key: string]: number };
+  timestamps: timestamps;
   lookup: Set<string>;
 }
 
 export interface StoredStamps {
-  timestamps: { [key: string]: number };
+  timestamps: timestamps;
   lookup: string[];
 }

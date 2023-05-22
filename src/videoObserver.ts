@@ -19,6 +19,8 @@ let url: string = window.location.href;
 let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
 let storeInterval: number;
 let videoLength: number = 0;
+let videoTitle: string;
+let streamerName: string;
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -27,7 +29,6 @@ const clearOldTS = function (obj: LocalStamps) {
 };
 
 const onPlay = function (videoEl: HTMLVideoElement) {
-  // clearInterval(storeInterval);
   storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
 };
 
@@ -64,12 +65,15 @@ const storeTime = function (videoEL: HTMLVideoElement) {
     deleteTimeStamp(urlId, data);
   } else if (!data.lookup.has(urlId)) {
     data.lookup.add(urlId);
-    data.timestamps = {
-      [urlId]: videoTime,
-      ...data.timestamps,
+    data.timestamps[urlId] = {
+      curr: videoTime,
+      total: videoLength,
+      title: videoTitle,
+      streamer: streamerName,
+      id: urlId,
     };
   } else {
-    data.timestamps[urlId] = videoTime;
+    data.timestamps[urlId] = { ...data.timestamps[urlId], curr: videoTime };
   }
 
   storeData(localStorageName, data);
@@ -81,9 +85,12 @@ const resume = function (videoEl: HTMLVideoElement) {
 
   const data = getData(localStorageName, false) as StoredStamps;
   const storedTime: number =
-    data.timestamps && data.timestamps[urlId] ? +data.timestamps[urlId] : 0;
+    data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
   videoLength = Math.floor(videoEl.duration);
+
+  videoTitle = document.querySelector(".stream-title")?.textContent;
+  streamerName = document.querySelector(".stream-username > span")?.textContent;
 
   videoEl.currentTime = storedTime;
 
