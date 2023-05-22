@@ -1,6 +1,6 @@
 export interface Message {
   type: "urlChanged";
-  url: string;
+  url: string | undefined;
 }
 
 type timestamps = {

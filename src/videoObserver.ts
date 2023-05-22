@@ -62,14 +62,15 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
+    console.log("store");
     deleteTimeStamp(urlId, data);
   } else if (!data.lookup.has(urlId)) {
     data.lookup.add(urlId);
     data.timestamps[urlId] = {
       curr: videoTime,
       total: videoLength,
-      title: videoTitle,
-      streamer: streamerName,
+      title: document.querySelector(".stream-title")?.textContent,
+      streamer: document.querySelector(".stream-username > span")?.textContent,
       id: urlId,
     };
   } else {
@@ -88,9 +89,6 @@ const resume = function (videoEl: HTMLVideoElement) {
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
   videoLength = Math.floor(videoEl.duration);
-
-  videoTitle = document.querySelector(".stream-title")?.textContent;
-  streamerName = document.querySelector(".stream-username > span")?.textContent;
 
   videoEl.currentTime = storedTime;
 
