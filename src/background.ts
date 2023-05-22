@@ -7,7 +7,9 @@ chrome.tabs.onUpdated.addListener(function (
   tab: chrome.tabs.Tab
 ) {
   if (changeInfo.title === undefined || changeInfo.title === "Kick") return;
+  const url = tab.url;
+  if (!url) return;
 
-  const message: Message = { type: "urlChanged", url: tab.url };
+  const message: Message = { type: "urlChanged", url: url };
   chrome.tabs.sendMessage(tabId, message);
 });

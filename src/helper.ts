@@ -1,3 +1,5 @@
+import { timeoutDuration } from "./config";
+
 export function deleteFromObject(keyPart: string, obj: { [key: string]: any }) {
   for (const k in obj) {
     if (~k.indexOf(keyPart)) {
@@ -6,26 +8,12 @@ export function deleteFromObject(keyPart: string, obj: { [key: string]: any }) {
   }
 }
 
-function deleteKeysFromBeginning(map, numToDelete) {
-  const keys = map.keys();
-  let count = 0;
-
-  for (const key of keys) {
-    if (count >= numToDelete) {
-      break;
-    }
-
-    map.delete(key);
-    count++;
-  }
-}
-
 export const waitForElementList = function (
   el: string,
-  callback: (element: Array<Element> | null) => void
+  callback: (element: Array<any> | null) => void
 ) {
   const observer = new MutationObserver(() => {
-    const elementList: NodeListOf<Element> = document.querySelectorAll(el);
+    const elementList: NodeListOf<any> = document.querySelectorAll(el);
     if (elementList.length > 0) {
       observer.disconnect();
       callback([...elementList]);
@@ -36,6 +24,10 @@ export const waitForElementList = function (
     childList: true,
     subtree: true,
   });
+
+  setTimeout(() => {
+    observer.disconnect(); // Stop the observer after the timeout
+  }, timeoutDuration * 1000);
 };
 
 export const waitForElement = function (
@@ -47,7 +39,7 @@ export const waitForElement = function (
   if (url && !url.includes(check)) return;
 
   const observer = new MutationObserver(() => {
-    const element: Element | undefined = document.querySelector(el);
+    const element: Element | null = document.querySelector(el);
     if (element) {
       observer.disconnect();
       callback(element);

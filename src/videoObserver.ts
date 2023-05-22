@@ -10,17 +10,14 @@ import {
   localStorageName,
   maxTimeStamps,
   timeEnd,
+  timeoutDuration,
   timeStart,
 } from "./config";
-
-console.log("kickback: Video observer running");
 
 let url: string = window.location.href;
 let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
 let storeInterval: number;
 let videoLength: number = 0;
-let videoTitle: string;
-let streamerName: string;
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -53,6 +50,10 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
     childList: true,
     subtree: true,
   });
+
+  setTimeout(() => {
+    observer.disconnect(); // Stop the observer after the timeout
+  }, timeoutDuration * 1000);
 }
 
 // Stores current time to local storage
@@ -62,15 +63,14 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
-    console.log("store");
     deleteTimeStamp(urlId, data);
   } else if (!data.lookup.has(urlId)) {
     data.lookup.add(urlId);
     data.timestamps[urlId] = {
       curr: videoTime,
       total: videoLength,
-      title: document.querySelector(".stream-title")?.textContent,
-      streamer: document.querySelector(".stream-username > span")?.textContent,
+      title: document.querySelector(".stream-title")?.textContent!,
+      streamer: document.querySelector(".stream-username > span")?.textContent!,
       id: urlId,
     };
   } else {
@@ -102,9 +102,6 @@ const resume = function (videoEl: HTMLVideoElement) {
 };
 
 const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
-
-// init
-waitForVideo(waitEl);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {

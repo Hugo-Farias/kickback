@@ -1,14 +1,16 @@
 import { waitForElementList } from "./helper";
 import { getData } from "./videoHelper";
 import { localStorageName } from "./config";
-import { Message, StoredStamps } from "./typeDef";
+import { StoredStamps } from "./typeDef";
 
 const data: StoredStamps = getData(localStorageName, false) as StoredStamps;
 
 const init = function () {
   waitForElementList(
     ".grid-item > div > a[href^='/video/']",
-    (elArr: HTMLAnchorElement[]) => {
+    (elArr: HTMLAnchorElement[] | null) => {
+      if (!elArr) return null;
+
       elArr.forEach((v) => {
         const id = v.href.replace("https://kick.com/video/", "");
 
@@ -34,10 +36,6 @@ const init = function () {
   );
 };
 
-init();
-
-chrome.runtime.onMessage.addListener((message: Message) => {
-  console.log("-> message.type", message.type);
-  if (message.type !== "urlChanged") return;
+chrome.runtime.onMessage.addListener(() => {
   init();
 });
