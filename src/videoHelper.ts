@@ -10,8 +10,8 @@ export const convertData = function (data: StoredStamps): LocalStamps {
 
 export const deleteTimeStamp = function (urlId: string, obj: LocalStamps) {
   if (obj.lookup.size <= 0) return;
-  deleteFromObject(urlId, obj.timestamps);
   obj.lookup.delete(urlId);
+  deleteFromObject(urlId, obj.timestamps);
   // localStorage.setItem(localStorageTimeStampName, stringLook);
 };
 

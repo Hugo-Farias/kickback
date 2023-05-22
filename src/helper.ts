@@ -6,6 +6,20 @@ export function deleteFromObject(keyPart: string, obj: { [key: string]: any }) {
   }
 }
 
+function deleteKeysFromBeginning(map, numToDelete) {
+  const keys = map.keys();
+  let count = 0;
+
+  for (const key of keys) {
+    if (count >= numToDelete) {
+      break;
+    }
+
+    map.delete(key);
+    count++;
+  }
+}
+
 export const waitForElementList = function (
   el: string,
   callback: (element: Array<Element> | null) => void

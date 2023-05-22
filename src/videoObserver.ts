@@ -13,7 +13,7 @@ import {
   timeStart,
 } from "./config";
 
-console.log("kickback running");
+console.log("kickback: Video observer running");
 
 let url: string = window.location.href;
 let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
@@ -27,7 +27,7 @@ const clearOldTS = function (obj: LocalStamps) {
 };
 
 const onPlay = function (videoEl: HTMLVideoElement) {
-  clearInterval(storeInterval);
+  // clearInterval(storeInterval);
   storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
 };
 
@@ -77,6 +77,8 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
+  if (!url.includes("video")) return;
+
   const data = getData(localStorageName, false) as StoredStamps;
   const storedTime: number =
     data.timestamps && data.timestamps[urlId] ? +data.timestamps[urlId] : 0;
