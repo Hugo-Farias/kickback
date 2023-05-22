@@ -8,12 +8,8 @@ export function deleteFromObject(keyPart: string, obj: { [key: string]: any }) {
 
 export const waitForElementList = function (
   el: string,
-  url: string | null = null,
-  check: string = "",
   callback: (element: Array<Element> | null) => void
 ) {
-  if (url && !url.includes(check)) return;
-
   const observer = new MutationObserver(() => {
     const elementList: NodeListOf<Element> = document.querySelectorAll(el);
     if (elementList.length > 0) {
