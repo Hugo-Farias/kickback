@@ -3,7 +3,7 @@ export interface Message {
   url: string;
 }
 
-type timestamps = {
+export type Timestamp = {
   [key: string]: {
     curr: number;
     total: number;
@@ -14,11 +14,11 @@ type timestamps = {
 };
 
 export interface LocalStamps {
-  timestamps: timestamps;
+  timestamps: Timestamp;
   lookup: Set<string>;
 }
 
 export interface StoredStamps {
-  timestamps: timestamps;
+  timestamps: Timestamp;
   lookup: string[];
 }
