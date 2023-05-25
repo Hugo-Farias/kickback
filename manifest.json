@@ -4,6 +4,11 @@
   "version": "0.0.1",
   "description": "Auto resume kick.com vods",
   "permissions": ["tabs", "webNavigation"],
+  "icons": {
+    "16": "src/assets/logo_16.png",
+    "48": "src/assets/logo_48.png",
+    "128": "src/assets/logo_128.png"
+  },
   "background": {
     "service_worker": "src/background.ts"
   },
