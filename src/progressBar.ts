@@ -17,6 +17,16 @@ const init = function () {
       elArr.forEach((v) => {
         const id = getIdFromUrl(v.href);
 
+        if (currentId === id) {
+          const nowPlayingTag = document.createElement("div");
+
+          nowPlayingTag.className =
+            "right-2 top-2 rounded bg-black/80 px-1 text-sm font-light text-white";
+          nowPlayingTag.style.position = "absolute";
+          nowPlayingTag.textContent = "Now Playing";
+          v.appendChild(nowPlayingTag);
+        }
+
         if (!data.timestamps[id]) return;
 
         const currTime: number = data.timestamps[id].curr;
@@ -27,37 +37,14 @@ const init = function () {
 
         const color = "#53FC18";
 
-        // if (currentId === id) {
-        //   color = "#2f8110";
-        //   v.style.border = `1px solid ${color}`;
-        // }
-
         div.style.position = "absolute";
         div.style.height = "4px";
         div.style.width = "100%";
         div.style.bottom = "0";
         div.style.background = `linear-gradient(to right, ${color} ${percentage}%, #9c9c9c 0)`;
-
         v.style.position = "relative";
-        v.style.overflow = "show";
 
         v.appendChild(div);
-
-        if (currentId === id) {
-          const npDiv = document.createElement("div");
-
-          npDiv.className =
-            "right-2 top-2 rounded bg-black/80 px-1 text-sm font-light text-white";
-          npDiv.style.position = "absolute";
-          npDiv.textContent = "Now Playing";
-          // npDiv.style.paddingInline = "0.25rem";
-          // npDiv.style.height = "50px";
-          // npDiv.style.width = "100px";
-          // npDiv.style.backgroundColor = "rgba(0,0,0,0.4)";
-          // npDiv.style.top = "0";
-          // npDiv.style.right = "0";
-          v.appendChild(npDiv);
-        }
       });
     }
   );
