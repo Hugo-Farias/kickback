@@ -1,7 +1,7 @@
 {
   "name": "kickback",
   "author": "Hugo Farias",
-  "Description": "Auto resume kick.com vods",
+  "Description": "Auto resume kick.com vods with progress preview on thumbnails",
   "version": "0.0.1",
   "private": true,
   "type": "module",

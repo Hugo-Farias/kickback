@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Resume Vods for Kick.com",
+  "name": "Resume Vods from Kick.com",
   "version": "0.0.1",
-  "description": "Auto resume kick.com vods",
+  "description": "Auto resume kick.com vods with progress preview on thumbnails",
   "permissions": ["tabs", "webNavigation"],
   "icons": {
     "16": "src/assets/logo_16.png",
