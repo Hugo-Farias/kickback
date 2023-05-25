@@ -13,9 +13,10 @@ import {
   timeoutDuration,
   timeStart,
 } from "./config";
+import { getIdFromUrl } from "./helper";
 
 let url: string = window.location.href;
-let urlId: string = url.replace("https://kick.com/video/", ""); // Current url video ID
+let urlId: string = getIdFromUrl(url); // Current url video ID
 let storeInterval: number;
 let videoLength: number = 0;
 
@@ -108,7 +109,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
   if (!message.url.includes("video")) return;
 
   url = message.url;
-  urlId = url.replace("https://kick.com/video/", "");
+  urlId = getIdFromUrl(url);
   clearInterval(storeInterval);
 
   waitForVideo(waitEl);
