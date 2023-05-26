@@ -3,7 +3,7 @@
   "name": "Resume Kick.com Vods",
   "version": "0.0.1",
   "description": "Auto resume kick.com vods with progress preview on thumbnails",
-  "permissions": ["tabs", "webNavigation"],
+  "permissions": ["tabs"],
   "icons": {
     "16": "src/assets/logo_16.png",
     "48": "src/assets/logo_48.png",
