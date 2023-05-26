@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Resume Kick.com Vods",
+  "name": "Kickback",
   "version": "0.0.1",
-  "description": "Auto resume kick.com vods with progress preview on thumbnails",
+  "description": "Auto resume kick.com VODs",
   "permissions": ["tabs"],
   "icons": {
     "16": "src/assets/logo_16.png",

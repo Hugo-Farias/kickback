@@ -15,6 +15,8 @@ import {
 } from "./config";
 import { getIdFromUrl } from "./helper";
 
+console.log("videoObserver running");
+
 let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
 let storeInterval: number;
