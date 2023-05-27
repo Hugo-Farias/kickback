@@ -1,5 +1,9 @@
-const main = function () {
-  return null;
-};
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-export default main;
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

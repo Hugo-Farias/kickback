@@ -1,4 +1,4 @@
-import { Message, LocalStamps, StoredStamps } from "./typeDef";
+import { Message, LocalStamps, StoredStamps } from "../typeDef";
 import {
   convertData,
   deleteTimeStamp,
@@ -13,8 +13,7 @@ import {
   timeoutDuration,
   timeStart,
 } from "./config";
-import { getIdFromUrl } from "./helper";
-import set = chrome.cookies.set;
+import { getIdFromUrl } from "../helper";
 
 console.log("videoObserver running");
 
@@ -39,7 +38,7 @@ const onPause = function (videoEl: HTMLVideoElement) {
   clearInterval(storeInterval);
   storeTimeout = setTimeout(() => {
     storeTime(videoEl);
-  }, intervalSecs * 1000);
+  }, intervalSecs * 500);
 };
 
 // Wait for video element
@@ -49,7 +48,7 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
   const observer = new MutationObserver(() => {
     const videoElement: HTMLVideoElement | null =
       document.querySelector(".vjs-tech");
-    if (videoElement && videoElement.readyState >= 4) {
+    if (videoElement && videoElement.readyState >= 3) {
       observer.disconnect();
       callback(videoElement);
     }

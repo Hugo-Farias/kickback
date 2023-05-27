@@ -9,6 +9,9 @@
     "48": "src/assets/logo_48.png",
     "128": "src/assets/logo_128.png"
   },
+  "action": {
+    "default_popup": "index.html"
+  },
   "background": {
     "service_worker": "src/background.ts"
   },
@@ -19,4 +22,3 @@
     }
   ]
 }
-1

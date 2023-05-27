@@ -1,4 +1,4 @@
-import { Message } from "./typeDef";
+import { Message } from "../typeDef";
 
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (

@@ -1,5 +1,5 @@
-import { LocalStamps, StoredStamps } from "./typeDef";
-import { deleteFromObject } from "./helper";
+import { LocalStamps, StoredStamps } from "../typeDef";
+import { deleteFromObject } from "../helper";
 
 export const convertData = function (data: StoredStamps): LocalStamps {
   return {
