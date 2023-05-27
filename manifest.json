@@ -13,11 +13,14 @@
     "default_popup": "index.html"
   },
   "background": {
-    "service_worker": "src/background.ts"
+    "service_worker": "src/background/background.ts"
   },
   "content_scripts": [
     {
-      "js": ["src/videoObserver.ts", "src/progressBar.ts"],
+      "js": [
+        "src/background/videoObserver.ts",
+        "src/background/progressBar.ts"
+      ],
       "matches": ["https://*.kick.com/*"]
     }
   ]

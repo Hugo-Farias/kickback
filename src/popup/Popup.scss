@@ -1,0 +1,14 @@
+html {
+  background-color: #212121;
+}
+
+.popup-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  & > .stream-info {
+    width: 20rem;
+    background-color: red;
+  }
+}

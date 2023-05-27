@@ -12,7 +12,7 @@ import {
   timeEnd,
   timeoutDuration,
   timeStart,
-} from "./config";
+} from "../config";
 import { getIdFromUrl } from "../helper";
 
 console.log("videoObserver running");

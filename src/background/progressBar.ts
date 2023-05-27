@@ -1,7 +1,7 @@
 import { StoredStamps } from "../typeDef";
 import { getIdFromUrl, waitForElementList } from "../helper";
 import { getData } from "./videoHelper";
-import { localStorageName, showProgressBarOnThumbs } from "./config";
+import { localStorageName, showProgressBarOnThumbs } from "../config";
 
 const data: StoredStamps = getData(localStorageName, false) as StoredStamps;
 

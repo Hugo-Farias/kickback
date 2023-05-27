@@ -1,4 +1,4 @@
-import { timeoutDuration } from "./background/config";
+import { timeoutDuration } from "./config";
 
 export function deleteFromObject(keyPart: string, obj: { [key: string]: any }) {
   for (const k in obj) {
