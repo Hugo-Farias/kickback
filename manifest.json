@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Kickback",
+  "name": "Kick.com Video Resumer",
   "version": "0.0.1",
-  "description": "Auto resume kick.com VODs",
+  "description": "Auto resume kick.com videos",
   "permissions": ["tabs"],
   "icons": {
     "16": "src/assets/logo_16.png",
