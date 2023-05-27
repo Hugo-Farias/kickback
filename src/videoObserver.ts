@@ -14,12 +14,14 @@ import {
   timeStart,
 } from "./config";
 import { getIdFromUrl } from "./helper";
+import set = chrome.cookies.set;
 
 console.log("videoObserver running");
 
 let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
 let storeInterval: number;
+let storeTimeout: number;
 let videoLength: number = 0;
 
 const clearOldTS = function (obj: LocalStamps) {
@@ -29,11 +31,15 @@ const clearOldTS = function (obj: LocalStamps) {
 };
 
 const onPlay = function (videoEl: HTMLVideoElement) {
+  clearTimeout(storeTimeout);
   storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
 };
 
-const onPause = function () {
+const onPause = function (videoEl: HTMLVideoElement) {
   clearInterval(storeInterval);
+  storeTimeout = setTimeout(() => {
+    storeTime(videoEl);
+  }, intervalSecs * 1000);
 };
 
 // Wait for video element
@@ -63,6 +69,8 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
   const data = getData(localStorageName) as LocalStamps;
+
+  // console.log("store");
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
@@ -97,7 +105,7 @@ const resume = function (videoEl: HTMLVideoElement) {
 
   videoEl.addEventListener("play", () => onPlay(videoEl));
 
-  videoEl.addEventListener("pause", onPause);
+  videoEl.addEventListener("pause", () => onPause(videoEl));
 
   if (data.lookup && data.lookup.length < maxTimeStamps * 2) return;
 
