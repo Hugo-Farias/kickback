@@ -22,6 +22,7 @@ let urlId: string = getIdFromUrl(url); // Current url video ID
 let storeInterval: number;
 let storeTimeout: number;
 let videoLength: number = 0;
+let seekTimeout: number;
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -79,8 +80,10 @@ const storeTime = function (videoEL: HTMLVideoElement) {
     data.timestamps[urlId] = {
       curr: videoTime,
       total: videoLength,
-      title: document.querySelector(".stream-title")?.textContent!,
-      streamer: document.querySelector(".stream-username > span")?.textContent!,
+      title: document.querySelector(".stream-title")?.textContent!.trim(),
+      streamer: document
+        .querySelector(".stream-username > span")
+        ?.textContent!.trim(),
       id: urlId,
     };
   } else {
@@ -105,6 +108,13 @@ const resume = function (videoEl: HTMLVideoElement) {
   videoEl.addEventListener("play", () => onPlay(videoEl));
 
   videoEl.addEventListener("pause", () => onPause(videoEl));
+
+  videoEl.addEventListener("seeked", () => {
+    clearTimeout(seekTimeout);
+    seekTimeout = setTimeout(() => {
+      storeTime(videoEl);
+    }, 2000);
+  });
 
   if (data.lookup && data.lookup.length < maxTimeStamps * 2) return;
 
