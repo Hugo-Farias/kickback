@@ -1,5 +1,7 @@
 import { Message } from "../typeDef";
 
+let msgTimeout: number;
+
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (
   tabId: number,
@@ -11,5 +13,16 @@ chrome.tabs.onUpdated.addListener(function (
   if (!url) return;
 
   const message: Message = { type: "urlChanged", url: url };
-  chrome.tabs.sendMessage(tabId, message);
+
+  if (msgTimeout) clearTimeout(msgTimeout);
+
+  msgTimeout = setTimeout(() => {
+    return chrome.tabs.sendMessage(tabId, message);
+  }, 500);
 });
+
+// chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
+//   // console.log("-> details", details);
+//   // console.log("History state updated for tab:", details.tabId);
+//   // console.log("New URL:", details.url);
+// });

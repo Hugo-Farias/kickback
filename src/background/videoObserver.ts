@@ -58,9 +58,9 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
-  const data = getData(localStorageName) as LocalStamps;
-
   console.log("-> videoTime store", videoTime);
+  if (videoTime < 5) return;
+  const data = getData(localStorageName) as LocalStamps;
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime > videoLength - timeEnd) {
@@ -86,8 +86,6 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
-  if (!url.includes("video")) return;
-
   const data = getData(localStorageName, false) as StoredStamps;
   const storedTime: number =
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
@@ -109,8 +107,8 @@ const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
-  if (!message.url.includes("video")) return;
   console.log("update");
+  if (!message.url.includes("video")) return;
 
   url = message.url;
   urlId = getIdFromUrl(url);

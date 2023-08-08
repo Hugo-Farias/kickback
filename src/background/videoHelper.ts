@@ -41,6 +41,11 @@ export const getData = function (
 let storeInterval: number;
 let storeTimeout: number;
 
+const clearAllTimeouts = function () {
+  clearTimeout(storeTimeout);
+  clearInterval(storeInterval);
+};
+
 export const addListenerToVideo = function (
   type: "play" | "pause" | "seeked",
   action: (v: HTMLVideoElement) => void,
@@ -53,22 +58,27 @@ export const addListenerToVideo = function (
 
   let func: () => void;
 
-  if (type !== "play") {
+  if (type === "pause") {
     func = () => {
       console.log(type + " action");
-      clearTimeout(storeTimeout);
-      clearTimeout(storeInterval);
+      clearAllTimeouts();
       storeTimeout = setTimeout(() => action(videoEl), time * 1000);
     };
-  } else {
+  } else if (type === "play") {
+    func = () => {
+      console.log(type + " action");
+      clearAllTimeouts();
+      storeInterval = setInterval(() => action(videoEl), time * 1000);
+    };
+  } else if (type === "seeked") {
     func = () => {
       console.log(type + " action");
       clearTimeout(storeTimeout);
-      clearTimeout(storeInterval);
-      storeInterval = setInterval(() => action(videoEl), time * 1000);
+      storeTimeout = setTimeout(() => action(videoEl), time * 1000);
     };
   }
 
   console.log(`${type} listener added`);
+  videoEl.removeEventListener(type, func);
   videoEl.addEventListener(type, func);
 };

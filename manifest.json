@@ -3,7 +3,7 @@
   "name": "Kick.com Video Resumer",
   "version": "1.1",
   "description": "Auto resume kick.com videos",
-  "permissions": ["tabs"],
+  "permissions": ["tabs", "webNavigation"],
   "icons": {
     "16": "src/assets/logo_16.png",
     "48": "src/assets/logo_48.png",
