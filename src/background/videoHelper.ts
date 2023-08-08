@@ -1,5 +1,6 @@
 import { LocalStamps, StoredStamps } from "../typeDef";
 import { deleteFromObject } from "../helper";
+import { intervalSecs } from "../config";
 
 export const convertData = function (data: StoredStamps): LocalStamps {
   return {
@@ -35,4 +36,39 @@ export const getData = function (
   if (convert) return convertData(parsedData);
 
   return parsedData;
+};
+
+let storeInterval: number;
+let storeTimeout: number;
+
+export const addListenerToVideo = function (
+  type: "play" | "pause" | "seeked",
+  action: (v: HTMLVideoElement) => void,
+  videoEl: HTMLVideoElement,
+  time: undefined | number = intervalSecs
+) {
+  // console.log("addListenerToVideo " + type);
+
+  // console.log(videoEl.src);
+
+  let func: () => void;
+
+  if (type !== "play") {
+    func = () => {
+      console.log(type + " action");
+      clearTimeout(storeTimeout);
+      clearTimeout(storeInterval);
+      storeTimeout = setTimeout(() => action(videoEl), time * 1000);
+    };
+  } else {
+    func = () => {
+      console.log(type + " action");
+      clearTimeout(storeTimeout);
+      clearTimeout(storeInterval);
+      storeInterval = setInterval(() => action(videoEl), time * 1000);
+    };
+  }
+
+  console.log(`${type} listener added`);
+  videoEl.addEventListener(type, func);
 };

@@ -1,5 +1,6 @@
 import { Message, LocalStamps, StoredStamps } from "../typeDef";
 import {
+  addListenerToVideo,
   convertData,
   deleteTimeStamp,
   getData,
@@ -19,27 +20,16 @@ console.log("videoObserver running");
 
 let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
-let storeInterval: number;
-let storeTimeout: number;
+// let storeInterval: number;
+// let storeTimeout: number;
 let videoLength: number = 0;
-let seekTimeout: number;
+// let seekTimeout: number;
+// let listenerTimeout: number;
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
   idsToBeDel.forEach((v) => deleteTimeStamp(v, obj));
   storeData(localStorageName, obj);
-};
-
-const onPlay = function (videoEl: HTMLVideoElement) {
-  clearTimeout(storeTimeout);
-  storeInterval = setInterval(() => storeTime(videoEl), intervalSecs * 1000);
-};
-
-const onPause = function (videoEl: HTMLVideoElement) {
-  clearInterval(storeInterval);
-  storeTimeout = setTimeout(() => {
-    storeTime(videoEl);
-  }, intervalSecs * 500);
 };
 
 // Wait for video element
@@ -70,10 +60,11 @@ const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
   const data = getData(localStorageName) as LocalStamps;
 
-  // console.log("store");
+  console.log("-> videoTime store", videoTime);
 
   // Remove key from storage if time is close to beginning or end of video
-  if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
+  if (videoTime > videoLength - timeEnd) {
+    console.log("delete");
     deleteTimeStamp(urlId, data);
   } else if (!data.lookup.has(urlId)) {
     data.lookup.add(urlId);
@@ -103,18 +94,11 @@ const resume = function (videoEl: HTMLVideoElement) {
 
   videoLength = Math.floor(videoEl.duration);
 
+  addListenerToVideo("play", storeTime.bind(this, videoEl), videoEl);
+  addListenerToVideo("pause", storeTime.bind(this, videoEl), videoEl, 5);
+  addListenerToVideo("seeked", storeTime.bind(this, videoEl), videoEl, 2);
+
   videoEl.currentTime = storedTime;
-
-  videoEl.addEventListener("play", () => onPlay(videoEl));
-
-  videoEl.addEventListener("pause", () => onPause(videoEl));
-
-  videoEl.addEventListener("seeked", () => {
-    clearTimeout(seekTimeout);
-    seekTimeout = setTimeout(() => {
-      storeTime(videoEl);
-    }, 2000);
-  });
 
   if (data.lookup && data.lookup.length < maxTimeStamps * 2) return;
 
@@ -126,10 +110,10 @@ const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
   if (!message.url.includes("video")) return;
+  console.log("update");
 
   url = message.url;
   urlId = getIdFromUrl(url);
-  clearInterval(storeInterval);
 
   waitForVideo(waitEl);
 });
