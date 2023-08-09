@@ -1,7 +1,6 @@
-import { Message, LocalStamps, StoredStamps } from "../typeDef";
+import { Message, LocalStamps } from "../typeDef";
 import {
   addListenerToVideo,
-  convertData,
   deleteTimeStamp,
   getData,
   storeData,
@@ -14,6 +13,7 @@ import {
   timeStart,
 } from "../config";
 import { getIdFromUrl } from "../helper";
+import id = chrome.runtime.id;
 
 console.log("video Observer");
 
@@ -21,6 +21,16 @@ let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
 let videoLength: number = 0;
 let isDataFull: boolean;
+let isDataOnLookUp: boolean;
+let data: LocalStamps;
+
+const checkData = function (): boolean {
+  if (isDataFull && isDataOnLookUp) return true;
+  if (data.timestamps[urlId]) {
+    isDataFull = Object.keys(data.timestamps[urlId]).length >= 5;
+    isDataOnLookUp = data.lookup.has(urlId);
+  }
+};
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -55,12 +65,14 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
   if (videoTime < 10) return;
-  const data = getData(localStorageName) as LocalStamps;
+  // const data = getData(localStorageName) as LocalStamps;
+  console.log("-> data", data.timestamps[urlId]);
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
     deleteTimeStamp(urlId, data);
-  } else if (!isDataFull || !data.lookup.has(urlId)) {
+  } else if (!checkData()) {
+    console.log("-> isDataFull", isDataFull);
     data.lookup.add(urlId);
     data.timestamps[urlId] = {
       curr: videoTime,
@@ -71,6 +83,7 @@ const storeTime = function (videoEL: HTMLVideoElement) {
         ?.textContent!.trim(),
       id: urlId,
     };
+    checkData();
   } else {
     data.timestamps[urlId] = { ...data.timestamps[urlId], curr: videoTime };
   }
@@ -80,8 +93,9 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
-  const data = getData(localStorageName, false) as StoredStamps;
-  isDataFull = Object.keys(data.timestamps[urlId]).length >= 5;
+  data = getData(localStorageName) as LocalStamps;
+  checkData();
+
   const storedTime: number =
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
@@ -95,9 +109,9 @@ const resume = function (videoEl: HTMLVideoElement) {
 
   videoEl.currentTime = storedTime;
 
-  if (data.lookup && data.lookup.length < maxTimeStamps * 2) return;
+  if (data.lookup && [...data.lookup].length < maxTimeStamps * 2) return;
 
-  clearOldTS(convertData(data));
+  clearOldTS(data);
 };
 
 const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
@@ -108,6 +122,8 @@ chrome.runtime.onMessage.addListener((message: Message) => {
 
   url = message.url;
   urlId = getIdFromUrl(url);
+  isDataFull = false;
+  isDataOnLookUp = false;
 
   waitForVideo(waitEl);
 });
