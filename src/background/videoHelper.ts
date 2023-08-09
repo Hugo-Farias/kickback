@@ -71,6 +71,8 @@ export const addListenerToVideo = function (
     };
   }
 
+  if (!func!) return;
+
   videoEl.removeEventListener(type, func);
   videoEl.addEventListener(type, func);
 };

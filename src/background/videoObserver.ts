@@ -7,7 +7,6 @@ import {
   storeData,
 } from "./videoHelper";
 import {
-  intervalSecs,
   localStorageName,
   maxTimeStamps,
   timeEnd,
@@ -15,6 +14,8 @@ import {
   timeStart,
 } from "../config";
 import { getIdFromUrl } from "../helper";
+
+console.log("video Observer");
 
 let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
@@ -65,7 +66,7 @@ const storeTime = function (videoEL: HTMLVideoElement) {
       total: videoLength,
       title: document.querySelector(".stream-title")?.textContent!.trim(),
       streamer: document
-        .querySelector(".stream-username > span")
+        .querySelector(".stream-username > a")
         ?.textContent!.trim(),
       id: urlId,
     };
@@ -84,9 +85,11 @@ const resume = function (videoEl: HTMLVideoElement) {
 
   videoLength = Math.floor(videoEl.duration);
 
-  addListenerToVideo("play", storeTime.bind(this, videoEl), videoEl);
-  addListenerToVideo("pause", storeTime.bind(this, videoEl), videoEl, 5);
-  addListenerToVideo("seeked", storeTime.bind(this, videoEl), videoEl, 2);
+  const storeTimeBound = storeTime.bind(videoEl);
+
+  addListenerToVideo("play", storeTimeBound, videoEl);
+  addListenerToVideo("pause", storeTimeBound, videoEl, 5);
+  addListenerToVideo("seeked", storeTimeBound, videoEl, 2);
 
   videoEl.currentTime = storedTime;
 
