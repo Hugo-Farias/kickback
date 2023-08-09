@@ -13,7 +13,6 @@ import {
   timeStart,
 } from "../config";
 import { getIdFromUrl } from "../helper";
-import id = chrome.runtime.id;
 
 console.log("video Observer");
 
@@ -23,8 +22,9 @@ let videoLength: number = 0;
 let isDataFull: boolean;
 let isDataOnLookUp: boolean;
 let data: LocalStamps;
+let observer: MutationObserver;
 
-const checkData = function (): boolean {
+const checkData = function () {
   if (isDataFull && isDataOnLookUp) return true;
   if (data.timestamps[urlId]) {
     isDataFull = Object.keys(data.timestamps[urlId]).length >= 5;
@@ -42,7 +42,7 @@ const clearOldTS = function (obj: LocalStamps) {
 function waitForVideo(callback: (video: HTMLVideoElement) => void) {
   if (!url.includes("video")) return;
 
-  const observer = new MutationObserver(() => {
+  observer = new MutationObserver(() => {
     const videoElement: HTMLVideoElement | null =
       document.querySelector(".vjs-tech");
     if (videoElement && videoElement.readyState >= 3) {
@@ -65,14 +65,11 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
   if (videoTime < 10) return;
-  // const data = getData(localStorageName) as LocalStamps;
-  console.log("-> data", data.timestamps[urlId]);
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
     deleteTimeStamp(urlId, data);
   } else if (!checkData()) {
-    console.log("-> isDataFull", isDataFull);
     data.lookup.add(urlId);
     data.timestamps[urlId] = {
       curr: videoTime,
@@ -124,6 +121,9 @@ chrome.runtime.onMessage.addListener((message: Message) => {
   urlId = getIdFromUrl(url);
   isDataFull = false;
   isDataOnLookUp = false;
+  if (observer) {
+    observer.disconnect();
+  }
 
   waitForVideo(waitEl);
 });

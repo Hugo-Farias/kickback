@@ -48,7 +48,7 @@ const init = function () {
     }
   );
 };
-init();
 
-// chrome.runtime.onMessage.addListener(() => {
-// });
+chrome.runtime.onMessage.addListener(() => {
+  init();
+});

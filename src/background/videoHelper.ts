@@ -1,5 +1,4 @@
 import { LocalStamps, StoredStamps } from "../typeDef";
-import { deleteFromObject } from "../helper";
 import { intervalSecs } from "../config";
 
 export const convertData = function (data: StoredStamps): LocalStamps {
@@ -9,10 +8,10 @@ export const convertData = function (data: StoredStamps): LocalStamps {
   };
 };
 
-export const deleteTimeStamp = function (urlId: string, obj: LocalStamps) {
+export const deleteTimeStamp = function (id: string, obj: LocalStamps) {
   if (obj.lookup.size <= 0) return;
-  obj.lookup.delete(urlId);
-  deleteFromObject(urlId, obj.timestamps);
+  obj.lookup.delete(id);
+  delete obj.timestamps[id];
 };
 
 export const storeData = function (name: string, data: LocalStamps) {

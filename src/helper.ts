@@ -1,13 +1,5 @@
 import { timeoutDuration } from "./config";
 
-export function deleteFromObject(keyPart: string, obj: { [key: string]: any }) {
-  for (const k in obj) {
-    if (~k.indexOf(keyPart)) {
-      delete obj[k];
-    }
-  }
-}
-
 export const waitForElementList = function (
   el: string,
   callback: (element: Array<any> | null) => void
