@@ -20,6 +20,7 @@ console.log("video Observer");
 let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
 let videoLength: number = 0;
+let isDataFull: boolean;
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -59,7 +60,7 @@ const storeTime = function (videoEL: HTMLVideoElement) {
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
     deleteTimeStamp(urlId, data);
-  } else if (!data.lookup.has(urlId)) {
+  } else if (!isDataFull || !data.lookup.has(urlId)) {
     data.lookup.add(urlId);
     data.timestamps[urlId] = {
       curr: videoTime,
@@ -80,6 +81,7 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
   const data = getData(localStorageName, false) as StoredStamps;
+  isDataFull = Object.keys(data.timestamps[urlId]).length >= 5;
   const storedTime: number =
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
