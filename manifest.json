@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Kick.com Video Resumer",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Auto resume kick.com videos",
-  "permissions": ["tabs", "webNavigation"],
+  "permissions": ["tabs"],
   "icons": {
     "16": "src/assets/logo_16.png",
     "48": "src/assets/logo_48.png",

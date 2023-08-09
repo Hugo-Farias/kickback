@@ -52,33 +52,25 @@ export const addListenerToVideo = function (
   videoEl: HTMLVideoElement,
   time: undefined | number = intervalSecs
 ) {
-  // console.log("addListenerToVideo " + type);
-
-  // console.log(videoEl.src);
-
   let func: () => void;
 
   if (type === "pause") {
     func = () => {
-      console.log(type + " action");
       clearAllTimeouts();
       storeTimeout = setTimeout(() => action(videoEl), time * 1000);
     };
   } else if (type === "play") {
     func = () => {
-      console.log(type + " action");
       clearAllTimeouts();
       storeInterval = setInterval(() => action(videoEl), time * 1000);
     };
   } else if (type === "seeked") {
     func = () => {
-      console.log(type + " action");
       clearTimeout(storeTimeout);
       storeTimeout = setTimeout(() => action(videoEl), time * 1000);
     };
   }
 
-  console.log(`${type} listener added`);
   videoEl.removeEventListener(type, func);
   videoEl.addEventListener(type, func);
 };

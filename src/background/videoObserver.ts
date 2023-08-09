@@ -16,15 +16,9 @@ import {
 } from "../config";
 import { getIdFromUrl } from "../helper";
 
-console.log("videoObserver running");
-
 let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
-// let storeInterval: number;
-// let storeTimeout: number;
 let videoLength: number = 0;
-// let seekTimeout: number;
-// let listenerTimeout: number;
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -58,13 +52,11 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
   const videoTime = Math.floor(videoEL.currentTime);
-  console.log("-> videoTime store", videoTime);
-  if (videoTime < 5) return;
+  if (videoTime < 10) return;
   const data = getData(localStorageName) as LocalStamps;
 
   // Remove key from storage if time is close to beginning or end of video
-  if (videoTime > videoLength - timeEnd) {
-    console.log("delete");
+  if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
     deleteTimeStamp(urlId, data);
   } else if (!data.lookup.has(urlId)) {
     data.lookup.add(urlId);
@@ -107,7 +99,6 @@ const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
-  console.log("update");
   if (!message.url.includes("video")) return;
 
   url = message.url;
