@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Kick.com Video Resumer",
+  "name": "Kick.com Video/VODS Resumer",
   "version": "1.2",
   "description": "Auto resume kick.com videos",
   "permissions": ["tabs"],
