@@ -3,10 +3,9 @@ import { getIdFromUrl, waitForElementList } from "../helper";
 import { getData } from "./videoHelper";
 import { localStorageName, showProgressBarOnThumbs } from "../config";
 
-const data: StoredStamps = getData(localStorageName, false) as StoredStamps;
-
 const init = function () {
   if (!showProgressBarOnThumbs) return;
+  const data: StoredStamps = getData(localStorageName, false) as StoredStamps;
   const currentId: string = getIdFromUrl(window.location.href);
 
   waitForElementList(
@@ -49,7 +48,7 @@ const init = function () {
     }
   );
 };
+init();
 
-chrome.runtime.onMessage.addListener(() => {
-  init();
-});
+// chrome.runtime.onMessage.addListener(() => {
+// });
