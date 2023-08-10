@@ -1,3 +1,4 @@
+import { getIdFromUrl } from "../helper";
 import { Message, LocalStamps } from "../typeDef";
 import {
   addListenerToVideo,
@@ -12,13 +13,12 @@ import {
   timeoutDuration,
   timeStart,
 } from "../config";
-import { getIdFromUrl } from "../helper";
 
 console.log("Kickback Running");
 
-export let data: LocalStamps;
 let url: string = window.location.href;
-let urlId: string = getIdFromUrl(url); // Current url video ID
+export let data: LocalStamps;
+export let urlId: string = getIdFromUrl(url); // Current video ID
 let videoLength: number = 0;
 let isDataFull: boolean;
 let isDataOnLookUp: boolean;

@@ -22,6 +22,6 @@ export const waitForElementList = function (
   }, timeoutDuration * 1000);
 };
 
-export const getIdFromUrl = function (url: string): string {
-  return url.replace("https://kick.com/video/", "");
+export const getIdFromUrl = function (s: string): string {
+  return s.replace("https://kick.com/video/", "");
 };

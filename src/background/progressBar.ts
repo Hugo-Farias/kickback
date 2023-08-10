@@ -1,11 +1,8 @@
 import { getIdFromUrl, waitForElementList } from "../helper";
-import { data } from "./videoObserver";
+import { data, urlId } from "./videoObserver";
 import { showProgressBarOnThumbs } from "../config";
 
 const init = function () {
-  if (!showProgressBarOnThumbs) return;
-  const currentId: string = getIdFromUrl(window.location.href);
-
   waitForElementList(
     ".grid-item > div > a[href^='/video/']",
     (elArr: HTMLAnchorElement[] | null) => {
@@ -14,7 +11,7 @@ const init = function () {
       elArr.forEach((v) => {
         const id = getIdFromUrl(v.href);
 
-        if (currentId === id) {
+        if (urlId === id) {
           const nowPlayingTag = document.createElement("div");
 
           nowPlayingTag.className =
@@ -47,20 +44,22 @@ const init = function () {
   );
 };
 
-chrome.runtime.onMessage.addListener(() => {
-  let retries = 30;
-  const intervalId = setInterval(() => {
-    if (data) {
-      clearInterval(intervalId);
-      init();
-      return;
-    }
-    // Kill the interval if waitFor never arrives after the amount of retries
-    if (!(retries - 1)) {
-      clearInterval(intervalId);
-      console.error("data couldn't be retrieved");
-      return;
-    }
-    retries--;
-  }, 500);
-});
+if (showProgressBarOnThumbs) {
+  chrome.runtime.onMessage.addListener(() => {
+    let retries = 30;
+    const intervalId = setInterval(() => {
+      retries--;
+      if (data || urlId) {
+        clearInterval(intervalId);
+        init();
+        return;
+      }
+      // Kill the interval if waitFor never arrives after the amount of retries
+      if (!retries) {
+        clearInterval(intervalId);
+        console.error("data couldn't be retrieved");
+        return;
+      }
+    }, 500);
+  });
+}
