@@ -14,14 +14,14 @@ import {
 } from "../config";
 import { getIdFromUrl } from "../helper";
 
-console.log("video Observer");
+console.log("Kickback Running");
 
+export let data: LocalStamps;
 let url: string = window.location.href;
 let urlId: string = getIdFromUrl(url); // Current url video ID
 let videoLength: number = 0;
 let isDataFull: boolean;
 let isDataOnLookUp: boolean;
-let data: LocalStamps;
 let observer: MutationObserver;
 
 const checkData = function () {
@@ -90,9 +90,6 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
-  data = getData(localStorageName) as LocalStamps;
-  checkData();
-
   const storedTime: number =
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
@@ -116,11 +113,13 @@ const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
   if (!message.url.includes("video")) return;
+  data = getData(localStorageName) as LocalStamps;
 
   url = message.url;
   urlId = getIdFromUrl(url);
   isDataFull = false;
   isDataOnLookUp = false;
+  checkData();
   if (observer) {
     observer.disconnect();
   }

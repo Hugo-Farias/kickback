@@ -1,11 +1,9 @@
-import { StoredStamps } from "../typeDef";
 import { getIdFromUrl, waitForElementList } from "../helper";
-import { getData } from "./videoHelper";
-import { localStorageName, showProgressBarOnThumbs } from "../config";
+import { data } from "./videoObserver";
+import { showProgressBarOnThumbs } from "../config";
 
 const init = function () {
   if (!showProgressBarOnThumbs) return;
-  const data: StoredStamps = getData(localStorageName, false) as StoredStamps;
   const currentId: string = getIdFromUrl(window.location.href);
 
   waitForElementList(
@@ -50,5 +48,19 @@ const init = function () {
 };
 
 chrome.runtime.onMessage.addListener(() => {
-  init();
+  let retries = 30;
+  const intervalId = setInterval(() => {
+    if (data) {
+      clearInterval(intervalId);
+      init();
+      return;
+    }
+    // Kill the interval if waitFor never arrives after the amount of retries
+    if (!(retries - 1)) {
+      clearInterval(intervalId);
+      console.error("data couldn't be retrieved");
+      return;
+    }
+    retries--;
+  }, 500);
 });
