@@ -112,10 +112,12 @@ const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
-  if (!message.url.includes("video")) return;
-  data = getData(localStorageName) as LocalStamps;
-
   url = message.url;
+  if ((url.includes("/") && !data) || url.includes("video")) {
+    data = getData(localStorageName) as LocalStamps;
+  }
+  if (!url.includes("video")) return;
+  // data = getData(localStorageName) as LocalStamps;
   urlId = getIdFromUrl(url);
   isDataFull = false;
   isDataOnLookUp = false;
