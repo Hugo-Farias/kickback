@@ -5,3 +5,7 @@ export const maxTimeStamps = 50; // max amount of timestamps to keep saved in st
 export const timeoutDuration = 50; // time in secs to disconnect all observers
 export const localStorageName = "kbTimeStamps";
 export const showProgressBarOnThumbs = true;
+export const allowVideoInput = true;
+export const videoInputAllowedKeys = allowVideoInput
+  ? ["ArrowLeft", "ArrowRight"]
+  : null;

@@ -12,6 +12,8 @@ import {
   timeEnd,
   timeoutDuration,
   timeStart,
+  allowVideoInput,
+  videoInputAllowedKeys,
 } from "../config";
 
 console.log("Kickback Running");
@@ -29,6 +31,18 @@ const checkData = function () {
   if (data.timestamps[urlId]) {
     isDataFull = Object.keys(data.timestamps[urlId]).length >= 5;
     isDataOnLookUp = data.lookup.has(urlId);
+  }
+};
+
+const videoInput = function (videoEl: HTMLVideoElement, e?: KeyboardEvent) {
+  if (!e) return;
+  if (!videoInputAllowedKeys?.includes(e.key)) return;
+  const { key } = e;
+
+  if (key === "ArrowLeft") {
+    videoEl.currentTime -= 5;
+  } else if (key === "ArrowRight") {
+    videoEl.currentTime += 5;
   }
 };
 
@@ -95,11 +109,15 @@ const resume = function (videoEl: HTMLVideoElement) {
 
   videoLength = Math.floor(videoEl.duration);
 
-  const storeTimeBound = storeTime.bind(videoEl);
+  // const storeTimeBound = storeTime.bind(videoEl);
 
-  addListenerToVideo("play", storeTimeBound, videoEl);
-  addListenerToVideo("pause", storeTimeBound, videoEl, 5);
-  addListenerToVideo("seeked", storeTimeBound, videoEl, 2);
+  addListenerToVideo("play", videoEl, storeTime);
+  addListenerToVideo("pause", videoEl, storeTime, 5);
+  addListenerToVideo("seeked", videoEl, storeTime, 2);
+
+  if (allowVideoInput) {
+    addListenerToVideo("keydown", videoEl, videoInput);
+  }
 
   videoEl.currentTime = storedTime;
 

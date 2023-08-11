@@ -46,12 +46,14 @@ const clearAllTimeouts = function () {
 };
 
 export const addListenerToVideo = function (
-  type: "play" | "pause" | "seeked",
-  action: (v: HTMLVideoElement) => void,
+  type: "play" | "pause" | "seeked" | "keydown",
   videoEl: HTMLVideoElement,
+  action: any,
   time: undefined | number = intervalSecs
 ) {
-  let func: () => void;
+  let element = type !== "keydown" ? videoEl : videoEl!.parentNode?.parentNode;
+
+  let func: (a?: any) => any | undefined;
 
   if (type === "pause") {
     func = () => {
@@ -66,12 +68,18 @@ export const addListenerToVideo = function (
   } else if (type === "seeked") {
     func = () => {
       clearTimeout(storeTimeout);
-      storeTimeout = setTimeout(() => action(videoEl), time * 1000);
+      storeTimeout = setTimeout(() => {
+        action(videoEl);
+      }, time * 1000);
+    };
+  } else if (type === "keydown") {
+    func = (e: KeyboardEvent) => {
+      action(videoEl, e);
     };
   }
 
-  if (!func!) return;
+  if (!func! || !element!) return;
 
-  videoEl.removeEventListener(type, func);
-  videoEl.addEventListener(type, func);
+  element.removeEventListener(type, func);
+  element.addEventListener(type, func);
 };
