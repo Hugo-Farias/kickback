@@ -28,7 +28,6 @@ export const getData = function (
   name: string,
   convert: boolean = true
 ): LocalStamps | StoredStamps {
-  console.log("data");
   const data = localStorage!.getItem(name);
   const parsedData =
     data !== null ? JSON.parse(data) : { timestamps: {}, lookup: [] };

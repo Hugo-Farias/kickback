@@ -117,7 +117,6 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     data = getData(localStorageName) as LocalStamps;
   }
   if (!url.includes("video")) return;
-  // data = getData(localStorageName) as LocalStamps;
   urlId = getIdFromUrl(url);
   isDataFull = false;
   isDataOnLookUp = false;
