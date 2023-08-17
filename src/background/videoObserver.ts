@@ -14,6 +14,7 @@ import {
   timeStart,
   allowVideoInput,
   videoInputAllowedKeys,
+  videoInputSkipAmount,
 } from "../config";
 
 console.log("Kickback Running");
@@ -40,9 +41,9 @@ const videoInput = function (videoEl: HTMLVideoElement, e?: KeyboardEvent) {
   const { key } = e;
 
   if (key === "ArrowLeft") {
-    videoEl.currentTime -= 5;
+    videoEl.currentTime -= videoInputSkipAmount;
   } else if (key === "ArrowRight") {
-    videoEl.currentTime += 5;
+    videoEl.currentTime += videoInputSkipAmount;
   }
 };
 

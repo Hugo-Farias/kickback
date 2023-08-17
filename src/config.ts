@@ -9,3 +9,4 @@ export const allowVideoInput = true;
 export const videoInputAllowedKeys = allowVideoInput
   ? ["ArrowLeft", "ArrowRight"]
   : null;
+export const videoInputSkipAmount = allowVideoInput ? 20 : 0;
