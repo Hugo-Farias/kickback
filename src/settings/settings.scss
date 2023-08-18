@@ -1,0 +1,8 @@
+@import "variables";
+
+body {
+  display: flex;
+  justify-content: center;
+  background-color: $color-background;
+  color: $color-font;
+}
