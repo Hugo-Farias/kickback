@@ -1,8 +1,32 @@
-@import "variables";
+@import "../variables";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-size: 10px;
+}
 
 body {
-  display: flex;
-  justify-content: center;
+  font-family: sans-serif;
+  //display: flex;
+  //justify-content: center;
   background-color: $color-background;
   color: $color-font;
+
+  .settings {
+    font-size: 1rem;
+    margin: 0 auto;
+    width: 50%;
+    min-width: 32rem;
+    text-align: center;
+
+    & > .options {
+      height: 20rem;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+  }
 }
