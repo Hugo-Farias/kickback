@@ -1,4 +1,5 @@
 import "./settings.scss";
+import { useState } from "react";
 
 const dummyOptions: {
   label: string;
@@ -19,11 +20,15 @@ const dummyOptions: {
 ];
 
 const Settings = function () {
+  const [options, setOptions] = useState(dummyOptions);
+
   const optionsJSX = dummyOptions.map((v, i) => {
     return (
       <li key={i}>
-        <span>{v.label}</span>
-        <input type={v.type} />
+        <input min="1" type={v.type} />
+        <div className="label">
+          <span>{v.label}</span>
+        </div>
       </li>
     );
   });
@@ -33,6 +38,10 @@ const Settings = function () {
       <h1>Settings</h1>
       <div className="options">
         <ul>{optionsJSX}</ul>
+      </div>
+      <div className="buttons">
+        <button>Save</button>
+        <button>Restore Defaults</button>
       </div>
     </div>
   );
