@@ -7,7 +7,7 @@ import {
   storeData,
 } from "./videoHelper";
 import {
-  localStorageName,
+  storageTimestamps,
   maxTimeStamps,
   timeEnd,
   timeoutDuration,
@@ -15,6 +15,7 @@ import {
   allowVideoInput,
   videoInputAllowedKeys,
   videoInputSkipAmount,
+  resumeVideo,
 } from "../config";
 
 console.log("Kickback Running");
@@ -37,8 +38,8 @@ const checkData = function () {
 
 const videoInput = function (videoEl: HTMLVideoElement, e?: KeyboardEvent) {
   if (!e) return;
-  if (!videoInputAllowedKeys?.includes(e.key)) return;
   const { key } = e;
+  if (!videoInputAllowedKeys?.includes(key)) return;
 
   if (key === "ArrowLeft") {
     videoEl.currentTime -= videoInputSkipAmount;
@@ -50,7 +51,7 @@ const videoInput = function (videoEl: HTMLVideoElement, e?: KeyboardEvent) {
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
   idsToBeDel.forEach((v) => deleteTimeStamp(v, obj));
-  storeData(localStorageName, obj);
+  storeData(storageTimestamps, obj);
 };
 
 // Wait for video element
@@ -100,27 +101,25 @@ const storeTime = function (videoEL: HTMLVideoElement) {
     data.timestamps[urlId] = { ...data.timestamps[urlId], curr: videoTime };
   }
 
-  storeData(localStorageName, data);
+  storeData(storageTimestamps, data);
 };
 
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
-  const storedTime: number =
-    data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
-
   videoLength = Math.floor(videoEl.duration);
 
-  // const storeTimeBound = storeTime.bind(videoEl);
-
-  addListenerToVideo("play", videoEl, storeTime);
-  addListenerToVideo("pause", videoEl, storeTime, 5);
-  addListenerToVideo("seeked", videoEl, storeTime, 2);
+  if (resumeVideo) {
+    const storedTime: number =
+      data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
+    addListenerToVideo("play", videoEl, storeTime);
+    addListenerToVideo("pause", videoEl, storeTime, 5);
+    addListenerToVideo("seeked", videoEl, storeTime, 2);
+    videoEl.currentTime = storedTime;
+  }
 
   if (allowVideoInput) {
     addListenerToVideo("keydown", videoEl, videoInput);
   }
-
-  videoEl.currentTime = storedTime;
 
   if (data.lookup && [...data.lookup].length < maxTimeStamps * 2) return;
 
@@ -133,7 +132,7 @@ const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
 chrome.runtime.onMessage.addListener((message: Message) => {
   url = message.url;
   if ((url.includes("/") && !data) || url.includes("video")) {
-    data = getData(localStorageName) as LocalStamps;
+    data = getData(storageTimestamps) as LocalStamps;
   }
   if (!url.includes("video")) return;
   urlId = getIdFromUrl(url);

@@ -1,5 +1,6 @@
-import "./settings.scss";
+import "./Settings.scss";
 import { useState } from "react";
+import Option from "./Option";
 
 const dummyOptions: {
   label: string;
@@ -19,25 +20,39 @@ const dummyOptions: {
   { label: "Skip amount in seconds", type: "number", value: 5 },
 ];
 
-const Settings = function () {
-  const [options, setOptions] = useState(dummyOptions);
+type initStateT = {
+  resume: boolean;
+  progressBar: boolean;
+  skip: boolean;
+  skipAmount: number;
+};
 
-  const optionsJSX = dummyOptions.map((v, i) => {
-    return (
-      <li key={i}>
-        <input min="1" type={v.type} />
-        <div className="label">
-          <span>{v.label}</span>
-        </div>
-      </li>
-    );
-  });
+const initState: initStateT = {
+  resume: true,
+  progressBar: true,
+  skip: true,
+  skipAmount: 5,
+};
+
+const Settings = function () {
+  const [options, setOptions] = useState<initStateT>(initState);
+
+  const handleAction = function (v) {
+    setOptions((prev) => ({ ...prev, [v]: !options[v] }));
+    console.log(options[v]);
+  };
 
   return (
     <div className="settings">
       <h1>Settings</h1>
       <div className="options">
-        <ul>{optionsJSX}</ul>
+        <Option
+          id="progressBar"
+          defaultVal={options.progressBar}
+          type="checkbox"
+          label="Show progress bar on thumbnail previews"
+          action={handleAction}
+        />
       </div>
       <div className="buttons">
         <button>Save</button>
