@@ -1,6 +1,5 @@
 import "./Settings.scss";
-import { useState } from "react";
-import OptionCheck from "./OptionCheck";
+import { MouseEvent, useState } from "react";
 
 const dummyOptions: {
   label: string;
@@ -39,21 +38,24 @@ const Settings = function () {
 
   const handleAction = function (id, val) {
     setOptions((prev) => ({ ...prev, [id]: val }));
-    // console.log("-> val", val);
-    console.log(options[id]);
   };
+  console.log(options);
 
   return (
     <div className="settings">
       <h1>Settings</h1>
       <div className="options">
-        <OptionCheck
-          id="progressBar"
-          defaultVal={options.progressBar}
-          type="checkbox"
-          label="Show progress bar on thumbnail previews"
-          action={handleAction}
-        />
+        <div
+          className="option"
+          onClick={() => handleAction("progressBar", !options.progressBar)}
+        >
+          <input
+            type="checkbox"
+            checked={options.progressBar}
+            onChange={() => {}}
+          />
+          <span>Show progress bar on thumbnail previews</span>
+        </div>
       </div>
       <div className="buttons">
         <button>Save</button>
