@@ -1,6 +1,6 @@
 import "./Settings.scss";
 import { useState } from "react";
-import Option from "./Option";
+import OptionCheck from "./OptionCheck";
 
 const dummyOptions: {
   label: string;
@@ -39,6 +39,7 @@ const Settings = function () {
 
   const handleAction = function (id, val) {
     setOptions((prev) => ({ ...prev, [id]: val }));
+    // console.log("-> val", val);
     console.log(options[id]);
   };
 
@@ -46,7 +47,7 @@ const Settings = function () {
     <div className="settings">
       <h1>Settings</h1>
       <div className="options">
-        <Option
+        <OptionCheck
           id="progressBar"
           defaultVal={options.progressBar}
           type="checkbox"
