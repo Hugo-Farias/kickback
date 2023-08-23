@@ -37,9 +37,9 @@ const initState: initStateT = {
 const Settings = function () {
   const [options, setOptions] = useState<initStateT>(initState);
 
-  const handleAction = function (v) {
-    setOptions((prev) => ({ ...prev, [v]: !options[v] }));
-    console.log(options[v]);
+  const handleAction = function (id, val) {
+    setOptions((prev) => ({ ...prev, [id]: val }));
+    console.log(options[id]);
   };
 
   return (
