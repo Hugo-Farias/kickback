@@ -1,65 +1,93 @@
 import "./Settings.scss";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 
-const dummyOptions: {
+type optionsT = {
+  id: string;
   label: string;
   type: "checkbox" | "number";
   value: boolean | number;
-}[] = [
-  {
+  children?: optionsT;
+};
+
+type initStateT = {
+  [identifier: any]: optionsT;
+};
+
+const initState: initStateT = {
+  resume: {
+    id: "resume",
+    label: "Resume VODs",
+    type: "checkbox",
+    value: true,
+  },
+  progressBar: {
+    id: "progressBar",
     label: "Show progress bar on thumbnail previews",
     type: "checkbox",
     value: true,
   },
-  {
+  skip: {
+    id: "skip",
     label: "Skip forwards or back with arrow keys",
     type: "checkbox",
     value: true,
+    children: {
+      id: "skipAmount",
+      label: "Skip amount in seconds",
+      type: "number",
+      value: 5,
+    },
   },
-  { label: "Skip amount in seconds", type: "number", value: 5 },
-];
-
-type initStateT = {
-  resume: boolean;
-  progressBar: boolean;
-  skip: boolean;
-  skipAmount: number;
-};
-
-const initState: initStateT = {
-  resume: true,
-  progressBar: true,
-  skip: true,
-  skipAmount: 5,
 };
 
 const Settings = function () {
   const [options, setOptions] = useState<initStateT>(initState);
+  const [save, setSave] = useState<boolean>(false);
 
   const handleAction = function (id, val) {
-    setOptions((prev) => ({ ...prev, [id]: val }));
+    setOptions((prev) => ({ ...prev, [id]: { ...prev[id], value: val } }));
   };
-  console.log(options);
+
+  const handleSave = function () {
+    Object.entries(options).map((v) => {
+      console.log(v[1].id, v[1].value);
+    });
+    setSave(true);
+
+    setTimeout(() => {
+      setSave(false);
+    }, 1500);
+  };
+
+  const handleRestore = function () {
+    if (!confirm("Restore Defaults?")) return;
+    setOptions(initState);
+  };
+
+  const JSX = Object.entries(options).map((v) => {
+    const obj = v[1];
+
+    return (
+      <div
+        key={obj.id}
+        className="option"
+        onClick={() => handleAction(obj.id, !obj.value)}
+      >
+        <input type={obj.type} checked={obj.value!} onChange={() => {}} />
+        <span>{obj.label}</span>
+      </div>
+    );
+  });
 
   return (
     <div className="settings">
       <h1>Settings</h1>
-      <div className="options">
-        <div
-          className="option"
-          onClick={() => handleAction("progressBar", !options.progressBar)}
-        >
-          <input
-            type="checkbox"
-            checked={options.progressBar}
-            onChange={() => {}}
-          />
-          <span>Show progress bar on thumbnail previews</span>
-        </div>
-      </div>
+      <div className="options">{JSX}</div>
       <div className="buttons">
-        <button>Save</button>
-        <button>Restore Defaults</button>
+        <button className={save ? "saved" : ""} onClick={handleSave}>
+          {!save ? "Save" : "Saved!"}
+        </button>
+        <button onClick={handleRestore}>Restore Defaults</button>
       </div>
     </div>
   );
