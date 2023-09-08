@@ -3,7 +3,7 @@
   "name": "Kick.com Video/VODS Resumer",
   "version": "1.4",
   "description": "Automatically bookmark kick.com videos so they resume from where you left off",
-  "permissions": ["tabs"],
+  "permissions": ["tabs", "storage"],
   "icons": {
     "16": "src/assets/logo_16.png",
     "48": "src/assets/logo_48.png",

@@ -52,6 +52,9 @@ const Settings = function () {
     Object.entries(options).map((v) => {
       console.log(v[1].id, v[1].value);
     });
+
+    chrome.storage.local.set(options);
+
     setSave(true);
 
     setTimeout(() => {
@@ -62,6 +65,7 @@ const Settings = function () {
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
     setOptions(initState);
+    handleSave();
   };
 
   const JSX = Object.entries(options).map((v) => {
