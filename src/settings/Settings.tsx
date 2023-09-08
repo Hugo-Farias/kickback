@@ -13,7 +13,7 @@ type initStateT = {
   [identifier: any]: optionsT;
 };
 
-const initState: initStateT = {
+const defaultState: initStateT = {
   resume: {
     id: "resume",
     label: "Resume VODs",
@@ -40,6 +40,10 @@ const initState: initStateT = {
   },
 };
 
+const initState = chrome.storage.local.get("settings").then((v) => {
+  console.log(v);
+}) as initStateT;
+
 const Settings = function () {
   const [options, setOptions] = useState<initStateT>(initState);
   const [save, setSave] = useState<boolean>(false);
@@ -55,6 +59,10 @@ const Settings = function () {
 
     chrome.storage.local.set(options);
 
+    chrome.storage.local.get(["skip", "resume"]).then((v) => {
+      console.log("asdfsdf");
+    });
+
     setSave(true);
 
     setTimeout(() => {
@@ -64,7 +72,7 @@ const Settings = function () {
 
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
-    setOptions(initState);
+    setOptions(defaultState);
     handleSave();
   };
 

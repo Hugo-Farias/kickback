@@ -12,6 +12,7 @@
   "background": {
     "service_worker": "src/background/background.ts"
   },
+  "options_page": "index.html",
   "content_scripts": [
     {
       "js": [
