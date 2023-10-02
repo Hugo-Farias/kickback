@@ -40,9 +40,7 @@ const defaultState: initStateT = {
   },
 };
 
-const initState = chrome.storage.local.get("settings").then((v) => {
-  console.log(v);
-}) as initStateT;
+const initState = defaultState;
 
 const Settings = function () {
   const [options, setOptions] = useState<initStateT>(initState);
@@ -57,10 +55,10 @@ const Settings = function () {
       console.log(v[1].id, v[1].value);
     });
 
-    chrome.storage.local.set(options);
+    chrome.storage.sync.set({ settings: options });
 
-    chrome.storage.local.get(["skip", "resume"]).then((v) => {
-      console.log("asdfsdf");
+    chrome.storage.sync.get(["settings"]).then((v) => {
+      console.log(v);
     });
 
     setSave(true);

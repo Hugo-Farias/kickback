@@ -11,3 +11,7 @@ export const videoInputAllowedKeys = allowVideoInput
   ? ["ArrowLeft", "ArrowRight"]
   : null;
 export const videoInputSkipAmount = allowVideoInput ? 20 : 0;
+
+chrome.storage.sync.get(["settings"]).then((v) => {
+  console.log(v);
+});

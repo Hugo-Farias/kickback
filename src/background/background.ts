@@ -21,6 +21,8 @@ chrome.tabs.onUpdated.addListener(function (
   }, 1000);
 });
 
+chrome.storage.sync.set({ test: 2 });
+
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
 //   // console.log("-> details", details);
 //   // console.log("History state updated for tab:", details.tabId);
