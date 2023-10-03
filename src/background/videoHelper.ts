@@ -1,5 +1,6 @@
 import { LocalStamps, StoredStamps } from "../typeDef";
 import { intervalSecs } from "../config";
+import sendKeyEvents = chrome.input.ime.sendKeyEvents;
 
 export const convertData = function (data: StoredStamps): LocalStamps {
   return {
@@ -38,11 +39,12 @@ export const getData = function (
 };
 
 let storeInterval: number;
-let storeTimeout: number;
+let pauseTimeout: number;
+let seekTimeout: number;
 
 const clearAllTimeouts = function () {
-  clearTimeout(storeTimeout);
   clearInterval(storeInterval);
+  clearTimeout(pauseTimeout);
 };
 
 export const addListenerToVideo = function (
@@ -54,11 +56,11 @@ export const addListenerToVideo = function (
   let element = type !== "keydown" ? videoEl : videoEl!.parentNode?.parentNode;
 
   let func: (a?: any) => any | undefined;
-
   if (type === "pause") {
     func = () => {
       clearAllTimeouts();
-      storeTimeout = setTimeout(() => action(videoEl), time * 1000);
+      clearTimeout(seekTimeout);
+      pauseTimeout = setTimeout(() => action(videoEl), time * 1000);
     };
   } else if (type === "play") {
     func = () => {
@@ -67,8 +69,8 @@ export const addListenerToVideo = function (
     };
   } else if (type === "seeked") {
     func = () => {
-      clearTimeout(storeTimeout);
-      storeTimeout = setTimeout(() => {
+      clearTimeout(seekTimeout);
+      seekTimeout = setTimeout(() => {
         action(videoEl);
       }, time * 1000);
     };

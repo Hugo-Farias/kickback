@@ -12,11 +12,9 @@ import {
   timeEnd,
   timeoutDuration,
   timeStart,
-  allowVideoInput,
-  videoInputAllowedKeys,
-  videoInputSkipAmount,
   resumeVideo,
 } from "../config";
+import { getSettings } from "../settings/settingsHelper";
 
 console.log("Kickback Running");
 
@@ -36,17 +34,17 @@ const checkData = function () {
   }
 };
 
-const videoInput = function (videoEl: HTMLVideoElement, e?: KeyboardEvent) {
-  if (!e) return;
-  const { key } = e;
-  if (!videoInputAllowedKeys?.includes(key)) return;
-
-  if (key === "ArrowLeft") {
-    videoEl.currentTime -= videoInputSkipAmount;
-  } else if (key === "ArrowRight") {
-    videoEl.currentTime += videoInputSkipAmount;
-  }
-};
+// const videoInput = function (videoEl: HTMLVideoElement, e?: KeyboardEvent) {
+//   if (!e) return;
+//   const { key } = e;
+//   if (!videoInputAllowedKeys?.includes(key)) return;
+//
+//   if (key === "ArrowLeft") {
+//     videoEl.currentTime -= videoInputSkipAmount;
+//   } else if (key === "ArrowRight") {
+//     videoEl.currentTime += videoInputSkipAmount;
+//   }
+// };
 
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
@@ -79,6 +77,7 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
+  console.log("storetime => ", videoEL.currentTime);
   const videoTime = Math.floor(videoEL.currentTime);
   if (videoTime < 5) return;
 
@@ -108,18 +107,21 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 const resume = function (videoEl: HTMLVideoElement) {
   videoLength = Math.floor(videoEl.duration);
 
-  if (resumeVideo) {
-    const storedTime: number =
-      data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
-    addListenerToVideo("play", videoEl, storeTime);
-    addListenerToVideo("pause", videoEl, storeTime, 5);
-    addListenerToVideo("seeked", videoEl, storeTime, 2);
-    videoEl.currentTime = storedTime;
-  }
+  const storedTime: number =
+    data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
-  if (allowVideoInput) {
-    addListenerToVideo("keydown", videoEl, videoInput);
-  }
+  getSettings("resume").then((value) => {
+    if (value) {
+      addListenerToVideo("play", videoEl, storeTime);
+      addListenerToVideo("seeked", videoEl, storeTime, 2);
+      addListenerToVideo("pause", videoEl, storeTime, 5);
+      videoEl.currentTime = storedTime;
+    }
+  });
+
+  // if (allowVideoInput) {
+  //   addListenerToVideo("keydown", videoEl, videoInput);
+  // }
 
   if (data.lookup && [...data.lookup].length < maxTimeStamps * 2) return;
 

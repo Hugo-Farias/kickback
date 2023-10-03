@@ -5,15 +5,17 @@ type optionsT = {
   id: string;
   label: string;
   type: "checkbox" | "number";
-  value: boolean | number;
+  value: boolean;
   children?: optionsT;
 };
 
-type initStateT = {
-  [identifier: any]: optionsT;
+export type defaultStateT = {
+  resume: optionsT;
+  progressBar: optionsT;
+  skip: optionsT;
 };
 
-const defaultState: initStateT = {
+const defaultState: defaultStateT = {
   resume: {
     id: "resume",
     label: "Resume VODs",
@@ -31,19 +33,21 @@ const defaultState: initStateT = {
     label: "Skip forwards or back with arrow keys",
     type: "checkbox",
     value: true,
-    children: {
-      id: "skipAmount",
-      label: "Skip amount in seconds",
-      type: "number",
-      value: 5,
-    },
   },
 };
 
-const initState = defaultState;
+let initState;
+
+chrome.storage.local
+  .get(["settings"])
+  .then((v: { settings: defaultStateT }) => {
+    const set = v.settings;
+    if (!set) return (initState = defaultState);
+    initState = v.settings;
+  });
 
 const Settings = function () {
-  const [options, setOptions] = useState<initStateT>(initState);
+  const [options, setOptions] = useState<defaultStateT>(initState);
   const [save, setSave] = useState<boolean>(false);
 
   const handleAction = function (id, val) {
@@ -51,15 +55,7 @@ const Settings = function () {
   };
 
   const handleSave = function () {
-    Object.entries(options).map((v) => {
-      console.log(v[1].id, v[1].value);
-    });
-
-    chrome.storage.sync.set({ settings: options });
-
-    chrome.storage.sync.get(["settings"]).then((v) => {
-      console.log(v);
-    });
+    chrome.storage.local.set({ settings: options }).then();
 
     setSave(true);
 
