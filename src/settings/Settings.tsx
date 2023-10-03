@@ -12,7 +12,6 @@ type optionsT = {
 export type defaultStateT = {
   resume: optionsT;
   progressBar: optionsT;
-  skip: optionsT;
 };
 
 const defaultState: defaultStateT = {
@@ -25,12 +24,6 @@ const defaultState: defaultStateT = {
   progressBar: {
     id: "progressBar",
     label: "Show progress bar on thumbnail previews",
-    type: "checkbox",
-    value: true,
-  },
-  skip: {
-    id: "skip",
-    label: "Skip forwards or back with arrow keys",
     type: "checkbox",
     value: true,
   },

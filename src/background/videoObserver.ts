@@ -12,7 +12,6 @@ import {
   timeEnd,
   timeoutDuration,
   timeStart,
-  resumeVideo,
 } from "../config";
 import { getSettings } from "../settings/settingsHelper";
 
@@ -77,7 +76,6 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
-  console.log("storetime => ", videoEL.currentTime);
   const videoTime = Math.floor(videoEL.currentTime);
   if (videoTime < 5) return;
 
