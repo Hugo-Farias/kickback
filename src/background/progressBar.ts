@@ -55,7 +55,7 @@ getSettings("progressBar").then((value) => {
           init();
           return;
         }
-        // Kill the interval if waitFor never arrives after the amount of retries
+        // Kill the interval if out of retries
         if (!retries) {
           clearInterval(intervalId);
           console.error("data couldn't be retrieved");
