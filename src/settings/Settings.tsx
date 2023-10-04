@@ -29,6 +29,8 @@ const defaultState: defaultStateT = {
   },
 };
 
+const settingsOrder: Array<keyof defaultStateT> = ["resume", "progressBar"];
+
 let initState;
 
 chrome.storage.local
@@ -71,11 +73,11 @@ const Settings = function () {
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
     setOptions(defaultState);
-    handleSave();
+    chrome.storage.local.remove("settings").then();
   };
 
-  const JSX = Object.entries(options).map((v) => {
-    const obj = v[1];
+  const JSX = settingsOrder.map((v) => {
+    const obj = options[v];
 
     return (
       <div

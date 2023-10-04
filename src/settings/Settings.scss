@@ -67,7 +67,7 @@
 
     & > button {
       transition: background-color 0.3s ease-in-out;
-      font-weight: 900;
+      font-weight: 700;
       padding: 0.3rem;
       //width: 100%;
       min-width: 15rem;
@@ -76,14 +76,14 @@
       transform: translateY(-50%);
 
       &:nth-child(1) {
-        background-color: #00544c;
-        color: white;
+        background-color: #3ad305;
+        color: black;
       }
 
       &:hover {
         cursor: pointer;
-        background-color: #c9c9c9;
-        color: black;
+        background-color: #00544c;
+        color: white;
       }
     }
   }
