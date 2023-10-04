@@ -76,8 +76,8 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
+  if (videoEL.currentTime < 10) return;
   const videoTime = Math.floor(videoEL.currentTime);
-  if (videoTime < 5) return;
 
   // Remove key from storage if time is close to beginning or end of video
   if (videoTime < timeStart || videoTime > videoLength - timeEnd) {
