@@ -1,4 +1,4 @@
-import { defaultStateT } from "../settings/Settings";
+import { defaultStateT } from "./Settings";
 
 export const getSettings = async function (name: keyof defaultStateT) {
   return await chrome.storage.local
