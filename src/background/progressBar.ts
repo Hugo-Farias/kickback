@@ -1,6 +1,5 @@
 import { getIdFromUrl, waitForElementList } from "../helper";
 import { data, urlId } from "./videoObserver";
-import { showProgressBarOnThumbs } from "../config";
 import { getSettings } from "../settings/settingsHelper";
 
 const init = function () {
