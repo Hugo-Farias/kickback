@@ -35,8 +35,18 @@ chrome.storage.local
   .get(["settings"])
   .then((v: { settings: defaultStateT }) => {
     const set = v.settings;
-    console.log(Object.entries(set).length);
+
     if (!set) return (initState = defaultState);
+
+    if (Object.entries(set).length !== Object.entries(defaultState).length) {
+      const setArr = Object.keys(set);
+      const defaultArr = Object.keys(defaultState);
+      setArr.forEach((v) => {
+        if (defaultArr.includes(v)) return;
+        delete set[v];
+        console.log(set);
+      });
+    }
     initState = v.settings;
   });
 
