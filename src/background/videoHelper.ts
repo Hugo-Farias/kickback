@@ -1,6 +1,5 @@
 import { LocalStamps, StoredStamps } from "../typeDef";
 import { intervalSecs } from "../config";
-import sendKeyEvents = chrome.input.ime.sendKeyEvents;
 
 export const convertData = function (data: StoredStamps): LocalStamps {
   return {

@@ -33,18 +33,6 @@ const checkData = function () {
   }
 };
 
-// const videoInput = function (videoEl: HTMLVideoElement, e?: KeyboardEvent) {
-//   if (!e) return;
-//   const { key } = e;
-//   if (!videoInputAllowedKeys?.includes(key)) return;
-//
-//   if (key === "ArrowLeft") {
-//     videoEl.currentTime -= videoInputSkipAmount;
-//   } else if (key === "ArrowRight") {
-//     videoEl.currentTime += videoInputSkipAmount;
-//   }
-// };
-
 const clearOldTS = function (obj: LocalStamps) {
   const idsToBeDel = Array.from(obj.lookup).reverse().slice(maxTimeStamps);
   idsToBeDel.forEach((v) => deleteTimeStamp(v, obj));
@@ -116,10 +104,6 @@ const resume = function (videoEl: HTMLVideoElement) {
       videoEl.currentTime = storedTime;
     }
   });
-
-  // if (allowVideoInput) {
-  //   addListenerToVideo("keydown", videoEl, videoInput);
-  // }
 
   if (data.lookup && [...data.lookup].length < maxTimeStamps * 2) return;
 
