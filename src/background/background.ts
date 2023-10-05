@@ -1,6 +1,9 @@
 import { Message } from "../typeDef";
+import { validateStoredSettings } from "../settings/settingsHelper";
 
 let msgTimeout: number;
+
+validateStoredSettings();
 
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (

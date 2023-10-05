@@ -1,5 +1,7 @@
 import "./Settings.scss";
 import { useState } from "react";
+import { settingsStorageLabel } from "../config";
+import { defaultSettingsState, validateStoredSettings } from "./settingsHelper";
 
 type optionsT = {
   id: string;
@@ -14,35 +16,30 @@ export type defaultStateT = {
   progressBar: optionsT;
 };
 
-const defaultState: defaultStateT = {
-  resume: {
-    id: "resume",
-    label: "Resume VODs",
-    type: "checkbox",
-    value: true,
-  },
-  progressBar: {
-    id: "progressBar",
-    label: "Show progress bar on thumbnail previews",
-    type: "checkbox",
-    value: true,
-  },
-};
-
 const settingsOrder: Array<keyof defaultStateT> = ["resume", "progressBar"];
 
 let initState;
 
 chrome.storage.local
-  .get(["settings"])
+  .get([settingsStorageLabel])
   .then((v: { settings: defaultStateT }) => {
     const set = v.settings;
 
-    if (!set) return (initState = defaultState);
+    if (!set) {
+      chrome.storage.local
+        .get([settingsStorageLabel])
+        .then((v: { settings: defaultStateT }) => {
+          const set = v.settings;
+          console.log(set);
+        });
+      return;
+    }
 
-    if (Object.entries(set).length !== Object.entries(defaultState).length) {
+    if (
+      Object.entries(set).length !== Object.entries(defaultSettingsState).length
+    ) {
       const setArr = Object.keys(set);
-      const defaultArr = Object.keys(defaultState);
+      const defaultArr = Object.keys(defaultSettingsState);
       setArr.forEach((v) => {
         if (defaultArr.includes(v)) return;
         delete set[v];
@@ -61,7 +58,7 @@ const Settings = function () {
   };
 
   const handleSave = function () {
-    chrome.storage.local.set({ settings: options }).then();
+    chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
 
     setSave(true);
 
@@ -72,8 +69,9 @@ const Settings = function () {
 
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
-    setOptions(defaultState);
-    chrome.storage.local.remove("settings").then();
+    setOptions(defaultSettingsState);
+    chrome.storage.local.remove(settingsStorageLabel).then();
+    validateStoredSettings();
   };
 
   const JSX = settingsOrder.map((v) => {
