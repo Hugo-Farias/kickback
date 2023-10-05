@@ -34,6 +34,19 @@ export const validateStoredSettings = function () {
         chrome.storage.local.set({
           [settingsStorageLabel]: defaultSettingsState,
         });
+        return;
+      }
+
+      if (
+        Object.entries(set).length !==
+        Object.entries(defaultSettingsState).length
+      ) {
+        const setArr = Object.keys(set);
+        const defaultArr = Object.keys(defaultSettingsState);
+        setArr.forEach((v) => {
+          if (defaultArr.includes(v)) return;
+          delete set[v];
+        });
       }
     });
 };

@@ -1,5 +1,5 @@
 import "./OptionCheck.scss";
-import React, { ReactNode, useState } from "react";
+import { ReactNode, useState } from "react";
 
 type defaultValT = boolean | string;
 
@@ -16,6 +16,8 @@ const OptionCheck = function (props: prop) {
   const [check, setCheck] = useState<boolean | string>(defaultVal);
   // const [inputVal, setInputVal] = useState<string>("");
   let inputBox: ReactNode;
+
+  if (!check) return;
 
   const handleClick = function () {
     setCheck((prev) => !prev);
