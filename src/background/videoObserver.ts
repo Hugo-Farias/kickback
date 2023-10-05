@@ -10,12 +10,12 @@ import {
   storageTimestamps,
   maxTimeStamps,
   timeEnd,
-  timeoutDuration,
+  observerTimeoutSecs,
   timeStart,
 } from "../config";
 import { getSettings } from "../settings/settingsHelper";
 
-console.log("Kickback Running");
+console.log("Kickback Running!");
 
 let url: string = window.location.href;
 export let data: LocalStamps;
@@ -59,7 +59,7 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 
   setTimeout(() => {
     observer.disconnect(); // Stop the observer after the timeout
-  }, timeoutDuration * 1000);
+  }, observerTimeoutSecs * 1000);
 }
 
 // Stores current time to local storage

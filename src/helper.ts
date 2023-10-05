@@ -1,4 +1,4 @@
-import { timeoutDuration } from "./config";
+import { observerTimeoutSecs } from "./config";
 
 export const waitForElementList = function (
   el: string,
@@ -19,7 +19,7 @@ export const waitForElementList = function (
 
   setTimeout(() => {
     observer.disconnect(); // Stop the observer after the timeout
-  }, timeoutDuration * 1000);
+  }, observerTimeoutSecs * 1000);
 };
 
 export const getIdFromUrl = function (s: string): string {
