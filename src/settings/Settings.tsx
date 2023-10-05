@@ -30,9 +30,7 @@ const Settings = function () {
       });
   }, []);
 
-  console.log("-> options", options);
-
-  if (!options) return console.log("not loaded!!!!");
+  if (!options) return null;
 
   const handleAction = function (id: string, val: boolean) {
     setOptions((prev) => ({ ...prev, [id]: { ...prev[id], value: val } }));
@@ -50,7 +48,6 @@ const Settings = function () {
 
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
-    // setOptions(defaultSettingsState);
     chrome.storage.local.remove(settingsStorageLabel).then(() => {
       validateStoredSettings();
     });
