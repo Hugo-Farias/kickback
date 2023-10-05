@@ -1,7 +1,7 @@
 import "./Settings.scss";
 import { useEffect, useState } from "react";
 import { settingsStorageLabel } from "../config";
-import { defaultSettingsState, validateStoredSettings } from "./settingsHelper";
+import { validateStoredSettings } from "./settingsHelper";
 
 type optionsT = {
   id: string;
