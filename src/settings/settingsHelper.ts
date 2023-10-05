@@ -28,9 +28,9 @@ export const validateStoredSettings = function () {
   chrome.storage.local
     .get([settingsStorageLabel])
     .then((v: { settings: defaultStateT }) => {
-      const set = v.settings;
+      const { settings } = v;
 
-      if (!set) {
+      if (!settings) {
         chrome.storage.local.set({
           [settingsStorageLabel]: defaultSettingsState,
         });
@@ -38,15 +38,15 @@ export const validateStoredSettings = function () {
       }
 
       if (
-        Object.entries(set).length !==
+        Object.entries(settings).length !==
         Object.entries(defaultSettingsState).length
       ) {
-        const setArr = Object.keys(set);
         const defaultArr = Object.keys(defaultSettingsState);
-        setArr.forEach((v) => {
+        Object.keys(settings).forEach((v) => {
           if (defaultArr.includes(v)) return;
-          delete set[v];
+          delete settings[v];
         });
+        chrome.storage.local.set({ [settingsStorageLabel]: settings });
       }
     });
 };

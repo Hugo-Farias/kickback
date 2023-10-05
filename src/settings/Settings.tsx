@@ -33,7 +33,10 @@ const Settings = function () {
   if (!options) return null;
 
   const handleAction = function (id: string, val: boolean) {
-    setOptions((prev) => ({ ...prev, [id]: { ...prev[id], value: val } }));
+    setOptions((prev: defaultStateT) => ({
+      ...prev,
+      [id]: { ...prev[id], value: val },
+    }));
   };
 
   const handleSave = function () {
