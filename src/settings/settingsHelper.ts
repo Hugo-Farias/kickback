@@ -9,7 +9,7 @@ export const getSettings = async function (name: keyof defaultStateT) {
     });
 };
 
-export const defaultSettingsState: defaultStateT = {
+export const defaultSettingsValues: defaultStateT = {
   resume: {
     id: "resume",
     label: "Resume VODs",
@@ -32,16 +32,16 @@ export const validateStoredSettings = function () {
 
       if (!settings) {
         chrome.storage.local.set({
-          [settingsStorageLabel]: defaultSettingsState,
+          [settingsStorageLabel]: defaultSettingsValues,
         });
         return;
       }
 
       if (
         Object.entries(settings).length !==
-        Object.entries(defaultSettingsState).length
+        Object.entries(defaultSettingsValues).length
       ) {
-        const defaultArr = Object.keys(defaultSettingsState);
+        const defaultArr = Object.keys(defaultSettingsValues);
         Object.keys(settings).forEach((v) => {
           if (defaultArr.includes(v)) return;
           delete settings[v];
