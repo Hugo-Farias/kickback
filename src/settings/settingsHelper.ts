@@ -22,6 +22,12 @@ export const defaultSettingsValues: defaultStateT = {
     type: "checkbox",
     value: true,
   },
+  uiState: {
+    id: "uiState",
+    label: "Save state of the chat and recommended sidebar",
+    type: "checkbox",
+    value: true,
+  },
 };
 
 export const validateStoredSettings = function () {

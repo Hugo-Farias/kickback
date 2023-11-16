@@ -14,6 +14,7 @@ type optionsT = {
 export type defaultStateT = {
   resume: optionsT;
   progressBar: optionsT;
+  uiState: optionsT;
 };
 
 const settingsOrder: Array<keyof defaultStateT> = ["resume", "progressBar"];
