@@ -17,26 +17,30 @@ export type defaultStateT = {
   uiState: boolean;
 };
 
-// const settingsOrder: Array<keyof defaultStateT> = ["resume", "progressBar"];
+export const defaultSettingsValues: defaultStateT = {
+  resume: true,
+  progressBar: true,
+  uiState: true,
+};
 
 const settingsRender: optionsT[] = [
   {
     id: "resume",
     label: "Resume VODs",
     type: "checkbox",
-    value: true,
+    value: defaultSettingsValues.resume,
   },
   {
     id: "progressBar",
     label: "Show progress bar on thumbnail previews",
     type: "checkbox",
-    value: true,
+    value: defaultSettingsValues.progressBar,
   },
   {
     id: "uiState",
-    label: "Save state of the chat and recommended sidebar",
+    label: "Save the state of chat and recommended sidebars",
     type: "checkbox",
-    value: true,
+    value: defaultSettingsValues.uiState,
   },
 ];
 
@@ -50,16 +54,18 @@ const Settings = function () {
     chrome.storage.local
       .get([settingsStorageLabel])
       .then((v: { settings: defaultStateT }) => {
+        console.log(v.settings);
+        if (!v.settings) return setOptions(defaultSettingsValues);
         setOptions(v.settings);
       });
   }, []);
 
   if (!options) return null;
 
-  const handleAction = function (id: string, val: boolean) {
+  const handleClick = function (id: string, val: boolean) {
     setOptions((prev: defaultStateT) => ({
       ...prev,
-      [id]: { ...prev[id], value: val },
+      [id]: val,
     }));
   };
 
@@ -76,21 +82,21 @@ const Settings = function () {
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
     chrome.storage.local.remove(settingsStorageLabel).then(() => {
-      validateStoredSettings();
+      // validateStoredSettings();
     });
   };
 
-  const JSX = settingsRender.map((v) => {
-    const obj = options[v];
+  const JSX = settingsRender.map((v: optionsT) => {
+    console.log(options);
 
     return (
       <div
-        key={obj.id}
+        key={v.id}
         className="option"
-        onClick={() => handleAction(obj.id, !obj.value)}
+        onClick={() => handleClick(v.id, !v.value)}
       >
-        <input type={obj.type} checked={obj.value!} onChange={() => {}} />
-        <span>{obj.label}</span>
+        <input type={v.type} checked={v.value!} onChange={() => {}} />
+        <span>{v.label}</span>
       </div>
     );
   });

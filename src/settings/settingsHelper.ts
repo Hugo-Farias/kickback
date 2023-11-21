@@ -1,5 +1,6 @@
 import { defaultStateT } from "./Settings";
 import { settingsStorageLabel } from "../config";
+import { defaultSettingsValues } from "./Settings";
 
 export const getSettings = async function (name: keyof defaultStateT) {
   return await chrome.storage.local
@@ -9,12 +10,6 @@ export const getSettings = async function (name: keyof defaultStateT) {
     });
 };
 
-export const defaultSettingsValues: defaultStateT = {
-  resume: true,
-  progressBar: true,
-  uiState: true,
-};
-
 export const validateStoredSettings = function () {
   chrome.storage.local
     .get([settingsStorageLabel])
@@ -22,9 +17,11 @@ export const validateStoredSettings = function () {
       const { settings } = v;
 
       if (!settings) {
-        chrome.storage.local.set({
-          [settingsStorageLabel]: defaultSettingsValues,
-        });
+        chrome.storage.local
+          .set({
+            [settingsStorageLabel]: defaultSettingsValues,
+          })
+          .then();
         return;
       }
 
