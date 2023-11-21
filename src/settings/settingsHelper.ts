@@ -5,29 +5,14 @@ export const getSettings = async function (name: keyof defaultStateT) {
   return await chrome.storage.local
     .get([settingsStorageLabel])
     .then((v: { settings: defaultStateT }) => {
-      return v.settings[name].value;
+      return v.settings[name];
     });
 };
 
 export const defaultSettingsValues: defaultStateT = {
-  resume: {
-    id: "resume",
-    label: "Resume VODs",
-    type: "checkbox",
-    value: true,
-  },
-  progressBar: {
-    id: "progressBar",
-    label: "Show progress bar on thumbnail previews",
-    type: "checkbox",
-    value: true,
-  },
-  uiState: {
-    id: "uiState",
-    label: "Save state of the chat and recommended sidebar",
-    type: "checkbox",
-    value: true,
-  },
+  resume: true,
+  progressBar: true,
+  uiState: true,
 };
 
 export const validateStoredSettings = function () {

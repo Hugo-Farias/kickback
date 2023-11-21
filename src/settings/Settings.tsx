@@ -12,12 +12,35 @@ type optionsT = {
 };
 
 export type defaultStateT = {
-  resume: optionsT;
-  progressBar: optionsT;
-  uiState: optionsT;
+  resume: boolean;
+  progressBar: boolean;
+  uiState: boolean;
 };
 
-const settingsOrder: Array<keyof defaultStateT> = ["resume", "progressBar"];
+// const settingsOrder: Array<keyof defaultStateT> = ["resume", "progressBar"];
+
+const settingsRender: optionsT[] = [
+  {
+    id: "resume",
+    label: "Resume VODs",
+    type: "checkbox",
+    value: true,
+  },
+  {
+    id: "progressBar",
+    label: "Show progress bar on thumbnail previews",
+    type: "checkbox",
+    value: true,
+  },
+  {
+    id: "uiState",
+    label: "Save state of the chat and recommended sidebar",
+    type: "checkbox",
+    value: true,
+  },
+];
+
+// const settingsArray: Array<>;
 
 const Settings = function () {
   const [options, setOptions] = useState<defaultStateT>(null);
@@ -57,7 +80,7 @@ const Settings = function () {
     });
   };
 
-  const JSX = settingsOrder.map((v) => {
+  const JSX = settingsRender.map((v) => {
     const obj = options[v];
 
     return (
