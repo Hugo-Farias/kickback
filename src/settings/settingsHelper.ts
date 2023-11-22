@@ -2,8 +2,9 @@ import { defaultStateT } from "./Settings";
 import { settingsStorageLabel } from "../config";
 import { defaultSettingsValues } from "./Settings";
 
-export const getSettings = async function (name: keyof defaultStateT) {
-  return await chrome.storage.local
+export const getSettings = function (name: keyof defaultStateT) {
+  console.log("-> getSettings");
+  return chrome.storage.local
     .get([settingsStorageLabel])
     .then((v: { settings: defaultStateT }) => {
       return v.settings[name];
@@ -13,9 +14,7 @@ export const getSettings = async function (name: keyof defaultStateT) {
 export const validateStoredSettings = function () {
   chrome.storage.local
     .get([settingsStorageLabel])
-    .then((v: { settings: defaultStateT }) => {
-      const { settings } = v;
-
+    .then(({ settings }: { settings: defaultStateT }) => {
       if (!settings) {
         chrome.storage.local
           .set({

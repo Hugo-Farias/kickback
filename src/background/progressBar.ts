@@ -44,23 +44,26 @@ const init = function () {
   );
 };
 
-getSettings("progressBar").then((value) => {
-  if (!value) return;
-  chrome.runtime.onMessage.addListener(() => {
-    let retries = 30;
-    const intervalId = setInterval(() => {
-      retries--;
-      if (data || urlId) {
-        clearInterval(intervalId);
-        init();
-        return;
-      }
-      // Kill the interval if out of retries
-      if (!retries) {
-        clearInterval(intervalId);
-        console.error("data couldn't be retrieved");
-        return;
-      }
-    }, 500);
+chrome.runtime.onMessage.addListener(() => {
+  getSettings("progressBar").then((value) => {
+    if (!value) return;
+
+    chrome.runtime.onMessage.addListener(() => {
+      let retries = 30;
+      const intervalId = setInterval(() => {
+        retries--;
+        if (data || urlId) {
+          clearInterval(intervalId);
+          init();
+          return;
+        }
+        // Kill the interval if out of retries
+        if (!retries) {
+          clearInterval(intervalId);
+          console.error("data couldn't be retrieved");
+          return;
+        }
+      }, 500);
+    });
   });
 });

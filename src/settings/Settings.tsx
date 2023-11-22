@@ -1,9 +1,7 @@
 import "./Settings.scss";
 import { useEffect, useState } from "react";
 import { settingsStorageLabel } from "../config";
-// Validate if changed one of the settings options
 import { validateStoredSettings } from "./settingsHelper";
-validateStoredSettings();
 
 type optionsT = {
   id: string;
@@ -17,14 +15,14 @@ export type defaultStateT = {
   resume: boolean;
   progressBar: boolean;
   sidebarState: boolean;
-  chatContainerState: boolean;
+  chatState: boolean;
 };
 
 export const defaultSettingsValues: defaultStateT = {
   resume: true,
   progressBar: true,
   sidebarState: false,
-  chatContainerState: false,
+  chatState: false,
 };
 
 const settingsRender: optionsT[] = [
@@ -42,22 +40,21 @@ const settingsRender: optionsT[] = [
   },
   {
     id: "sidebarState",
-    label: "Auto close the recomended sidebar",
+    label: "Auto close recomended sidebar",
     type: "checkbox",
     value: defaultSettingsValues.sidebarState,
   },
   {
-    id: "chatContainerState",
-    label: "Auto close the chat",
+    id: "chatState",
+    label: "Auto close chat sidebar",
     type: "checkbox",
-    value: defaultSettingsValues.chatContainerState,
+    value: defaultSettingsValues.chatState,
   },
 ];
 
 const Settings = function () {
   const [options, setOptions] = useState<defaultStateT | null>(null);
   const [save, setSave] = useState<boolean>(false);
-  console.log("-> options", options);
 
   useEffect(() => {
     chrome.storage.local
@@ -90,11 +87,12 @@ const Settings = function () {
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
     chrome.storage.local.remove(settingsStorageLabel).then(() => {});
+    // validateStoredSettings();
     setOptions(defaultSettingsValues);
   };
 
   const JSX = settingsRender.map((v: optionsT) => {
-    const value = options[v.id] && v.value;
+    const value = options[v.id] ? options[v.id] : v.value;
 
     return (
       <div

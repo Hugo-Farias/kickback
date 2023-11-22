@@ -1,24 +1,20 @@
 import { getSettings } from "../settings/settingsHelper";
-import { waitForElementList } from "../helper";
+import { waitForElement } from "../helper";
+
+let chatState = null;
+
+getSettings("chatState").then((v) => (chatState = v));
+
+getSettings("sidebarState").then((v) => {
+  if (!v) return;
+  waitForElement(".sidebar-toggle-button", (el: HTMLDivElement) => {
+    el.click();
+  });
+});
 
 chrome.runtime.onMessage.addListener(() => {
-  waitForElementList(
-    ".chat-content .base-icon, .sidebar-toggle-button",
-    (elArr: HTMLDivElement[] | null) => {
-      if (
-        (!getSettings("sidebarState") && !getSettings("chatContainerState")) ||
-        !elArr
-      )
-        return;
-
-      elArr.forEach((el) => {
-        // console.log(el);
-        // el.addEventListener("click", (v) => console.log(el.className));
-        if (el.className.includes("base")) return;
-        if (el.className.includes("sidebar")) return;
-
-        el.click();
-      });
-    }
-  );
+  if (!chatState) return;
+  waitForElement(".chat-content .base-icon", (el: HTMLDivElement) => {
+    el.click();
+  });
 });
