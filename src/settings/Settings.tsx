@@ -2,8 +2,8 @@ import "./Settings.scss";
 import { useEffect, useState } from "react";
 import { settingsStorageLabel } from "../config";
 // Validate if deleted one of the settings options
-import { validateStoredSettings } from "./settingsHelper";
-validateStoredSettings();
+// import { validateStoredSettings } from "./settingsHelper";
+// validateStoredSettings();
 
 type optionsT = {
   id: string;
@@ -49,8 +49,7 @@ const settingsRender: optionsT[] = [
 const Settings = function () {
   const [options, setOptions] = useState<defaultStateT | null>(null);
   const [save, setSave] = useState<boolean>(false);
-
-  console.log("settings");
+  console.log("-> options", options);
 
   useEffect(() => {
     chrome.storage.local
@@ -83,18 +82,17 @@ const Settings = function () {
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
     chrome.storage.local.remove(settingsStorageLabel).then(() => {});
+    setOptions(defaultSettingsValues);
   };
 
   const JSX = settingsRender.map((v: optionsT) => {
-    console.log(options);
-
     const value = options[v.id] && v.value;
 
     return (
       <div
         key={v.id}
         className="option"
-        onClick={() => handleClick(v.id, value)}
+        onClick={() => handleClick(v.id, !value)}
       >
         <input type={v.type} checked={value} onChange={() => {}} />
         <span>{v.label}</span>

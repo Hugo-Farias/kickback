@@ -5,6 +5,7 @@ export const maxTimeStamps = 50; // max amount of timestamps to keep saved in st
 export const observerTimeoutSecs = 50; // time in secs to disconnect all observers
 export const storageTimestamps = "kbTimeStamps";
 export const settingsStorageLabel = "settings";
+export const uiStateLabel = "kbUIState";
 // export let resumeVideo = true;
 // export let showProgressBarOnThumbs = true;
 // export let allowVideoInput = true;

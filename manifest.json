@@ -17,7 +17,8 @@
     {
       "js": [
         "src/background/videoObserver.ts",
-        "src/background/progressBar.ts"
+        "src/background/progressBar.ts",
+        "src/background/uiState.ts"
       ],
       "matches": ["https://*.kick.com/*"]
     }

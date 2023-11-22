@@ -1,4 +1,4 @@
-import { getIdFromUrl } from "../helper";
+import { getIdFromUrl, waitForElementList } from "../helper";
 import { Message, LocalStamps } from "../typeDef";
 import {
   addListenerToVideo,
@@ -97,12 +97,11 @@ const resume = function (videoEl: HTMLVideoElement) {
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
   getSettings("resume").then((value) => {
-    if (value) {
-      addListenerToVideo("play", videoEl, storeTime);
-      addListenerToVideo("seeked", videoEl, storeTime, 2);
-      addListenerToVideo("pause", videoEl, storeTime, 5);
-      videoEl.currentTime = storedTime;
-    }
+    if (!value) return;
+    addListenerToVideo("play", videoEl, storeTime);
+    addListenerToVideo("seeked", videoEl, storeTime, 2);
+    addListenerToVideo("pause", videoEl, storeTime, 5);
+    videoEl.currentTime = storedTime;
   });
 
   if (data.lookup && [...data.lookup].length < maxTimeStamps * 2) return;
@@ -119,6 +118,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     data = getData(storageTimestamps) as LocalStamps;
   }
   if (!url.includes("video")) return;
+
   urlId = getIdFromUrl(url);
   isDataFull = false;
   isDataOnLookUp = false;
