@@ -34,7 +34,7 @@ export const validateStoredSettings = function () {
           if (defaultArr.includes(v)) return;
           delete settings[v];
         });
-        chrome.storage.local.set({ [settingsStorageLabel]: settings });
+        chrome.storage.local.set({ [settingsStorageLabel]: settings }).then();
       }
     });
 };
