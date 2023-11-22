@@ -1,4 +1,4 @@
-import { getIdFromUrl, waitForElementList } from "../helper";
+import { getIdFromUrl } from "../helper";
 import { Message, LocalStamps } from "../typeDef";
 import {
   addListenerToVideo,

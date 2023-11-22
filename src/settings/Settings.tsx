@@ -1,9 +1,9 @@
 import "./Settings.scss";
 import { useEffect, useState } from "react";
 import { settingsStorageLabel } from "../config";
-// Validate if deleted one of the settings options
-// import { validateStoredSettings } from "./settingsHelper";
-// validateStoredSettings();
+// Validate if changed one of the settings options
+import { validateStoredSettings } from "./settingsHelper";
+validateStoredSettings();
 
 type optionsT = {
   id: string;
@@ -16,13 +16,15 @@ type optionsT = {
 export type defaultStateT = {
   resume: boolean;
   progressBar: boolean;
-  uiState: boolean;
+  sidebarState: boolean;
+  chatContainerState: boolean;
 };
 
 export const defaultSettingsValues: defaultStateT = {
   resume: true,
   progressBar: true,
-  uiState: true,
+  sidebarState: false,
+  chatContainerState: false,
 };
 
 const settingsRender: optionsT[] = [
@@ -39,10 +41,16 @@ const settingsRender: optionsT[] = [
     value: defaultSettingsValues.progressBar,
   },
   {
-    id: "uiState",
-    label: "Save the state of chat and recommended sidebars",
+    id: "sidebarState",
+    label: "Auto close the recomended sidebar",
     type: "checkbox",
-    value: defaultSettingsValues.uiState,
+    value: defaultSettingsValues.sidebarState,
+  },
+  {
+    id: "chatContainerState",
+    label: "Auto close the chat",
+    type: "checkbox",
+    value: defaultSettingsValues.chatContainerState,
   },
 ];
 
