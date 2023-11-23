@@ -7,6 +7,7 @@ const init = function () {
     ".grid-item > div > a[href^='/video/']",
     (elArr: HTMLAnchorElement[] | null) => {
       if (!elArr) return null;
+      console.log("init");
 
       elArr.forEach((v) => {
         const id = getIdFromUrl(v.href);
@@ -44,26 +45,24 @@ const init = function () {
   );
 };
 
-chrome.runtime.onMessage.addListener(() => {
-  getSettings("progressBar").then((value) => {
-    if (!value) return;
-
-    chrome.runtime.onMessage.addListener(() => {
-      let retries = 30;
-      const intervalId = setInterval(() => {
-        retries--;
-        if (data || urlId) {
-          clearInterval(intervalId);
-          init();
-          return;
-        }
-        // Kill the interval if out of retries
-        if (!retries) {
-          clearInterval(intervalId);
-          console.error("data couldn't be retrieved");
-          return;
-        }
-      }, 500);
-    });
+getSettings("progressBar").then((value) => {
+  if (!value) return;
+  chrome.runtime.onMessage.addListener(() => {
+    console.log("-> value", value);
+    let retries = 30;
+    const intervalId = setInterval(() => {
+      retries--;
+      if (data || urlId) {
+        clearInterval(intervalId);
+        init();
+        return;
+      }
+      // Kill the interval if out of retries
+      if (!retries) {
+        clearInterval(intervalId);
+        console.error("data couldn't be retrieved");
+        return;
+      }
+    }, 500);
   });
 });

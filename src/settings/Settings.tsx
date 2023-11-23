@@ -1,7 +1,7 @@
 import "./Settings.scss";
 import { useEffect, useState } from "react";
 import { settingsStorageLabel } from "../config";
-import { validateStoredSettings } from "./settingsHelper";
+// import { validateStoredSettings } from "./settingsHelper";
 
 type optionsT = {
   id: keyof defaultStateT;
@@ -46,7 +46,7 @@ const settingsRender: optionsT[] = [
   },
   {
     id: "chatState",
-    label: "Auto close chat sidebar",
+    label: "Auto close chat",
     type: "checkbox",
     value: defaultSettingsValues.chatState,
   },
@@ -60,7 +60,6 @@ const Settings = function () {
     chrome.storage.local
       .get([settingsStorageLabel])
       .then((v: { settings: defaultStateT }) => {
-        console.log(v.settings);
         if (!v.settings) return setOptions(defaultSettingsValues);
         setOptions(v.settings);
       });
