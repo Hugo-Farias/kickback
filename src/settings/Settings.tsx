@@ -4,7 +4,7 @@ import { settingsStorageLabel } from "../config";
 import { validateStoredSettings } from "./settingsHelper";
 
 type optionsT = {
-  id: string;
+  id: keyof defaultStateT;
   label: string;
   type: "checkbox" | "number";
   value: boolean;
@@ -60,6 +60,7 @@ const Settings = function () {
     chrome.storage.local
       .get([settingsStorageLabel])
       .then((v: { settings: defaultStateT }) => {
+        console.log(v.settings);
         if (!v.settings) return setOptions(defaultSettingsValues);
         setOptions(v.settings);
       });
