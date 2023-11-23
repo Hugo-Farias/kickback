@@ -3,11 +3,11 @@ import { settingsStorageLabel } from "../config";
 import { defaultSettingsValues } from "./Settings";
 
 export const getSettings = function (name: keyof defaultStateT) {
-  console.log("-> getSettings");
   return chrome.storage.local
     .get([settingsStorageLabel])
-    .then((v: { settings: defaultStateT }) => {
-      return v.settings[name];
+    .then(({ settings }: { settings: defaultStateT }) => {
+      if (!settings) return defaultSettingsValues[name];
+      return settings[name];
     });
 };
 
