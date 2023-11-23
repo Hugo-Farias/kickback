@@ -12,7 +12,6 @@ import {
   timeEnd,
   observerTimeoutSecs,
   timeStart,
-  settingsStorageLabel,
 } from "../config";
 import { getSettings } from "../settings/settingsHelper";
 

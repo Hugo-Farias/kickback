@@ -7,8 +7,6 @@ const init = function () {
     ".grid-item > div > a[href^='/video/']",
     (elArr: HTMLAnchorElement[] | null) => {
       if (!elArr) return null;
-      console.log("init");
-
       elArr.forEach((v) => {
         const id = getIdFromUrl(v.href);
 
@@ -48,7 +46,6 @@ const init = function () {
 getSettings("progressBar").then((value) => {
   if (!value) return;
   chrome.runtime.onMessage.addListener(() => {
-    console.log("-> value", value);
     let retries = 30;
     const intervalId = setInterval(() => {
       retries--;

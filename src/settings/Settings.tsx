@@ -1,6 +1,7 @@
 import "./Settings.scss";
 import { useEffect, useState } from "react";
 import { settingsStorageLabel } from "../config";
+import { validateStoredSettings } from "./settingsHelper";
 // import { validateStoredSettings } from "./settingsHelper";
 
 type optionsT = {
@@ -16,6 +17,7 @@ export type defaultStateT = {
   progressBar: boolean;
   sidebarState: boolean;
   chatState: boolean;
+  // test: boolean;
 };
 
 export const defaultSettingsValues: defaultStateT = {
@@ -23,6 +25,7 @@ export const defaultSettingsValues: defaultStateT = {
   progressBar: true,
   sidebarState: false,
   chatState: false,
+  // test: false,
 };
 
 const settingsRender: optionsT[] = [
@@ -50,6 +53,12 @@ const settingsRender: optionsT[] = [
     type: "checkbox",
     value: defaultSettingsValues.chatState,
   },
+  // {
+  //   id: "test",
+  //   label: "test label",
+  //   type: "checkbox",
+  //   value: defaultSettingsValues.test,
+  // },
 ];
 
 const Settings = function () {
@@ -57,6 +66,7 @@ const Settings = function () {
   const [save, setSave] = useState<boolean>(false);
 
   useEffect(() => {
+    validateStoredSettings();
     chrome.storage.local
       .get([settingsStorageLabel])
       .then((v: { settings: defaultStateT }) => {
@@ -87,12 +97,11 @@ const Settings = function () {
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
     chrome.storage.local.remove(settingsStorageLabel).then(() => {});
-    // validateStoredSettings();
     setOptions(defaultSettingsValues);
   };
 
   const JSX = settingsRender.map((v: optionsT) => {
-    const value = options[v.id] ? options[v.id] : v.value;
+    const value = v.id ? options[v.id] : v.value;
 
     return (
       <div
