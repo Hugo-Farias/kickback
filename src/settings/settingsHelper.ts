@@ -2,20 +2,23 @@ import { defaultStateT } from "./Settings";
 import { settingsStorageLabel } from "../config";
 import { defaultSettingsValues } from "./Settings";
 
-export const getSettings = function (name: keyof defaultStateT) {
+export const getSettings = function (name: keyof typeof defaultSettingsValues) {
   return chrome.storage.local
     .get([settingsStorageLabel])
-    .then(({ settings }: { settings: defaultStateT }) => {
-      if (!settings) return defaultSettingsValues[name];
-      return settings[name];
+    .then((v: { [key: string]: defaultStateT }) => {
+      const setting = v[settingsStorageLabel];
+      if (!setting) return defaultSettingsValues[name];
+      return setting[name];
     });
 };
 
 export const validateStoredSettings = function () {
   chrome.storage.local
     .get([settingsStorageLabel])
-    .then(({ settings }: { settings: defaultStateT }) => {
-      if (!settings) {
+    .then((v: { [key: string]: defaultStateT }) => {
+      const setting = v[settingsStorageLabel];
+
+      if (!setting) {
         chrome.storage.local
           .set({
             [settingsStorageLabel]: defaultSettingsValues,
@@ -25,15 +28,15 @@ export const validateStoredSettings = function () {
       }
 
       if (
-        Object.entries(settings).length !==
+        Object.entries(setting).length !==
         Object.entries(defaultSettingsValues).length
       ) {
         const defaultArr = Object.keys(defaultSettingsValues);
-        Object.keys(settings).forEach((v) => {
-          if (defaultArr.includes(v)) return;
-          delete settings[v];
+        Object.keys(setting).forEach((v) => {
+          if (defaultArr.includes(v)) return null;
+          delete setting[v as keyof defaultStateT];
         });
-        chrome.storage.local.set({ [settingsStorageLabel]: settings }).then();
+        chrome.storage.local.set({ [settingsStorageLabel]: setting }).then();
       }
     });
 };

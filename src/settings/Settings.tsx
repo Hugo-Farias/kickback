@@ -2,7 +2,6 @@ import "./Settings.scss";
 import { useEffect, useState } from "react";
 import { settingsStorageLabel } from "../config";
 import { validateStoredSettings } from "./settingsHelper";
-// import { validateStoredSettings } from "./settingsHelper";
 
 type optionsT = {
   id: keyof defaultStateT;
@@ -17,6 +16,7 @@ export type defaultStateT = {
   progressBar: boolean;
   sidebarState: boolean;
   chatState: boolean;
+  pausePlayClick: boolean;
   // test: boolean;
 };
 
@@ -25,6 +25,7 @@ export const defaultSettingsValues: defaultStateT = {
   progressBar: true,
   sidebarState: false,
   chatState: false,
+  pausePlayClick: false,
   // test: false,
 };
 
@@ -37,21 +38,27 @@ const settingsRender: optionsT[] = [
   },
   {
     id: "progressBar",
-    label: "Show progress bar on thumbnail previews",
+    label: "Show progress bar on 'Recent broadcasts' thumbnail previews",
     type: "checkbox",
     value: defaultSettingsValues.progressBar,
   },
   {
     id: "sidebarState",
-    label: "Auto close recomended sidebar",
+    label: "Auto-close recommended sidebar",
     type: "checkbox",
     value: defaultSettingsValues.sidebarState,
   },
   {
     id: "chatState",
-    label: "Auto close chat",
+    label: "Auto-close chat",
     type: "checkbox",
     value: defaultSettingsValues.chatState,
+  },
+  {
+    id: "pausePlayClick",
+    label: "Pause/Play by clicking on video frame",
+    type: "checkbox",
+    value: defaultSettingsValues.pausePlayClick,
   },
   // {
   //   id: "test",
@@ -62,26 +69,23 @@ const settingsRender: optionsT[] = [
 ];
 
 const Settings = function () {
-  const [options, setOptions] = useState<defaultStateT | null>(null);
+  const [options, setOptions] = useState<defaultStateT>(defaultSettingsValues);
   const [save, setSave] = useState<boolean>(false);
 
   useEffect(() => {
     validateStoredSettings();
     chrome.storage.local
       .get([settingsStorageLabel])
-      .then((v: { settings: defaultStateT }) => {
-        if (!v.settings) return setOptions(defaultSettingsValues);
-        setOptions(v.settings);
+      .then((v: { [key: string]: defaultStateT }) => {
+        if (!v[settingsStorageLabel]) return setOptions(defaultSettingsValues);
+        setOptions(v[settingsStorageLabel]);
       });
   }, []);
 
   if (!options) return null;
 
   const handleClick = function (id: string, val: boolean) {
-    setOptions((prev: defaultStateT) => ({
-      ...prev,
-      [id]: val,
-    }));
+    setOptions((prev: defaultStateT) => ({ ...prev, [id]: val }));
   };
 
   const handleSave = function () {

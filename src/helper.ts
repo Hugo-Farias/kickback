@@ -27,7 +27,7 @@ export const waitForElement = function (
   callback: (element: any | null) => void
 ) {
   const observer = new MutationObserver(() => {
-    const element: Node = document.querySelector(el);
+    const element: Element | null = document.querySelector(el);
     if (element) {
       observer.disconnect();
       callback(element);

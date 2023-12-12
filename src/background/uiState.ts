@@ -1,7 +1,7 @@
 import { getSettings } from "../settings/settingsHelper";
 import { waitForElement } from "../helper";
 
-let chatState = null;
+let chatState: boolean;
 
 getSettings("chatState").then((v) => (chatState = v));
 

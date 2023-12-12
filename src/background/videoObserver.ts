@@ -93,6 +93,15 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 const resume = function (videoEl: HTMLVideoElement) {
   videoLength = Math.floor(videoEl.duration);
 
+  getSettings("pausePlayClick").then((value) => {
+    if (!value) return;
+    videoEl.addEventListener("click", () => {
+      if (videoEl.paused) return videoEl.play();
+      // videoEl.play();
+      videoEl.pause();
+    });
+  });
+
   const storedTime: number =
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
@@ -123,6 +132,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
   isDataFull = false;
   isDataOnLookUp = false;
   checkData();
+
   if (observer) {
     observer.disconnect();
   }
