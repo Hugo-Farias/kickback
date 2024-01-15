@@ -20,7 +20,7 @@ console.log("Kickback Running!");
 let url: string = window.location.href;
 export let data: LocalStamps;
 export let urlId: string = getIdFromUrl(url); // Current video ID
-let videoLength: number = 0;
+let videoLength = 0;
 let isDataFull: boolean;
 let isDataOnLookUp: boolean;
 let observer: MutationObserver;
@@ -41,11 +41,9 @@ const clearOldTS = function (obj: LocalStamps) {
 
 // Wait for video element
 function waitForVideo(callback: (video: HTMLVideoElement) => void) {
-  if (!url.includes("video")) return;
-
   observer = new MutationObserver(() => {
     const videoElement: HTMLVideoElement | null =
-      document.querySelector(".vjs-tech");
+      document.querySelector("video");
     if (videoElement && videoElement.readyState >= 3) {
       observer.disconnect();
       callback(videoElement);
@@ -75,10 +73,12 @@ const storeTime = function (videoEL: HTMLVideoElement) {
     data.timestamps[urlId] = {
       curr: videoTime,
       total: videoLength,
-      title: document.querySelector(".stream-title")?.textContent!.trim(),
+      title: document
+        .querySelector(".flex.min-w-0.max-w-full.shrink.gap-1.overflow-hidden")
+        ?.textContent?.trim(),
       streamer: document
-        .querySelector(".stream-username > a")
-        ?.textContent!.trim(),
+        .querySelector("#channel-username")
+        ?.textContent?.trim(),
       id: urlId,
     };
     checkData();
@@ -92,15 +92,6 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
   videoLength = Math.floor(videoEl.duration);
-
-  getSettings("pausePlayClick").then((value) => {
-    if (!value) return;
-    videoEl.addEventListener("click", () => {
-      if (videoEl.paused) return videoEl.play();
-      // videoEl.play();
-      videoEl.pause();
-    });
-  });
 
   const storedTime: number =
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
@@ -118,15 +109,15 @@ const resume = function (videoEl: HTMLVideoElement) {
   clearOldTS(data);
 };
 
-const waitEl = (videoEl: HTMLVideoElement) => resume(videoEl);
-
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
   url = message.url;
-  if ((url.includes("/") && !data) || url.includes("video")) {
+  if ((url.includes("/") && !data) || url.includes("videos")) {
     data = getData(storageTimestamps) as LocalStamps;
   }
-  if (!url.includes("video")) return;
+  if (!url.includes("videos")) return;
+
+  console.log("message");
 
   urlId = getIdFromUrl(url);
   isDataFull = false;
@@ -137,5 +128,5 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     observer.disconnect();
   }
 
-  waitForVideo(waitEl);
+  waitForVideo((videoEl: HTMLVideoElement) => resume(videoEl));
 });

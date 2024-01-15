@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Kick.com Video/VODS Resumer",
-  "version": "1.4",
+  "version": "1.5",
   "description": "Automatically bookmark kick.com videos so they resume from where you left off",
   "permissions": ["tabs", "storage"],
   "icons": {
@@ -17,8 +17,7 @@
     {
       "js": [
         "src/background/videoObserver.ts",
-        "src/background/progressBar.ts",
-        "src/background/uiState.ts"
+        "src/background/progressBar.ts"
       ],
       "matches": ["https://*.kick.com/*"]
     }

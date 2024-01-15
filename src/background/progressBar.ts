@@ -4,7 +4,7 @@ import { getSettings } from "../settings/settingsHelper";
 
 const init = function () {
   waitForElementList(
-    ".grid-item > div > a[href^='/video/']",
+    ".grid.h-full.grid-cols-1 > div > a[href]",
     (elArr: HTMLAnchorElement[] | null) => {
       if (!elArr) return null;
       elArr.forEach((v) => {
@@ -39,7 +39,7 @@ const init = function () {
 
         v.appendChild(div);
       });
-    }
+    },
   );
 };
 

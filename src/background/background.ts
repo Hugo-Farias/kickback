@@ -5,10 +5,11 @@ let msgTimeout: number;
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (
   tabId: number,
-  changeInfo: chrome.tabs.TabChangeInfo,
-  tab: chrome.tabs.Tab
+  _changeInfo: chrome.tabs.TabChangeInfo,
+  tab: chrome.tabs.Tab,
 ) {
-  if (changeInfo.title === undefined || changeInfo.title === "Kick") return;
+  console.log(tab.status);
+  if (tab.status !== "complete") return;
   const url = tab.url;
   if (!url) return;
 

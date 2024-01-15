@@ -2,7 +2,7 @@ import { observerTimeoutSecs } from "./config";
 
 export const waitForElementList = function (
   el: string,
-  callback: (element: Array<any> | null) => void
+  callback: (element: Array<any> | null) => void,
 ) {
   const observer = new MutationObserver(() => {
     const elementList: NodeListOf<any> = document.querySelectorAll(el);
@@ -24,7 +24,7 @@ export const waitForElementList = function (
 
 export const waitForElement = function (
   el: string,
-  callback: (element: any | null) => void
+  callback: (element: any | null) => void,
 ) {
   const observer = new MutationObserver(() => {
     const element: Element | null = document.querySelector(el);
@@ -45,5 +45,6 @@ export const waitForElement = function (
 };
 
 export const getIdFromUrl = function (s: string): string {
-  return s.replace("https://kick.com/video/", "");
+  const splitted = s.split("/");
+  return splitted[splitted.length - 1];
 };
