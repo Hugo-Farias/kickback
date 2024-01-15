@@ -1,22 +1,22 @@
 @import "../variables";
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+//* {
+//  box-sizing: border-box;
+//  margin: 0;
+//  padding: 0;
+//}
 
 :root {
-  font-size: 10px;
-  margin-top: 2rem;
+  //font-size: 10px;
   background-color: $color-background;
-  color: $color-font;
-  font-family: sans-serif;
 }
 
 .settings {
-  font-size: 1.4rem;
-  margin: 0 auto;
+  //margin-top: 2rem;
+  font-family: sans-serif;
+  color: $color-font;
+  font-size: 18px;
+  margin: 4rem auto;
   max-width: 51rem;
   min-width: 32rem;
   text-align: center;
@@ -32,7 +32,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      font-size: 1.4rem;
+      font-size: inherit;
       border-radius: 0.4rem;
       padding: 1.2rem 1rem;
       cursor: pointer;
