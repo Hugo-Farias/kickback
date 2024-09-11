@@ -13,7 +13,7 @@ import {
   observerTimeoutSecs,
   timeStart,
 } from "../config";
-import { getSettings } from "../settings/settingsHelper";
+// import { getSettings } from "../settings/settingsHelper";
 
 console.log("Kickback Running!");
 
@@ -62,7 +62,8 @@ function waitForVideo(callback: (video: HTMLVideoElement) => void) {
 
 // Stores current time to local storage
 const storeTime = function (videoEL: HTMLVideoElement) {
-  if (videoEL.currentTime < 10) return;
+  console.log("store");
+  if (videoEL.currentTime < 60) return;
   const videoTime = Math.floor(videoEL.currentTime);
 
   // Remove key from storage if time is close to beginning or end of video
@@ -92,17 +93,18 @@ const storeTime = function (videoEL: HTMLVideoElement) {
 // resumes video and sets listeners on play/pause, so it doesn't store it when not needed
 const resume = function (videoEl: HTMLVideoElement) {
   videoLength = Math.floor(videoEl.duration);
+  console.log("videoLength =>", videoLength);
 
   const storedTime: number =
     data && data.timestamps[urlId]?.curr ? +data.timestamps[urlId].curr : 0;
 
-  getSettings("resume").then((value) => {
-    if (!value) return;
-    addListenerToVideo("play", videoEl, storeTime);
-    addListenerToVideo("seeked", videoEl, storeTime, 2);
-    addListenerToVideo("pause", videoEl, storeTime, 5);
-    videoEl.currentTime = storedTime;
-  });
+  // getSettings("resume").then((value) => {
+  //   if (!value) return;
+  addListenerToVideo("play", videoEl, storeTime);
+  addListenerToVideo("seeked", videoEl, storeTime, 2);
+  addListenerToVideo("pause", videoEl, storeTime, 5);
+  videoEl.currentTime = storedTime;
+  // });
 
   if (data.lookup && [...data.lookup].length < maxTimeStamps * 2) return;
 

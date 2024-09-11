@@ -1,6 +1,6 @@
 import { getIdFromUrl, waitForElementList } from "../helper";
 import { data, urlId } from "./videoObserver";
-import { getSettings } from "../settings/settingsHelper";
+// import { getSettings } from "../settings/settingsHelper";
 
 const init = function () {
   waitForElementList(
@@ -43,23 +43,23 @@ const init = function () {
   );
 };
 
-getSettings("progressBar").then((value) => {
-  if (!value) return;
-  chrome.runtime.onMessage.addListener(() => {
-    let retries = 30;
-    const intervalId = setInterval(() => {
-      retries--;
-      if (data || urlId) {
-        clearInterval(intervalId);
-        init();
-        return;
-      }
-      // Kill the interval if out of retries
-      if (!retries) {
-        clearInterval(intervalId);
-        console.error("data couldn't be retrieved");
-        return;
-      }
-    }, 500);
-  });
+// getSettings("progressBar").then((value) => {
+//   if (!value) return;
+chrome.runtime.onMessage.addListener(() => {
+  let retries = 30;
+  const intervalId = setInterval(() => {
+    retries--;
+    if (data || urlId) {
+      clearInterval(intervalId);
+      init();
+      return;
+    }
+    // Kill the interval if out of retries
+    if (!retries) {
+      clearInterval(intervalId);
+      console.error("data couldn't be retrieved");
+      return;
+    }
+  }, 500);
 });
+// });

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Kick.com Video/VODS Resumer",
-  "version": "1.5",
+  "version": "1.4.2",
   "description": "Automatically bookmark kick.com videos so they resume from where you left off",
   "permissions": ["tabs", "storage"],
   "icons": {

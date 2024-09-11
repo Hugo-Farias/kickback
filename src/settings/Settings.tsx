@@ -72,6 +72,8 @@ const Settings = function () {
   const [options, setOptions] = useState<defaultStateT>(defaultSettingsValues);
   const [save, setSave] = useState<boolean>(false);
 
+  console.log("test");
+
   useEffect(() => {
     validateStoredSettings();
     chrome.storage.local
@@ -100,7 +102,7 @@ const Settings = function () {
 
   const handleRestore = function () {
     if (!confirm("Restore Defaults?")) return;
-    chrome.storage.local.remove(settingsStorageLabel).then(() => {});
+    chrome.storage.local.remove(settingsStorageLabel).then(() => null);
     setOptions(defaultSettingsValues);
   };
 
@@ -113,7 +115,7 @@ const Settings = function () {
         className="option"
         onClick={() => handleClick(v.id, !value)}
       >
-        <input type={v.type} checked={value} onChange={() => {}} />
+        <input type={v.type} checked={value} onChange={() => null} />
         <span>{v.label}</span>
       </div>
     );
