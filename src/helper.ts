@@ -1,3 +1,5 @@
+import { StoredStamps, Timestamp } from "./typeDef.ts";
+
 export const waitForElement = <T extends Element>(
   selector: string,
 ): Promise<T | null> => {
@@ -17,4 +19,26 @@ export const waitForElement = <T extends Element>(
       resolve(null);
     }, 30000);
   });
+};
+
+export const getIdFromUrl = (url: string) => {
+  const urlParts = url.split("/");
+  const id = urlParts[urlParts.length - 1];
+  if (id.length < 8) return null;
+  return id;
+};
+
+export const getData = (id?: string): StoredStamps | Timestamp | null => {
+  const data = localStorage.getItem("kbTimeStamps");
+
+  if (!data) return null;
+
+  const parsedData = JSON.parse(data) as StoredStamps;
+
+  // Check if id is valid and if it exists return the timestamp
+  if (id && parsedData.timestamps[id]) {
+    return parsedData.timestamps[id] as unknown as Timestamp;
+  }
+
+  return parsedData;
 };

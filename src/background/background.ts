@@ -1,4 +1,5 @@
 import { Message } from "../typeDef";
+import { getIdFromUrl } from "../helper.ts";
 
 let msgTimeout: number;
 
@@ -14,7 +15,11 @@ chrome.tabs.onUpdated.addListener(function (
   if (!url) return;
   if (!url.includes("videos")) return;
 
-  const message: Message = { type: "urlChanged", url: url };
+  const message: Message = {
+    type: "urlChanged",
+    url: url,
+    id: getIdFromUrl(url),
+  };
 
   if (msgTimeout) clearTimeout(msgTimeout);
 

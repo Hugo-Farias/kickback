@@ -1,7 +1,8 @@
-export interface Message {
+export type Message = {
   type: "urlChanged";
   url: string;
-}
+  id: string | null;
+};
 
 export type Timestamp = {
   [key: string]: {
@@ -13,12 +14,12 @@ export type Timestamp = {
   };
 };
 
-export interface LocalStamps {
+export type LocalStamps = {
   timestamps: Timestamp;
   lookup: Set<string>;
-}
+};
 
-export interface StoredStamps {
+export type StoredStamps = {
   timestamps: Timestamp;
   lookup: string[];
-}
+};
