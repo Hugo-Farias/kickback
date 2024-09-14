@@ -1,7 +1,6 @@
 import { Message } from "../typeDef";
 
 let msgTimeout: number;
-let currUrl: string | undefined;
 
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (
@@ -9,12 +8,12 @@ chrome.tabs.onUpdated.addListener(function (
   _: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab,
 ) {
-  console.log(tab);
+  console.log(tab.url);
   if (tab.status !== "complete" || tab.title?.includes("kick.com")) return;
   const url = tab.url;
-  if (!url || currUrl === url) return;
-  currUrl = url;
-  console.log("url =>", url);
+  if (!url) return;
+  if (!url.includes("videos")) return;
+  console.log(url);
 
   const message: Message = { type: "urlChanged", url: url };
 
@@ -22,7 +21,7 @@ chrome.tabs.onUpdated.addListener(function (
 
   msgTimeout = setTimeout(() => {
     return chrome.tabs.sendMessage(tabId, message);
-  }, 2000);
+  }, 500);
 });
 
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {

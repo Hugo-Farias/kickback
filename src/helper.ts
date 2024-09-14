@@ -1,50 +1,19 @@
-import { observerTimeoutSecs } from "./config";
-
-export const waitForElementList = function (
-  el: string,
-  callback: (element: Array<any> | null) => void,
-) {
-  const observer = new MutationObserver(() => {
-    const elementList: NodeListOf<any> = document.querySelectorAll(el);
-    if (elementList.length > 0) {
-      observer.disconnect();
-      callback([...elementList]);
-    }
+export const waitForElement = <T extends Element>(
+  selector: string,
+): Promise<T | null> => {
+  // Wait for video element every 1 second
+  return new Promise((resolve) => {
+    const timer = setInterval(() => {
+      const element = document.querySelector<T>(selector);
+      if (element) {
+        clearInterval(timer);
+        resolve(element);
+      }
+    }, 1000);
+    // Timeout after 30 seconds
+    setTimeout(() => {
+      clearInterval(timer);
+      resolve(null);
+    }, 30000);
   });
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
-
-  setTimeout(() => {
-    observer.disconnect(); // Stop the observer after the timeout
-  }, observerTimeoutSecs * 1000);
-};
-
-export const waitForElement = function (
-  el: string,
-  callback: (element: any | null) => void,
-) {
-  const observer = new MutationObserver(() => {
-    const element: Element | null = document.querySelector(el);
-    if (element) {
-      observer.disconnect();
-      callback(element);
-    }
-  });
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
-
-  setTimeout(() => {
-    observer.disconnect(); // Stop the observer after the timeout
-  }, observerTimeoutSecs * 1000);
-};
-
-export const getIdFromUrl = function (s: string): string {
-  const splitted = s.split("/");
-  return splitted[splitted.length - 1];
 };

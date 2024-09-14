@@ -1,5 +1,3 @@
-import "./Popup.scss";
-
 const Popup = function () {
   return (
     <div className="popup-container">
