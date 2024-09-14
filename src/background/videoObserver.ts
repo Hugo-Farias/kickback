@@ -5,7 +5,8 @@ import { waitForElement } from "../helper.ts";
 chrome.runtime.onMessage.addListener((message: Message) => {
   console.log(message);
   waitForElement<HTMLVideoElement>("video").then((v) => {
+    console.log(v);
     if (!v) return console.error("Video element not found");
-    console.log(v.currentTime);
+    v.currentTime = 60 * 10;
   });
 });
