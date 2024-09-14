@@ -28,7 +28,7 @@ export const getIdFromUrl = (url: string) => {
   return id;
 };
 
-export const getData = (id?: string): StoredStamps | Timestamp | null => {
+export const getData = (id: string): StoredStamps | Timestamp | null => {
   const data = localStorage.getItem("kbTimeStamps");
 
   if (!data) return null;
@@ -36,9 +36,7 @@ export const getData = (id?: string): StoredStamps | Timestamp | null => {
   const parsedData = JSON.parse(data) as StoredStamps;
 
   // Check if id is valid and if it exists return the timestamp
-  if (id && parsedData.timestamps[id]) {
-    return parsedData.timestamps[id] as unknown as Timestamp;
-  }
-
-  return parsedData;
+  return parsedData.timestamps[id]
+    ? (parsedData.timestamps[id] as Timestamp)
+    : null;
 };
