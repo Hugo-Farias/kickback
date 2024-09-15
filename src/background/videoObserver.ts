@@ -11,6 +11,14 @@ const setTime = (id: string, time: number) => {
   console.log(id, time);
 };
 
+const onPlay = (id: string, time: number) => {
+  intervals.play = setInterval(() => {
+    console.log("play");
+    setTime(id, time);
+  }, 1000 * 3);
+  console.log(intervals);
+};
+
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
   if (!message.id) return null;
@@ -20,12 +28,15 @@ chrome.runtime.onMessage.addListener((message: Message) => {
 
     const data = getData(message.id + "") as Timestamp;
 
-    video.addEventListener("play", () => {
-      intervals.play = setInterval(() => {
-        console.log("play");
-        setTime(data.id, video.currentTime);
-      }, 1000 * 3);
-      console.log(intervals);
+    // Set intervals on play
+    video.addEventListener(
+      "play",
+      onPlay.bind(null, data.id, video.currentTime),
+    );
+
+    // Clear intervals on pause
+    video.addEventListener("pause", () => {
+      clearInterval(intervals.play);
     });
 
     if (data) {
