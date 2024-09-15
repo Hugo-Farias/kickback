@@ -3,7 +3,7 @@ import { StoredStamps, Timestamp } from "./typeDef.ts";
 export const waitForElement = <T extends Element>(
   selector: string,
 ): Promise<T | null> => {
-  // Wait for video element every 1 second
+  // Wait for video, check for element in 1 second intervals
   return new Promise((resolve) => {
     const timer = setInterval(() => {
       console.log("search");
@@ -28,15 +28,29 @@ export const getIdFromUrl = (url: string) => {
   return id;
 };
 
-export const getData = (id: string): StoredStamps | Timestamp | null => {
+export const getTimestamp = (id: string): Timestamp | null => {
   const data = localStorage.getItem("kbTimeStamps");
 
   if (!data) return null;
 
-  const parsedData = JSON.parse(data) as StoredStamps;
+  const parsedData: StoredStamps = JSON.parse(data);
 
-  // Check if id is valid and if it exists return the timestamp
-  return parsedData.timestamps[id]
-    ? (parsedData.timestamps[id] as Timestamp)
-    : null;
+  // Check if id is valid and if it exists return the timestamp else return null
+  return parsedData.timestamps[id] ?? null;
+};
+
+export const addEvent = (
+  element: HTMLVideoElement,
+  trigger: keyof HTMLVideoElementEventMap,
+  execute: () => void,
+) => {
+  element.removeEventListener(trigger, execute);
+  element.addEventListener(trigger, execute);
+};
+
+export const removeAllIntervalls = (intervals: { [key: string]: number }) => {
+  for (const key of Object.keys(intervals)) {
+    console.log("removeAllIntervalls", intervals[key]);
+    clearInterval(intervals[key]);
+  }
 };

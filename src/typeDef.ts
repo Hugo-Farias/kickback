@@ -10,12 +10,13 @@ export type Timestamp = {
   title: string | undefined;
   streamer: string | undefined;
   id: string;
+  storageTime: number;
 };
 
-export type LocalStamps = {
-  timestamps: Timestamp;
-  lookup: Set<string>;
-};
+// export type LocalStamps = {
+//   timestamps: Timestamp;
+//   lookup: Set<string>;
+// };
 
 export type StoredStamps = {
   timestamps: { [key: string]: Timestamp };

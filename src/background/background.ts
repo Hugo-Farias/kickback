@@ -9,7 +9,6 @@ chrome.tabs.onUpdated.addListener(function (
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab,
 ) {
-  console.log(tab.title, changeInfo.status);
   if (changeInfo.status !== "complete") return;
   const url = tab.url;
   if (!url) return;
@@ -18,13 +17,12 @@ chrome.tabs.onUpdated.addListener(function (
   const message: Message = {
     type: "urlChanged",
     url: url,
-    id: getIdFromUrl(url),
+    id: getIdFromUrl(url) + "",
   };
 
   if (msgTimeout) clearTimeout(msgTimeout);
 
   msgTimeout = setTimeout(() => {
-    console.log("msg");
     return chrome.tabs.sendMessage(tabId, message);
   }, 500);
 });
