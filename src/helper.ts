@@ -38,19 +38,3 @@ export const getTimestamp = (id: string): Timestamp | null => {
   // Check if id is valid and if it exists return the timestamp else return null
   return parsedData.timestamps[id] ?? null;
 };
-
-export const addEvent = (
-  element: HTMLVideoElement,
-  trigger: keyof HTMLVideoElementEventMap,
-  execute: () => void,
-) => {
-  element.removeEventListener(trigger, execute);
-  element.addEventListener(trigger, execute);
-};
-
-export const removeAllIntervalls = (intervals: { [key: string]: number }) => {
-  for (const key of Object.keys(intervals)) {
-    console.log("removeAllIntervalls", intervals[key]);
-    clearInterval(intervals[key]);
-  }
-};
