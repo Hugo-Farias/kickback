@@ -7,38 +7,25 @@ import {
   onPause,
 } from "./videoEvents.ts";
 
+export let currentId: string;
+export let currentVideo: HTMLVideoElement;
+
 const resume = (videoElement: HTMLVideoElement, time: number) => {
   videoElement.currentTime = time;
 };
-
-// const fillData = (video: HTMLVideoElement, id: string): Timestamp => {
-//   return {
-//     curr: video.currentTime,
-//     total: video.duration,
-//     title: document
-//       .querySelector(".flex.min-w-0.max-w-full.shrink.gap-1.overflow-hidden")
-//       ?.textContent?.trim(),
-//     streamer: document.querySelector("#channel-username")?.textContent?.trim(),
-//     id: id,
-//     storageTime: Date.now(),
-//   };
-// };
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
   removeAllIntervalls();
   if (!message.id) return null;
-  const id = message.id;
+  currentId = message.id;
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return console.error("Video element not found");
+    currentVideo = video;
 
-    const data: Timestamp | null = getTimestamp(id);
-
-    // console.log(data);
-
-    // run storeData
-    // storeData(video, id, data);
+    const timestamp: Timestamp | null = getTimestamp(currentId);
+    console.log("timestamp =>", timestamp);
 
     // Set intervals on play
     addEvent(video, "play", onPlay);
@@ -46,15 +33,13 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     // Clear intervals on pause
     addEvent(video, "pause", onPause);
 
-    // video.addEventListener("pause", () => {
-    //   clearInterval(intervals.play);
-    // });
+    if (!timestamp) {
+      console.log("no data");
+      video.pause();
+      setTimeout(() => video.play(), 400);
+      return null;
+    }
 
-    video.pause();
-    video.play().then(null);
-
-    if (!data) return null;
-
-    resume(video, data.curr);
+    resume(video, timestamp.curr);
   });
 });

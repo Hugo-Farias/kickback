@@ -18,7 +18,4 @@ export type Timestamp = {
 //   lookup: Set<string>;
 // };
 
-export type StoredStamps = {
-  timestamps: { [key: string]: Timestamp };
-  lookup: string[];
-};
+export type StoredStamps = { [key: string]: Timestamp };

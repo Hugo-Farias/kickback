@@ -1,15 +1,18 @@
 import { StoredStamps, Timestamp } from "./typeDef.ts";
 
+const storageKey = "test";
+
 export const waitForElement = <T extends Element>(
   selector: string,
 ): Promise<T | null> => {
   // Wait for video, check for element in 1 second intervals
   return new Promise((resolve) => {
     const timer = setInterval(() => {
-      console.log("search");
+      // console.log(`Scanning for element "${selector}"`);
       const element = document.querySelector<T>(selector);
       if (element) {
         clearInterval(timer);
+        // console.log("element found", element);
         resolve(element);
       }
     }, 1000);
@@ -28,13 +31,25 @@ export const getIdFromUrl = (url: string) => {
   return id;
 };
 
-export const getTimestamp = (id: string): Timestamp | null => {
-  const data = localStorage.getItem("kbTimeStamps");
+export const getTimestamp = (id: string | null): Timestamp | null => {
+  if (!id) return null;
+  const data = localStorage.getItem(storageKey);
 
   if (!data) return null;
 
   const parsedData: StoredStamps = JSON.parse(data);
 
   // Check if id is valid and if it exists return the timestamp else return null
-  return parsedData.timestamps[id] ?? null;
+  return parsedData[id] ?? null;
+};
+
+export const getData = (): StoredStamps => {
+  console.log("getData");
+  const data = localStorage.getItem(storageKey);
+  if (!data) return {};
+  return JSON.parse(data);
+};
+
+export const storeData = (data: StoredStamps) => {
+  localStorage.setItem(storageKey, JSON.stringify(data));
 };

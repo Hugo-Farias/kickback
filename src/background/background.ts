@@ -9,6 +9,7 @@ chrome.tabs.onUpdated.addListener(function (
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab,
 ) {
+  console.log(changeInfo);
   if (changeInfo.status !== "complete") return;
   const url = tab.url;
   if (!url) return;
