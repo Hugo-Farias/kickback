@@ -3,7 +3,7 @@ import { StoredStamps, Timestamp } from "../typeDef.ts";
 import { currentId, currentVideo } from "./videoObserver.ts";
 
 const intervals: { [key: string]: number } = {};
-const data: StoredStamps = getData();
+let data: StoredStamps = getData();
 
 const fillData = (): Timestamp => {
   return {
@@ -18,28 +18,28 @@ const fillData = (): Timestamp => {
   };
 };
 
-const setTime = (time: number): Timestamp => {
-  const storedTimestamp = data[currentId];
+const setTime = () => {
+  const currentTime = currentVideo.currentTime;
 
-  if (!storedTimestamp) return fillData();
+  if (currentTime < 90 || currentTime > currentVideo.duration - 90) return null;
 
-  return {
-    ...storedTimestamp,
-    curr: time,
+  const storedTimestamp = data[currentId] ?? fillData();
+
+  data = {
+    ...data,
+    [currentId]: {
+      ...storedTimestamp,
+      curr: currentTime,
+    },
   };
+
+  storeData(data);
 };
 
 export const removeAllIntervalls = () => {
   for (const key of Object.keys(intervals)) {
     clearInterval(intervals[key]);
   }
-};
-
-const checkTime = () => {
-  return (
-    currentVideo.currentTime < 90 ||
-    currentVideo.currentTime > data[currentId].total - 90
-  );
 };
 
 export const onPause = () => {
@@ -49,17 +49,7 @@ export const onPause = () => {
 export const onPlay = () => {
   removeAllIntervalls();
 
-  intervals.play = setInterval(() => {
-    if (checkTime()) return null;
-
-    console.log("interval");
-    const newData: StoredStamps = {
-      ...data,
-      [currentId]: setTime(currentVideo.currentTime),
-    };
-
-    storeData(newData);
-  }, 5000);
+  intervals.play = setInterval(setTime, 3000);
 };
 
 export const addEvent = (

@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     currentVideo = video;
 
     const timestamp: Timestamp | null = getTimestamp(currentId);
-    console.log("timestamp =>", timestamp);
 
     // Set intervals on play
     addEvent(video, "play", onPlay);

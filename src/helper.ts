@@ -8,14 +8,12 @@ export const waitForElement = <T extends Element>(
   // Wait for video, check for element in 1 second intervals
   return new Promise((resolve) => {
     const timer = setInterval(() => {
-      // console.log(`Scanning for element "${selector}"`);
       const element = document.querySelector<T>(selector);
       if (element) {
         clearInterval(timer);
-        // console.log("element found", element);
         resolve(element);
       }
-    }, 1000);
+    }, 2200);
     // Timeout after 30 seconds
     setTimeout(() => {
       clearInterval(timer);
