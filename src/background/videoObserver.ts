@@ -5,20 +5,19 @@ import {
   removeAllIntervalls,
   onPlay,
   onPause,
+  resume,
 } from "./videoEvents.ts";
 
 export let currentId: string;
 export let currentVideo: HTMLVideoElement;
 
-const resume = (videoElement: HTMLVideoElement, time: number) => {
-  videoElement.currentTime = time;
-};
-
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
+  const newId = message.id;
+  if (newId === currentId) return null;
+  if (!newId) return null;
   removeAllIntervalls();
-  if (!message.id) return null;
-  currentId = message.id;
+  currentId = newId;
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return console.error("Video element not found");
@@ -39,6 +38,6 @@ chrome.runtime.onMessage.addListener((message: Message) => {
       return null;
     }
 
-    resume(video, timestamp.curr);
+    resume();
   });
 });

@@ -3,6 +3,8 @@ import { StoredStamps, Timestamp } from "../typeDef.ts";
 import { currentId, currentVideo } from "./videoObserver.ts";
 
 const intervals: { [key: string]: number } = {};
+let seekTimeout: number;
+
 let data: StoredStamps = getData();
 
 const fillData = (): Timestamp => {
@@ -22,6 +24,8 @@ const setTime = () => {
   const currentTime = currentVideo.currentTime;
 
   if (currentTime < 90 || currentTime > currentVideo.duration - 90) return null;
+
+  console.log("setTime");
 
   const storedTimestamp = data[currentId] ?? fillData();
 
@@ -43,13 +47,31 @@ export const removeAllIntervalls = () => {
 };
 
 export const onPause = () => {
-  removeAllIntervalls();
+  clearInterval(intervals.play);
+  console.log("pause");
+  clearTimeout(seekTimeout);
+
+  seekTimeout = setTimeout(setTime, 2000);
 };
 
 export const onPlay = () => {
-  removeAllIntervalls();
+  clearInterval(intervals.play);
 
-  intervals.play = setInterval(setTime, 3000);
+  console.log("play");
+  intervals.play = setInterval(setTime, 30000);
+};
+
+export const resume = () => {
+  if (!data[currentId]) return;
+
+  intervals.first = setInterval(() => {
+    if (currentVideo.currentTime >= 90) {
+      currentVideo.play();
+      clearInterval(intervals.first);
+    }
+    console.log("first");
+    currentVideo.currentTime = data[currentId].curr;
+  }, 1500);
 };
 
 export const addEvent = (
