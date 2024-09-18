@@ -49,16 +49,19 @@ export const removeAllIntervalls = () => {
 export const onPause = () => {
   clearInterval(intervals.play);
   console.log("pause");
-  clearTimeout(seekTimeout);
-
-  seekTimeout = setTimeout(setTime, 2000);
 };
 
 export const onPlay = () => {
   clearInterval(intervals.play);
 
   console.log("play");
-  intervals.play = setInterval(setTime, 30000);
+  intervals.play = setInterval(setTime, 20000);
+};
+
+export const onSeek = () => {
+  console.log("seeked");
+  clearTimeout(seekTimeout);
+  seekTimeout = setTimeout(setTime, 2000);
 };
 
 export const resume = () => {
@@ -72,7 +75,7 @@ export const resume = () => {
     }
     console.log("resume");
     currentVideo.currentTime = data[currentId].curr;
-  }, 1000);
+  }, 100);
 };
 
 export const addEvent = (

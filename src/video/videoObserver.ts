@@ -6,6 +6,7 @@ import {
   onPlay,
   onPause,
   resume,
+  onSeek,
 } from "./videoEvents.ts";
 
 export let currentId: string;
@@ -28,6 +29,8 @@ chrome.runtime.onMessage.addListener((message: Message) => {
 
     // Clear intervals on pause
     addEvent(video, "pause", onPause);
+
+    addEvent(video, "seeked", onSeek);
 
     //TODO remove this after debuging
     if (!getTimestamp(currentId)) {
