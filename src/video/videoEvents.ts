@@ -65,13 +65,14 @@ export const resume = () => {
   if (!data[currentId]) return;
 
   intervals.first = setInterval(() => {
+    clearTimeout(seekTimeout);
     if (currentVideo.currentTime >= 90) {
-      currentVideo.play();
       clearInterval(intervals.first);
+      return null;
     }
-    console.log("first");
+    console.log("resume");
     currentVideo.currentTime = data[currentId].curr;
-  }, 1500);
+  }, 1000);
 };
 
 export const addEvent = (

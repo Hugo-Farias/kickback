@@ -13,7 +13,7 @@ export const waitForElement = <T extends Element>(
         clearInterval(timer);
         resolve(element);
       }
-    }, 200);
+    }, 1000);
     // Timeout after 30 seconds
     setTimeout(() => {
       clearInterval(timer);
