@@ -7,10 +7,13 @@ import {
   onPause,
   resume,
   onSeek,
+  dataOverLimit,
 } from "./videoEvents.ts";
 
 export let currentId: string;
 export let currentVideo: HTMLVideoElement;
+
+console.log(dataOverLimit(20));
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {

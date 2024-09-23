@@ -25,8 +25,6 @@ const setTime = () => {
 
   if (currentTime < 90 || currentTime > currentVideo.duration - 90) return null;
 
-  console.log("setTime");
-
   const storedTimestamp = data[currentId] ?? fillData();
 
   data = {
@@ -39,7 +37,6 @@ const setTime = () => {
 
   storeData(data);
 };
-
 export const removeAllIntervalls = () => {
   for (const key of Object.keys(intervals)) {
     clearInterval(intervals[key]);
@@ -48,18 +45,15 @@ export const removeAllIntervalls = () => {
 
 export const onPause = () => {
   clearInterval(intervals.play);
-  console.log("pause");
 };
 
 export const onPlay = () => {
   clearInterval(intervals.play);
 
-  console.log("play");
   intervals.play = setInterval(setTime, 20000);
 };
 
 export const onSeek = () => {
-  console.log("seeked");
   clearTimeout(seekTimeout);
   seekTimeout = setTimeout(setTime, 2000);
 };
@@ -73,7 +67,6 @@ export const resume = () => {
       clearInterval(intervals.first);
       return null;
     }
-    console.log("resume");
     currentVideo.currentTime = data[currentId].curr;
   }, 100);
 };
@@ -85,4 +78,10 @@ export const addEvent = (
 ) => {
   element.removeEventListener(trigger, execute);
   element.addEventListener(trigger, execute);
+};
+
+export const dataOverLimit = (limit: number) => {
+  const output = Object.keys(data).length;
+  console.log(output);
+  return limit <= output;
 };

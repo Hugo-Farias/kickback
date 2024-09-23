@@ -42,7 +42,6 @@ export const getTimestamp = (id: string | null): Timestamp | null => {
 };
 
 export const getData = (): StoredStamps => {
-  console.log("getData");
   const data = localStorage.getItem(storageKey);
   if (!data) return {};
   return JSON.parse(data);
