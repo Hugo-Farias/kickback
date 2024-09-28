@@ -1,16 +1,9 @@
 import { getData, storeData } from "../helper.ts";
 import { StoredStamps, Timestamp } from "../typeDef.ts";
-import DUMMY_DATA from "../data/DUMMY_DATA.json";
 import { currentId, currentVideo } from "./videoObserver.ts";
 
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
-
-const dummy = DUMMY_DATA;
-
-console.log(dummy);
-
-storeData(dummy);
 
 let data: StoredStamps = getData();
 
@@ -23,7 +16,7 @@ const fillData = (): Timestamp => {
       ?.textContent?.trim(),
     streamer: document.querySelector("#channel-username")?.textContent?.trim(),
     id: currentId,
-    storageTime: Date.now(),
+    storageTime: Number(Date.now()),
   };
 };
 
@@ -68,6 +61,14 @@ export const onSeek = () => {
 export const resume = () => {
   if (!data[currentId]) return;
 
+  data = {
+    ...data,
+    [currentId]: {
+      ...data[currentId],
+      storageTime: Date.now(),
+    },
+  };
+
   intervals.first = setInterval(() => {
     clearTimeout(seekTimeout);
     if (currentVideo.currentTime >= 90) {
@@ -89,7 +90,6 @@ export const addEvent = (
 
 const dataOverLimit = (limit: number) => {
   const output = Object.keys(data).length;
-  // console.log(output);
   return limit <= output;
 };
 
@@ -100,12 +100,9 @@ export const deleteOldFromData = (amount: number) => {
     (a, b) => data[a].storageTime - data[b].storageTime,
   );
 
-  console.log(keys);
-  for (let i = 0; i < amount / 2; i++) {
+  for (let i = 0; i < Math.ceil(amount / 2); i++) {
     delete data[keys[i]];
-    // console.log(data[keys[i]]);
   }
-  console.log(data);
 
-  // storeData(data);
+  storeData(data);
 };

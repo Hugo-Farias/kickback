@@ -1,6 +1,6 @@
 import { StoredStamps, Timestamp } from "./typeDef.ts";
 
-const storageKey = "dummy";
+const storageKey = "kbTimestamps";
 
 export const waitForElement = <T extends Element>(
   selector: string,

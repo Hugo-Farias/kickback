@@ -13,7 +13,8 @@ import {
 export let currentId: string;
 export let currentVideo: HTMLVideoElement;
 
-deleteOldFromData(30);
+// If data has more than n elements, delete half of the oldest ones
+deleteOldFromData(100);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
