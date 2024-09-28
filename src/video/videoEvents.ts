@@ -76,7 +76,7 @@ export const resume = () => {
       return null;
     }
     currentVideo.currentTime = data[currentId].curr;
-  }, 100);
+  }, 300);
 };
 
 export const addEvent = (

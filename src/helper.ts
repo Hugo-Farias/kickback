@@ -5,17 +5,20 @@ const storageKey = "kbTimestamps";
 export const waitForElement = <T extends Element>(
   selector: string,
 ): Promise<T | null> => {
-  // Wait for video, check for element in 1 second intervals
+  // Wait for element, check for element in 1 second intervals
   return new Promise((resolve) => {
+    console.log('waiting for element "' + selector + '"');
     const timer = setInterval(() => {
       const element = document.querySelector<T>(selector);
       if (element) {
+        console.log("element found");
         clearInterval(timer);
         resolve(element);
       }
     }, 1000);
     // Timeout after 30 seconds
     setTimeout(() => {
+      console.log("element not found");
       clearInterval(timer);
       resolve(null);
     }, 30000);
@@ -48,5 +51,6 @@ export const getData = (): StoredStamps => {
 };
 
 export const storeData = (data: StoredStamps) => {
+  console.log("storeData");
   localStorage.setItem(storageKey, JSON.stringify(data));
 };

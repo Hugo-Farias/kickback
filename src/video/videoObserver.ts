@@ -13,7 +13,8 @@ import {
 export let currentId: string;
 export let currentVideo: HTMLVideoElement;
 
-// If data has more than n elements, delete half of the oldest ones
+// If data has more than n elements, delete half of the oldest
+// TODO additional real world testting
 deleteOldFromData(100);
 
 // Receive message from background and trigger every url updated event
