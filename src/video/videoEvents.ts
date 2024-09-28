@@ -1,9 +1,16 @@
 import { getData, storeData } from "../helper.ts";
 import { StoredStamps, Timestamp } from "../typeDef.ts";
+import DUMMY_DATA from "../data/DUMMY_DATA.json";
 import { currentId, currentVideo } from "./videoObserver.ts";
 
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
+
+const dummy = DUMMY_DATA;
+
+console.log(dummy);
+
+storeData(dummy);
 
 let data: StoredStamps = getData();
 
@@ -80,8 +87,25 @@ export const addEvent = (
   element.addEventListener(trigger, execute);
 };
 
-export const dataOverLimit = (limit: number) => {
+const dataOverLimit = (limit: number) => {
   const output = Object.keys(data).length;
-  console.log(output);
+  // console.log(output);
   return limit <= output;
+};
+
+export const deleteOldFromData = (amount: number) => {
+  if (!dataOverLimit(amount)) return null;
+
+  const keys = Object.keys(data).sort(
+    (a, b) => data[a].storageTime - data[b].storageTime,
+  );
+
+  console.log(keys);
+  for (let i = 0; i < amount / 2; i++) {
+    delete data[keys[i]];
+    // console.log(data[keys[i]]);
+  }
+  console.log(data);
+
+  // storeData(data);
 };
