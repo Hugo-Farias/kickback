@@ -5,8 +5,8 @@ import {
   removeAllIntervalls,
   onPlay,
   onPause,
-  resume,
   onSeek,
+  resume,
   deleteOldFromData,
 } from "./videoEvents.ts";
 
@@ -14,7 +14,7 @@ export let currentId: string;
 export let currentVideo: HTMLVideoElement;
 
 // If data has more than n elements, delete half of the oldest
-deleteOldFromData(100);
+deleteOldFromData(200);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
 
     addEvent(video, "seeked", onSeek);
 
-    //TODO remove this after debuging
+    //TODO remove this before compiling
     if (!getTimestamp(currentId)) {
       console.log("no data");
       return null;

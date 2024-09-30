@@ -5,20 +5,23 @@ const storageKey = "kbTimestamps";
 export const waitForElement = <T extends Element>(
   selector: string,
 ): Promise<T | null> => {
+  let timer: number;
+  let clearTimer: number;
   // Wait for element, check for element in 1 second intervals
   return new Promise((resolve) => {
     console.log('waiting for element "' + selector + '"');
-    const timer = setInterval(() => {
+    timer = setInterval(() => {
       const element = document.querySelector<T>(selector);
       if (element) {
-        console.log("element found");
+        console.log(`"${selector}" element found`);
         clearInterval(timer);
+        clearTimeout(clearTimer);
         resolve(element);
       }
     }, 1000);
     // Timeout after 30 seconds
-    setTimeout(() => {
-      console.log("element not found");
+    clearTimer = setTimeout(() => {
+      console.log(`"${selector}" element not found`);
       clearInterval(timer);
       resolve(null);
     }, 30000);

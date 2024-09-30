@@ -59,6 +59,7 @@ export const onSeek = () => {
 };
 
 export const resume = () => {
+  clearInterval(intervals.resume);
   if (!data[currentId]) return;
 
   data = {
@@ -69,14 +70,15 @@ export const resume = () => {
     },
   };
 
-  intervals.first = setInterval(() => {
+  intervals.resume = setInterval(() => {
+    console.log("resumeInterval");
     clearTimeout(seekTimeout);
     if (currentVideo.currentTime >= 90) {
-      clearInterval(intervals.first);
+      clearInterval(intervals.resume);
       return null;
     }
     currentVideo.currentTime = data[currentId].curr;
-  }, 300);
+  }, 500);
 };
 
 export const addEvent = (
@@ -103,6 +105,4 @@ export const deleteOldFromData = (amount: number) => {
   for (let i = 0; i < Math.ceil(amount / 2); i++) {
     delete data[keys[i]];
   }
-
-  storeData(data);
 };

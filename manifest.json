@@ -14,7 +14,7 @@
   },
   "content_scripts": [
     {
-      "js": ["src/video/videoObserver.ts"],
+      "js": ["src/video/videoObserver.ts", "src/video/videoThumbnails.ts"],
       "matches": ["https://*.kick.com/*"]
     }
   ]
