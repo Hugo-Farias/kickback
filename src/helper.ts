@@ -2,21 +2,34 @@ import { StoredStamps, Timestamp } from "./typeDef.ts";
 
 const storageKey = "kbTimestamps";
 
-export const waitForElement = <T extends Element>(
+type ElementReturnType<T extends Element, L extends boolean> = L extends true
+  ? NodeListOf<T> | null
+  : T | null;
+
+export const waitForElement = <T extends Element, L extends boolean>(
   selector: string,
-): Promise<T | null> => {
+  getList: L,
+): Promise<ElementReturnType<T, L>> => {
   let timer: number;
   let clearTimer: number;
+  let element: NodeListOf<T> | T | null;
+
   // Wait for element, check for element in 1 second intervals
   return new Promise((resolve) => {
     console.log('waiting for element "' + selector + '"');
+
+    if (getList) {
+      element = document.querySelectorAll<T>(selector);
+    } else {
+      element = document.querySelector<T>(selector);
+    }
+
     timer = setInterval(() => {
-      const element = document.querySelector<T>(selector);
       if (element) {
         console.log(`"${selector}" element found`);
         clearInterval(timer);
         clearTimeout(clearTimer);
-        resolve(element);
+        resolve(element as ElementReturnType<T, L>);
       }
     }, 1000);
     // Timeout after 30 seconds

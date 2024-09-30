@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
   removeAllIntervalls();
   currentId = newId;
 
-  waitForElement<HTMLVideoElement>("video").then((video) => {
+  waitForElement<HTMLVideoElement, false>("video", false).then((video) => {
     if (!video) return console.error("Video element not found");
     currentVideo = video;
 
