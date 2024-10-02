@@ -5,7 +5,7 @@ import { currentId, currentVideo } from "./videoObserver.ts";
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
 
-let data: StoredStamps = getData();
+export let data: StoredStamps = getData();
 
 const fillData = (): Timestamp => {
   return {
@@ -71,7 +71,6 @@ export const resume = () => {
   };
 
   intervals.resume = setInterval(() => {
-    console.log("resumeInterval");
     clearTimeout(seekTimeout);
     if (currentVideo.currentTime >= 90) {
       clearInterval(intervals.resume);

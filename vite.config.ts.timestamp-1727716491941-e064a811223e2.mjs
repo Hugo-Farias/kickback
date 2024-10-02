@@ -20,7 +20,7 @@ var manifest_default = {
   },
   content_scripts: [
     {
-      js: ["src/video/videoObserver.ts", "src/video/videoThumbnails.ts"],
+      js: ["src/video/videoObserver.ts", "src/video/videoLinks.ts"],
       matches: ["https://*.kick.com/*"]
     }
   ]

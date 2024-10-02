@@ -9,7 +9,7 @@ chrome.tabs.onUpdated.addListener(function (
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab,
 ) {
-  console.log(changeInfo.status);
+  // console.log(changeInfo);
   if (changeInfo.status !== "complete") return;
   const url = tab.url;
   if (!url) return;
@@ -25,7 +25,7 @@ chrome.tabs.onUpdated.addListener(function (
 
   msgTimeout = setTimeout(() => {
     return chrome.tabs.sendMessage(tabId, message);
-  }, 500);
+  }, 1000);
 });
 
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
