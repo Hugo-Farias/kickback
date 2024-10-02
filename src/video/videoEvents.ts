@@ -32,6 +32,7 @@ const setTime = () => {
     [currentId]: {
       ...storedTimestamp,
       curr: currentTime,
+      total: currentVideo.duration,
     },
   };
 
@@ -61,6 +62,8 @@ export const onSeek = () => {
 export const resume = () => {
   clearInterval(intervals.resume);
   if (!data[currentId]) return;
+
+  console.log(data[currentId]);
 
   data = {
     ...data,

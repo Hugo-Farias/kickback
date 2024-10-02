@@ -25,7 +25,7 @@ chrome.tabs.onUpdated.addListener(function (
 
   msgTimeout = setTimeout(() => {
     return chrome.tabs.sendMessage(tabId, message);
-  }, 1000);
+  }, 500);
 });
 
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
