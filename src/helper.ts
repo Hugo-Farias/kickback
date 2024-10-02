@@ -1,4 +1,4 @@
-import { StoredStamps, Timestamp } from "./typeDef.ts";
+import { StoredStamps } from "./typeDef.ts";
 
 const storageKey = "kbTimestamps";
 
@@ -48,18 +48,6 @@ export const getIdFromUrl = (url: string) => {
   const id = urlParts[urlParts.length - 1];
   if (id.length < 8) return null;
   return id;
-};
-
-export const getTimestamp = (id: string | null): Timestamp | null => {
-  if (!id) return null;
-  const data = localStorage.getItem(storageKey);
-
-  if (!data) return null;
-
-  const parsedData: StoredStamps = JSON.parse(data);
-
-  // Check if id is valid and if it exists return the timestamp else return null
-  return parsedData[id] ?? null;
 };
 
 export const getData = (): StoredStamps => {
