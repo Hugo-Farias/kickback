@@ -38,6 +38,7 @@ chrome.runtime.onMessage.addListener(() => {
 
       const color = "#53FC18";
 
+      // Adds progress bar to video link thumbnails
       div.style.position = "absolute";
       div.style.height = "3px";
       div.style.width = "100%";

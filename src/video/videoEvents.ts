@@ -63,8 +63,6 @@ export const resume = () => {
   clearInterval(intervals.resume);
   if (!data[currentId]) return;
 
-  console.log(data[currentId]);
-
   data = {
     ...data,
     [currentId]: {
