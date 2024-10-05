@@ -61,6 +61,7 @@ export const onSeek = () => {
 
 export const resume = () => {
   clearInterval(intervals.resume);
+  console.log(data);
   if (!data[currentId]) return;
 
   data = {
@@ -90,19 +91,16 @@ export const addEvent = (
   element.addEventListener(trigger, execute);
 };
 
-const dataOverLimit = (limit: number) => {
-  const output = Object.keys(data).length;
-  return limit <= output;
-};
-
 export const deleteOldFromData = (amount: number) => {
-  if (!dataOverLimit(amount)) return null;
+  const dataKeys = Object.keys(data);
 
-  const keys = Object.keys(data).sort(
+  if (!(dataKeys.length < amount * 2)) return null;
+
+  const keys = dataKeys.sort(
     (a, b) => data[a].storageTime - data[b].storageTime,
   );
 
-  for (let i = 0; i < Math.ceil(amount / 2); i++) {
+  for (let i = 0; i < Math.ceil(amount); i++) {
     delete data[keys[i]];
   }
 };

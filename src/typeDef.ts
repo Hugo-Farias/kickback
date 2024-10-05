@@ -13,9 +13,9 @@ export type Timestamp = {
   storageTime: number;
 };
 
-// export type LocalStamps = {
-//   timestamps: Timestamp;
-//   lookup: Set<string>;
-// };
+export type oldStamps = {
+  timestamps: { [key: string]: Timestamp };
+  lookup: string[];
+};
 
 export type StoredStamps = { [key: string]: Timestamp };

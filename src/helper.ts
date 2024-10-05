@@ -1,15 +1,17 @@
-import { StoredStamps } from "./typeDef.ts";
+import { oldStamps, StoredStamps } from "./typeDef.ts";
 
-const storageKey = "kbTimestamps";
+const storageKey = "kb2stamps";
+const oldKey = "kbTimestamps";
 
-type ElementReturnType<T extends Element, L extends boolean> = L extends true
-  ? NodeListOf<T> | null
-  : T | null;
+type ElementReturnType<
+  T extends Element,
+  L extends boolean = false,
+> = L extends true ? NodeListOf<T> : T;
 
-export const waitForElement = <T extends Element, L extends boolean>(
+export const waitForElement = <T extends Element, L extends boolean = false>(
   selector: string,
   getList: L,
-): Promise<ElementReturnType<T, L>> => {
+): Promise<ElementReturnType<T, L> | null> => {
   let timer: number;
   let clearTimer: number;
   let element: NodeListOf<T> | T | null;
@@ -52,7 +54,16 @@ export const getIdFromUrl = (url: string) => {
 
 export const getData = (): StoredStamps => {
   const data = localStorage.getItem(storageKey);
-  if (!data) return {};
+
+  if (!data) {
+    const oldData: string | null = localStorage.getItem(oldKey);
+    if (oldData) {
+      const oldObj: oldStamps = JSON.parse(oldData);
+      return oldObj.timestamps;
+    }
+    return {};
+  }
+
   return JSON.parse(data);
 };
 
