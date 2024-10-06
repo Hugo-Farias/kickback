@@ -7,7 +7,7 @@ let seekTimeout: number;
 
 export let data: StoredStamps = getData();
 
-const fillData = (): Timestamp => {
+const fillStamp = (): Timestamp => {
   return {
     curr: currentVideo.currentTime,
     total: currentVideo.duration,
@@ -16,7 +16,7 @@ const fillData = (): Timestamp => {
       ?.textContent?.trim(),
     streamer: document.querySelector("#channel-username")?.textContent?.trim(),
     id: currentId,
-    storageTime: Number(Date.now()),
+    storageTime: Date.now(),
   };
 };
 
@@ -25,7 +25,7 @@ const setTime = () => {
 
   if (currentTime < 90 || currentTime > currentVideo.duration - 90) return null;
 
-  const storedTimestamp = data[currentId] ?? fillData();
+  const storedTimestamp = data[currentId] ?? fillStamp();
 
   data = {
     ...data,
@@ -50,7 +50,6 @@ export const onPause = () => {
 
 export const onPlay = () => {
   clearInterval(intervals.play);
-
   intervals.play = setInterval(setTime, 20000);
 };
 
@@ -61,7 +60,6 @@ export const onSeek = () => {
 
 export const resume = () => {
   clearInterval(intervals.resume);
-  console.log(data);
   if (!data[currentId]) return;
 
   data = {
@@ -94,7 +92,7 @@ export const addEvent = (
 export const deleteOldFromData = (amount: number) => {
   const dataKeys = Object.keys(data);
 
-  if (!(dataKeys.length < amount * 2)) return null;
+  if (!(dataKeys.length > amount * 2)) return null;
 
   const keys = dataKeys.sort(
     (a, b) => data[a].storageTime - data[b].storageTime,
