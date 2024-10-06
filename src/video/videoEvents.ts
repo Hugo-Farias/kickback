@@ -94,11 +94,13 @@ export const deleteOldFromData = (amount: number) => {
 
   if (!(dataKeys.length > amount * 2)) return null;
 
-  const keys = dataKeys.sort(
-    (a, b) => data[a].storageTime - data[b].storageTime,
-  );
+  const keys = dataKeys
+    .sort((a, b) => data[b].storageTime - data[a].storageTime)
+    .reverse();
 
   for (let i = 0; i < Math.ceil(amount); i++) {
     delete data[keys[i]];
   }
+
+  console.log(data);
 };

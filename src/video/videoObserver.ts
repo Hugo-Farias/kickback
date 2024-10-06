@@ -14,7 +14,7 @@ export let currentId: string;
 export let currentVideo: HTMLVideoElement;
 
 // If data has double than n elements, delete half by oldest to newest
-deleteOldFromData(150);
+deleteOldFromData(14);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
