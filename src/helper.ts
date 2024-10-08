@@ -1,6 +1,6 @@
 import { oldStamps, StoredStamps } from "./typeDef.ts";
 
-const storageKey = "dummy";
+const storageKey = "kb2stamps";
 const oldKey = "kbTimestamps";
 
 type ElementReturnType<
@@ -64,11 +64,11 @@ export const getData = (): StoredStamps => {
     return {};
   }
 
+  localStorage.removeItem(oldKey);
+
   return JSON.parse(data);
 };
 
 export const storeData = (data: StoredStamps) => {
-  return null;
-  console.log("storeData");
   localStorage.setItem(storageKey, JSON.stringify(data));
 };

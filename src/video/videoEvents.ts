@@ -58,6 +58,12 @@ export const onSeek = () => {
   seekTimeout = setTimeout(setTime, 2000);
 };
 
+export const onClick = () => {
+  if (currentVideo.paused)
+    currentVideo.play().catch((e) => console.error("video play:", e));
+  else currentVideo.pause();
+};
+
 export const resume = () => {
   clearInterval(intervals.resume);
   if (!data[currentId]) return;
@@ -92,7 +98,7 @@ export const addEvent = (
 export const deleteOldFromData = (amount: number) => {
   const dataKeys = Object.keys(data);
 
-  if (!(dataKeys.length > amount * 2)) return null;
+  if (dataKeys.length < amount * 2) return null;
 
   const keys = dataKeys
     .sort((a, b) => data[b].storageTime - data[a].storageTime)
@@ -101,6 +107,4 @@ export const deleteOldFromData = (amount: number) => {
   for (let i = 0; i < Math.ceil(amount); i++) {
     delete data[keys[i]];
   }
-
-  console.log(data);
 };

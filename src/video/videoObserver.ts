@@ -8,13 +8,14 @@ import {
   onSeek,
   resume,
   deleteOldFromData,
+  onClick,
 } from "./videoEvents.ts";
 
 export let currentId: string;
 export let currentVideo: HTMLVideoElement;
 
 // If data has double than n elements, delete half by oldest to newest
-deleteOldFromData(14);
+deleteOldFromData(100);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: Message) => {
@@ -36,6 +37,9 @@ chrome.runtime.onMessage.addListener((message: Message) => {
 
     // Clear intervals on pause
     addEvent(video, "pause", onPause);
+
+    // Set click event listenter on video;
+    addEvent(video, "click", onClick);
 
     // init
     resume();
