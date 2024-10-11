@@ -48,13 +48,24 @@ const Settings = function () {
           "flex w-full flex-col justify-center rounded-md bg-white/10 py-10"
         }
       >
-        <div className={"mx-auto space-y-3 text-xl"}>
-          {settingsValues.map((value, index) => {
+        <div className={"mx-auto space-y-2 text-xl"}>
+          {settingsValues.map((value) => {
             return (
-              <div className={"flex gap-6"}>
-                <input type={"checkbox"} aria-label={value.label} />
-                <label key={index}>{value.label}</label>
-              </div>
+              <label
+                className={
+                  "flex items-center gap-6 rounded-md px-8 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
+                }
+                htmlFor={value.id}
+                key={value.id}
+              >
+                <input
+                  className={"size-5"}
+                  type={"checkbox"}
+                  aria-label={value.label}
+                  id={value.id}
+                />
+                {value.label}
+              </label>
             );
           })}
         </div>
