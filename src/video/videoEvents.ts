@@ -7,6 +7,8 @@ let seekTimeout: number;
 
 export let data: StoredStamps = getData();
 
+const timeClause = 90;
+
 const fillStamp = (): Timestamp => {
   return {
     curr: currentVideo.currentTime,
@@ -23,7 +25,11 @@ const fillStamp = (): Timestamp => {
 const setTime = () => {
   const currentTime = currentVideo.currentTime;
 
-  if (currentTime < 90 || currentTime > currentVideo.duration - 90) return null;
+  if (
+    currentTime < timeClause ||
+    currentTime > currentVideo.duration - timeClause
+  )
+    return null;
 
   const storedTimestamp = data[currentId] ?? fillStamp();
 
@@ -50,7 +56,7 @@ export const onPause = () => {
 
 export const onPlay = () => {
   clearInterval(intervals.play);
-  intervals.play = setInterval(setTime, 20000);
+  intervals.play = setInterval(setTime, 2000);
 };
 
 export const onSeek = () => {
@@ -65,8 +71,15 @@ export const onClick = () => {
 };
 
 export const resume = () => {
-  clearInterval(intervals.resume);
-  if (!data[currentId]) return;
+  if (!data[currentId]) {
+    // intervals.play = setInterval(setTime, 2000);
+    currentVideo.currentTime = currentVideo.currentTime - 1;
+    return null;
+  }
+  if (data[currentId].curr < timeClause) {
+    delete data[currentId];
+    return null;
+  }
 
   data = {
     ...data,
@@ -78,12 +91,12 @@ export const resume = () => {
 
   intervals.resume = setInterval(() => {
     clearTimeout(seekTimeout);
-    if (currentVideo.currentTime >= 90) {
+    if (currentVideo.currentTime >= timeClause) {
       clearInterval(intervals.resume);
       return null;
     }
     currentVideo.currentTime = data[currentId].curr;
-  }, 500);
+  }, 1000);
 };
 
 export const addEvent = (

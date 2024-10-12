@@ -18,19 +18,15 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
 
   // Wait for element, check for element in 1 second intervals
   return new Promise((resolve) => {
-    // console.log('waiting for element "' + selector + '"');
-
     timer = setInterval(() => {
       if (getList) {
         const temp = document.querySelectorAll<T>(selector);
         if (temp.length > 0) element = temp;
       } else {
         element = document.querySelector<T>(selector);
-        // console.log("element =>", element);
       }
 
       if (element) {
-        // console.log(`"${selector}" element found`);
         clearInterval(timer);
         clearTimeout(clearTimer);
         resolve(element as ElementReturnType<T, L>);
@@ -38,7 +34,6 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
     }, 1000);
     // Timeout after 30 seconds
     clearTimer = setTimeout(() => {
-      // console.log(`"${selector}" element not found`);
       clearInterval(timer);
       resolve(null);
     }, 30000);
