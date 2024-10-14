@@ -1,45 +1,50 @@
 import { OptionsT } from "./typeDef";
+import { ChangeEvent, useState } from "react";
 
-const settingsValues: OptionsT[] = [
+const settingsInfo: OptionsT[] = [
   {
     id: "resume",
     label: "Resume VODs",
     type: "checkbox",
-    value: true,
+    checked: true,
   },
   {
     id: "progressBar",
-    label: "Show progress bar on 'Recent broadcasts' thumbnail previews",
+    label: "Show progress bar on 'More Videos' section thumbnails",
     type: "checkbox",
-    value: true,
-  },
-  {
-    id: "sidebarState",
-    label: "Auto-close recommended sidebar",
-    type: "checkbox",
-    value: false,
-  },
-  {
-    id: "chatState",
-    label: "Auto-close chat",
-    type: "checkbox",
-    value: false,
+    checked: true,
   },
   {
     id: "pausePlayClick",
     label: "Pause/Play by clicking on video frame",
     type: "checkbox",
-    value: false,
+    checked: false,
   },
 ];
 
+const initialSettings = settingsInfo.reduce((prev, curr) => {
+  return { ...prev, [curr.id]: curr.checked };
+}, {});
+
+// console.log(initialSettings);
+
 const Settings = function () {
-  console.log(settingsValues);
+  const [settings, setSettings] = useState<{ [key: string]: boolean }>(
+    initialSettings,
+  );
+
+  const onCheck = (e: ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+
+    console.log(target.id, target.checked);
+
+    setSettings({ ...settings, [target.id]: target.checked });
+  };
 
   return (
     <div
       className={
-        "font-inter flex h-dvh w-full flex-col items-center gap-6 bg-[#141517] p-10 text-[#fdfdfd]"
+        "flex h-dvh w-full flex-col items-center gap-6 bg-[#141517] p-10 font-inter text-[#fdfdfd]"
       }
     >
       <h1 className={"text-3xl font-bold tracking-wide"}>Kickback Settings</h1>
@@ -48,12 +53,12 @@ const Settings = function () {
           "flex w-full flex-col justify-center rounded-md bg-white/10 py-10"
         }
       >
-        <div className={"mx-auto space-y-2 text-xl"}>
-          {settingsValues.map((value) => {
+        <form className={"mx-auto space-y-2 text-xl"}>
+          {settingsInfo.map((value) => {
             return (
               <label
                 className={
-                  "flex items-center gap-6 rounded-md px-8 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
+                  "flex items-center gap-6 rounded-md px-8 py-2 transition-colors hover:bg-black/30"
                 }
                 htmlFor={value.id}
                 key={value.id}
@@ -61,14 +66,16 @@ const Settings = function () {
                 <input
                   className={"size-5"}
                   type={"checkbox"}
+                  checked={settings[value.id]}
                   aria-label={value.label}
                   id={value.id}
+                  onChange={onCheck}
                 />
                 {value.label}
               </label>
             );
           })}
-        </div>
+        </form>
       </div>
     </div>
   );

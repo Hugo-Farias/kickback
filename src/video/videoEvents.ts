@@ -1,11 +1,11 @@
-import { getData, storeData } from "../helper.ts";
+import { getDataFromStorage, storeData } from "../helper.ts";
 import { StoredStamps, Timestamp } from "../typeDef.ts";
 import { currentId, currentVideo } from "./videoObserver.ts";
 
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
 
-export let data: StoredStamps = getData();
+export let data: StoredStamps = getDataFromStorage();
 
 const timeClause = 90;
 
@@ -72,7 +72,6 @@ export const onClick = () => {
 
 export const resume = () => {
   if (!data[currentId]) {
-    // intervals.play = setInterval(setTime, 2000);
     currentVideo.currentTime = currentVideo.currentTime - 1;
     return null;
   }

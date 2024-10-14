@@ -47,7 +47,7 @@ export const getIdFromUrl = (url: string) => {
   return id;
 };
 
-export const getData = (): StoredStamps => {
+export const getDataFromStorage = (): StoredStamps => {
   const data = localStorage.getItem(storageKey);
 
   if (!data) {

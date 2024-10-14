@@ -26,5 +26,5 @@ export type OptionsT = {
   id: string;
   label: string;
   type: "checkbox" | "number";
-  value: boolean;
+  checked: boolean;
 };
