@@ -1,13 +1,13 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
-export type OptionsT = {
-  id: "resume" | "progressBar" | "pausePlayClick";
-  label: string;
-  type: "checkbox" | "number";
-  checked: boolean;
-};
+// type OptionsT = {
+//   id: string;
+//   label: string;
+//   type: "checkbox" | "number";
+//   checked: boolean;
+// };
 
-const settingsInfo: OptionsT[] = [
+const settingsRender = [
   {
     id: "resume",
     label: "Resume VODs",
@@ -26,17 +26,19 @@ const settingsInfo: OptionsT[] = [
     type: "checkbox",
     checked: false,
   },
-];
+] as const;
 
-const initialSettings: Record<OptionsT["id"], boolean> = settingsInfo.reduce(
+type SettingsValuesT = Record<(typeof settingsRender)[number]["id"], boolean>;
+
+const initialValues: SettingsValuesT = settingsRender.reduce(
   (prev, curr) => ({ ...prev, [curr.id]: curr.checked }),
-  {} as Record<OptionsT["id"], boolean>,
+  {} as SettingsValuesT,
 );
 
+console.log(initialValues);
+
 const Settings = function () {
-  const [settings, setSettings] = useState<{ [key: string]: boolean }>(
-    initialSettings,
-  );
+  const [settings, setSettings] = useState<SettingsValuesT>(initialValues);
 
   useEffect(() => {
     console.clear();
@@ -64,7 +66,7 @@ const Settings = function () {
         }
       >
         <form className={"mx-auto space-y-2 text-xl"}>
-          {settingsInfo.map((value) => {
+          {settingsRender.map((value) => {
             return (
               <label
                 className={
