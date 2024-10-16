@@ -32,10 +32,8 @@ type SettingsValuesT = Record<(typeof settingsRender)[number]["id"], boolean>;
 
 const initialValues: SettingsValuesT = settingsRender.reduce(
   (prev, curr) => ({ ...prev, [curr.id]: curr.checked }),
-  {} as SettingsValuesT,
-);
-
-console.log(initialValues);
+  {},
+) as SettingsValuesT;
 
 const Settings = function () {
   const [settings, setSettings] = useState<SettingsValuesT>(initialValues);
