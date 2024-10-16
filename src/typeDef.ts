@@ -19,12 +19,3 @@ export type oldStamps = {
 };
 
 export type StoredStamps = { [key: string]: Timestamp };
-
-// Settings
-
-export type OptionsT = {
-  id: string;
-  label: string;
-  type: "checkbox" | "number";
-  checked: boolean;
-};

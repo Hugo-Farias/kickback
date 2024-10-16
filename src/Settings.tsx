@@ -1,5 +1,11 @@
-import { OptionsT } from "./typeDef";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+
+export type OptionsT = {
+  id: "resume" | "progressBar" | "pausePlayClick";
+  label: string;
+  type: "checkbox" | "number";
+  checked: boolean;
+};
 
 const settingsInfo: OptionsT[] = [
   {
@@ -22,23 +28,27 @@ const settingsInfo: OptionsT[] = [
   },
 ];
 
-const initialSettings = settingsInfo.reduce((prev, curr) => {
-  return { ...prev, [curr.id]: curr.checked };
-}, {});
-
-// console.log(initialSettings);
+const initialSettings: Record<OptionsT["id"], boolean> = settingsInfo.reduce(
+  (prev, curr) => ({ ...prev, [curr.id]: curr.checked }),
+  {} as Record<OptionsT["id"], boolean>,
+);
 
 const Settings = function () {
   const [settings, setSettings] = useState<{ [key: string]: boolean }>(
     initialSettings,
   );
 
+  useEffect(() => {
+    console.clear();
+    console.log(settings);
+  }, [settings]);
+
   const onCheck = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
 
-    console.log(target.id, target.checked);
-
-    setSettings({ ...settings, [target.id]: target.checked });
+    setSettings((prev) => {
+      return { ...prev, [target.id]: target.checked };
+    });
   };
 
   return (
@@ -58,14 +68,14 @@ const Settings = function () {
             return (
               <label
                 className={
-                  "flex items-center gap-6 rounded-md px-8 py-2 transition-colors hover:bg-black/30"
+                  "flex items-center gap-6 rounded-md px-8 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
                 }
                 htmlFor={value.id}
                 key={value.id}
               >
                 <input
                   className={"size-5"}
-                  type={"checkbox"}
+                  type={value.type}
                   checked={settings[value.id]}
                   aria-label={value.label}
                   id={value.id}
