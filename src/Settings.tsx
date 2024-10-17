@@ -7,6 +7,8 @@ import { ChangeEvent, useEffect, useState } from "react";
 //   checked: boolean;
 // };
 
+const settingsStorageLabel = "settings";
+
 const settingsRender = [
   {
     id: "resume",
@@ -35,18 +37,28 @@ const initialValues: SettingsValuesT = settingsRender.reduce(
   {},
 ) as SettingsValuesT;
 
+let storeSettingsTimeout: number;
+
 const Settings = function () {
-  const [settings, setSettings] = useState<SettingsValuesT>(initialValues);
+  const [options, setOptions] = useState<SettingsValuesT>(initialValues);
 
   useEffect(() => {
-    console.clear();
-    console.log(settings);
-  }, [settings]);
+    chrome.storage.local.get([settingsStorageLabel]).then((value) => {
+      setOptions(value[settingsStorageLabel]);
+    });
+  }, []);
+
+  useEffect(() => {
+    clearTimeout(storeSettingsTimeout);
+    storeSettingsTimeout = setTimeout(() => {
+      chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
+    }, 500);
+  }, [options]);
 
   const onCheck = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
 
-    setSettings((prev) => {
+    setOptions((prev) => {
       return { ...prev, [target.id]: target.checked };
     });
   };
@@ -76,7 +88,7 @@ const Settings = function () {
                 <input
                   className={"size-5"}
                   type={value.type}
-                  checked={settings[value.id]}
+                  checked={options[value.id]}
                   aria-label={value.label}
                   id={value.id}
                   onChange={onCheck}
