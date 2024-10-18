@@ -1,9 +1,3 @@
-export type Message = {
-  type: "urlChanged";
-  url: string;
-  id: string | null;
-};
-
 export type Timestamp = {
   curr: number;
   total: number;

@@ -1,13 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { getSettings } from "./helper.ts";
 
-// type OptionsT = {
-//   id: string;
-//   label: string;
-//   type: "checkbox" | "number";
-//   checked: boolean;
-// };
-
 const settingsStorageLabel = "settings";
 
 const settingsRender = [
@@ -25,7 +18,10 @@ const settingsRender = [
   },
 ] as const;
 
-type SettingsValuesT = Record<(typeof settingsRender)[number]["id"], boolean>;
+export type SettingsValuesT = Record<
+  (typeof settingsRender)[number]["id"],
+  boolean
+>;
 
 const initialValues: SettingsValuesT = settingsRender.reduce(
   (prev, curr) => ({ ...prev, [curr.id]: curr.checked }),
@@ -38,6 +34,7 @@ const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(initialValues);
 
   // Comment chrome.storage calls for localhost to work during development
+
   useEffect(() => {
     getSettings().then((value) => {
       if (value) setOptions(value);
@@ -68,7 +65,7 @@ const Settings = function () {
       <h1 className={"text-3xl font-bold tracking-wide"}>Kickback Settings</h1>
       <div
         className={
-          "flex w-full flex-col justify-center rounded-md bg-white/10 py-10"
+          "flex flex-col justify-center rounded-md bg-white/10 px-16 py-10"
         }
       >
         <form className={"mx-auto space-y-2 text-xl"}>

@@ -1,7 +1,15 @@
-import { Message } from "../typeDef";
-import { getIdFromUrl } from "../helper.ts";
+import { getIdFromUrl, getSettings } from "../helper.ts";
+import { SettingsValuesT } from "../Settings.tsx";
+
+export type MessageType = {
+  type: "urlChanged";
+  url: string;
+  id: string | null;
+  settings: SettingsValuesT;
+};
 
 let msgTimeout: number;
+let message: MessageType;
 
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (
@@ -14,17 +22,20 @@ chrome.tabs.onUpdated.addListener(function (
   if (!url) return;
   if (!url.includes("videos")) return;
 
-  const message: Message = {
-    type: "urlChanged",
-    url: url,
-    id: getIdFromUrl(url) + "",
-  };
+  getSettings().then((settings) => {
+    message = {
+      type: "urlChanged",
+      url: url,
+      id: getIdFromUrl(url) || null,
+      settings: settings,
+    };
 
-  if (msgTimeout) clearTimeout(msgTimeout);
+    if (msgTimeout) clearTimeout(msgTimeout);
 
-  msgTimeout = setTimeout(() => {
-    return chrome.tabs.sendMessage(tabId, message);
-  }, 500);
+    msgTimeout = setTimeout(() => {
+      return chrome.tabs.sendMessage(tabId, message);
+    }, 500);
+  });
 });
 
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {

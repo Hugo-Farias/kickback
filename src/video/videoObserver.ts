@@ -1,5 +1,5 @@
-import { Message } from "../typeDef.ts";
-import { getSettings, waitForElement } from "../helper.ts";
+import { MessageType } from "../background/background.ts";
+import { waitForElement } from "../helper.ts";
 import {
   addEvent,
   removeAllIntervalls,
@@ -15,15 +15,18 @@ export let currentId: string;
 export let currentVideo: HTMLVideoElement;
 
 // If data has double than n elements, delete half by oldest to newest
+
 deleteOldFromData(100);
 
 // Receive message from background and trigger every url updated event
-chrome.runtime.onMessage.addListener((message: Message) => {
+chrome.runtime.onMessage.addListener((message: MessageType) => {
   const newId = message.id;
   if (newId === currentId) return null;
   if (!newId) return null;
   removeAllIntervalls();
   currentId = newId;
+  // getSettings().then((value) => console.log(value));
+  console.log(message.settings);
 
   waitForElement<HTMLVideoElement>("video", false).then((video) => {
     if (!video) return null;
@@ -35,15 +38,14 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     // Set intervals on seek
     addEvent(video, "seeked", onSeek);
 
-    getSettings().then((v) => {
-      console.log(v);
-    });
-
     // Clear intervals on pause
     addEvent(video, "pause", onPause);
 
-    // Set click event listenter on video;
-    addEvent(video, "click", onClick);
+    // Check for settings
+    if (message.settings && message.settings.pausePlayClick) {
+      // Set click event listenter on video;
+      addEvent(video, "click", onClick);
+    }
 
     // init
     resume();

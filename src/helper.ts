@@ -1,4 +1,5 @@
 import { oldStamps, StoredStamps } from "./typeDef.ts";
+import { SettingsValuesT } from "./Settings.tsx";
 
 const storageKey = "kb2stamps";
 const oldKey = "kbTimestamps";
@@ -70,7 +71,7 @@ export const storeData = (data: StoredStamps) => {
 
 const settingsStorageLabel = "settings";
 
-export const getSettings = () => {
+export const getSettings = (): Promise<SettingsValuesT> => {
   return Promise.resolve(
     chrome.storage.local
       .get([settingsStorageLabel])
