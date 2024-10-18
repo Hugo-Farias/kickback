@@ -19,7 +19,7 @@ const settingsRender = [
   },
   {
     id: "pausePlayClick",
-    label: "Play/Pause by clicking inside video frame",
+    label: "Play/Pause by clicking inside video",
     type: "checkbox",
     checked: false,
   },

@@ -38,6 +38,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     getSettings().then((v) => {
       console.log(v);
     });
+
     // Clear intervals on pause
     addEvent(video, "pause", onPause);
 
