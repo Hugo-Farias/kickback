@@ -67,3 +67,13 @@ export const getDataFromStorage = (): StoredStamps => {
 export const storeData = (data: StoredStamps) => {
   localStorage.setItem(storageKey, JSON.stringify(data));
 };
+
+const settingsStorageLabel = "settings";
+
+export const getSettings = () => {
+  return Promise.resolve(
+    chrome.storage.local
+      .get([settingsStorageLabel])
+      .then((value) => value[settingsStorageLabel]),
+  );
+};

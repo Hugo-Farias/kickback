@@ -1,5 +1,5 @@
 import { Message } from "../typeDef.ts";
-import { waitForElement } from "../helper.ts";
+import { getSettings, waitForElement } from "../helper.ts";
 import {
   addEvent,
   removeAllIntervalls,
@@ -35,6 +35,9 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     // Set intervals on seek
     addEvent(video, "seeked", onSeek);
 
+    getSettings().then((v) => {
+      console.log(v);
+    });
     // Clear intervals on pause
     addEvent(video, "pause", onPause);
 

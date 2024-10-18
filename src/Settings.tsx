@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
+import { getSettings } from "./helper.ts";
 
 // type OptionsT = {
 //   id: string;
@@ -11,12 +12,6 @@ const settingsStorageLabel = "settings";
 
 const settingsRender = [
   {
-    id: "resume",
-    label: "Resume VODs",
-    type: "checkbox",
-    checked: true,
-  },
-  {
     id: "progressBar",
     label: "Show progress bar on 'More Videos' section thumbnails",
     type: "checkbox",
@@ -24,7 +19,7 @@ const settingsRender = [
   },
   {
     id: "pausePlayClick",
-    label: "Pause/Play by clicking on video frame",
+    label: "Play/Pause by clicking inside video frame",
     type: "checkbox",
     checked: false,
   },
@@ -42,9 +37,10 @@ let storeSettingsTimeout: number;
 const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(initialValues);
 
+  // Comment chrome.storage calls for localhost to work during development
   useEffect(() => {
-    chrome.storage.local.get([settingsStorageLabel]).then((value) => {
-      setOptions(value[settingsStorageLabel]);
+    getSettings().then((value) => {
+      if (value) setOptions(value);
     });
   }, []);
 
@@ -52,7 +48,7 @@ const Settings = function () {
     clearTimeout(storeSettingsTimeout);
     storeSettingsTimeout = setTimeout(() => {
       chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
-    }, 500);
+    }, 200);
   }, [options]);
 
   const onCheck = (e: ChangeEvent<HTMLInputElement>) => {
