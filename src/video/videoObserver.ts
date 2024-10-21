@@ -25,8 +25,6 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
   if (!newId) return null;
   removeAllIntervalls();
   currentId = newId;
-  // getSettings().then((value) => console.log(value));
-  console.log(message.settings);
 
   waitForElement<HTMLVideoElement>("video", false).then((video) => {
     if (!video) return null;

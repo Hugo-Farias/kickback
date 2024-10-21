@@ -42,7 +42,7 @@ const setTime = () => {
     },
   };
 
-  storeData(data);
+  storeData(data[currentId]);
 };
 export const removeAllIntervalls = () => {
   for (const key of Object.keys(intervals)) {
@@ -56,7 +56,7 @@ export const onPause = () => {
 
 export const onPlay = () => {
   clearInterval(intervals.play);
-  intervals.play = setInterval(setTime, 2000);
+  intervals.play = setInterval(setTime, 20000);
 };
 
 export const onSeek = () => {

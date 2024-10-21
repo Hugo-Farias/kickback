@@ -1,4 +1,4 @@
-import { oldStamps, StoredStamps } from "./typeDef.ts";
+import { oldStamps, StoredStamps, Timestamp } from "./typeDef.ts";
 import { SettingsValuesT } from "./Settings.tsx";
 
 const storageKey = "kb2stamps";
@@ -65,8 +65,11 @@ export const getDataFromStorage = (): StoredStamps => {
   return JSON.parse(data);
 };
 
-export const storeData = (data: StoredStamps) => {
-  localStorage.setItem(storageKey, JSON.stringify(data));
+export const storeData = (data: Timestamp) => {
+  localStorage.setItem(
+    storageKey,
+    JSON.stringify({ ...getDataFromStorage(), [data.id]: data }),
+  );
 };
 
 const settingsStorageLabel = "settings";

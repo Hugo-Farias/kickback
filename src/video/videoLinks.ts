@@ -1,10 +1,11 @@
-import { getIdFromUrl, waitForElement } from "../helper.ts";
+import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
 import { currentId } from "./videoObserver.ts";
-import { data } from "./videoEvents.ts";
 import { MessageType } from "../background/background.ts";
 
 chrome.runtime.onMessage.addListener((message: MessageType) => {
   if (message.settings && !message.settings.progressBar) return null;
+
+  const data = getDataFromStorage();
 
   waitForElement<HTMLAnchorElement, true>(
     ".grid.h-full.grid-cols-1 > div > a[href]",
