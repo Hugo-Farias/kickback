@@ -1,4 +1,4 @@
-import { getDataFromStorage, storeData } from "../helper.ts";
+import { getDataFromStorage, storeData, storeTimestamp } from "../helper.ts";
 import { StoredStamps, Timestamp } from "../typeDef.ts";
 import { currentId, currentVideo } from "./videoObserver.ts";
 
@@ -42,7 +42,7 @@ const setTime = () => {
     },
   };
 
-  storeData(data[currentId]);
+  storeTimestamp(data[currentId]);
 };
 export const removeAllIntervalls = () => {
   for (const key of Object.keys(intervals)) {
@@ -108,15 +108,18 @@ export const addEvent = (
 };
 
 export const deleteOldFromData = (amount: number) => {
-  const dataKeys = Object.keys(data);
+  const localData = getDataFromStorage();
+  const dataKeys = Object.keys(localData);
 
   if (dataKeys.length < amount * 2) return null;
 
   const keys = dataKeys
-    .sort((a, b) => data[b].storageTime - data[a].storageTime)
+    .sort((a, b) => localData[b].storageTime - localData[a].storageTime)
     .reverse();
 
   for (let i = 0; i < Math.ceil(amount); i++) {
-    delete data[keys[i]];
+    delete localData[keys[i]];
   }
+
+  storeData(localData);
 };

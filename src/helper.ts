@@ -65,11 +65,15 @@ export const getDataFromStorage = (): StoredStamps => {
   return JSON.parse(data);
 };
 
-export const storeData = (data: Timestamp) => {
+export const storeTimestamp = (data: Timestamp) => {
   localStorage.setItem(
     storageKey,
     JSON.stringify({ ...getDataFromStorage(), [data.id]: data }),
   );
+};
+
+export const storeData = (data: StoredStamps) => {
+  localStorage.setItem(storageKey, JSON.stringify(data));
 };
 
 const settingsStorageLabel = "settings";
