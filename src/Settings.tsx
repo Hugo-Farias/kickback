@@ -39,10 +39,6 @@ const Settings = function () {
     getSettings().then((value) => {
       if (value) setOptions(value);
     });
-    console.log(chrome.i18n.getMessage("title", ["test"]));
-    chrome.i18n.detectLanguage("title").then((lang) => {
-      console.log(lang);
-    });
   }, []);
 
   useEffect(() => {

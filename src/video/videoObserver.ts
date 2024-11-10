@@ -20,7 +20,6 @@ deleteOldFromData(100);
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: MessageType) => {
   const newId = message.id;
-  console.log("observer", newId);
   if (newId === currentId) return null;
   if (!newId) return null;
   removeAllIntervalls();
