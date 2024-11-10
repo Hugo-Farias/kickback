@@ -1,0 +1,14 @@
+{
+  "extDescription": {
+    "message": "Guarda automáticamente los videos de kick.com para que se reanuden desde donde los dejaste"
+  },
+  "nowPlaying": {
+    "message": "Reproduciendo ahora"
+  },
+  "settingsProgressBar": {
+    "message": "Mostrar barra de progreso en las miniaturas de la sección 'Más videos'"
+  },
+  "settingsPausePlayClick": {
+    "message": "Reproducir/Pausar al hacer clic dentro del video"
+  }
+}

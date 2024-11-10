@@ -6,13 +6,13 @@ const settingsStorageLabel = "settings";
 const settingsRender = [
   {
     id: "progressBar",
-    label: "Show progress bar on 'More Videos' section thumbnails",
+    label: chrome.i18n.getMessage("settingsProgressBar"),
     type: "checkbox",
     checked: true,
   },
   {
     id: "pausePlayClick",
-    label: "Play/Pause by clicking inside video",
+    label: chrome.i18n.getMessage("settingsPausePlayClick"),
     type: "checkbox",
     checked: false,
   },
@@ -39,7 +39,10 @@ const Settings = function () {
     getSettings().then((value) => {
       if (value) setOptions(value);
     });
-    console.log(chrome.i18n.getMessage("title"));
+    console.log(chrome.i18n.getMessage("title", ["test"]));
+    chrome.i18n.detectLanguage("title").then((lang) => {
+      console.log(lang);
+    });
   }, []);
 
   useEffect(() => {
@@ -66,19 +69,19 @@ const Settings = function () {
       }
     >
       <h1 className={"mx-auto text-center text-3xl font-bold tracking-wide"}>
-        {{ chrome.i18n.getMessage("title") }}
+        {chrome.i18n.getMessage("title")}
       </h1>
       <div
         className={
-          "mx-auto w-full max-w-screen-sm justify-center rounded-md bg-white/10 px-16 py-10"
+          "mx-auto w-full max-w-screen-sm justify-center bg-white/10 py-10"
         }
       >
-        <form className={"mx-auto contain-content"}>
+        <form className={"mx-auto text-lg contain-content"}>
           {settingsRender.map((value) => {
             return (
               <label
                 className={
-                  "flex items-center gap-6 rounded-md px-8 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
+                  "flex items-center justify-center gap-3 px-5 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
                 }
                 htmlFor={value.id}
                 key={value.id}

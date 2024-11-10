@@ -3,7 +3,7 @@
   <head>
     <!--    <link rel="icon" type="image/png" href="./src/assets/logo_16.png" />-->
     <meta name="viewport" charset="UTF-8" />
-    <title>Kick.com Video/VODs Resumer</title>
+    <title>Settings</title>
   </head>
   <body>
     <div id="root"></div>

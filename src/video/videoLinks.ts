@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
         // Adds 'now playing' tag
         nowPlayingTag.className =
           "z-controls absolute rounded bg-[#070809] bg-opacity-80 px-1.5 py-1 text-xs font-semibold top-1.5 right-1.5";
-        nowPlayingTag.textContent = "Now Playing";
+        nowPlayingTag.textContent = chrome.i18n.getMessage("nowPlaying");
         link.appendChild(nowPlayingTag);
       }
 

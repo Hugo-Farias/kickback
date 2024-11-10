@@ -1,6 +1,14 @@
 {
-  "title": {
-    "message": "Kickback Settings",
-    "description": "Kickback Settings"
+  "extDescription": {
+    "message": "Automatically bookmark kick.com videos so they resume from where you left off"
+  },
+  "nowPlaying": {
+    "message": "Now Playing"
+  },
+  "settingsProgressBar": {
+    "message": "Show progress bar on 'More Videos' section thumbnails"
+  },
+  "settingsPausePlayClick": {
+    "message": "Play/Pause by clicking inside video"
   }
 }
