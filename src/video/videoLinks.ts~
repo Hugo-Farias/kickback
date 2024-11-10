@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
 
   const data = getDataFromStorage();
 
-  waitForElement<HTMLAnchorElement, true>("section > div > a[href]", true).then(
+  waitForElement<HTMLAnchorElement, true>(".grid > div > a[href]", true).then(
     (vidLinks) => {
       if (!vidLinks) return null;
 
