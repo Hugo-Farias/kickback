@@ -26,7 +26,7 @@ chrome.tabs.onUpdated.addListener(function (
     message = {
       type: "urlChanged",
       url: url,
-      id: getIdFromUrl(url) || null,
+      id: getIdFromUrl(url),
       settings: settings,
     };
 
@@ -34,7 +34,7 @@ chrome.tabs.onUpdated.addListener(function (
 
     msgTimeout = setTimeout(() => {
       return chrome.tabs.sendMessage(tabId, message);
-    }, 500);
+    }, 100);
   });
 });
 

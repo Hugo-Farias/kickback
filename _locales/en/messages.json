@@ -6,7 +6,7 @@
     "message": "Now Playing"
   },
   "settingsProgressBar": {
-    "message": "Show progress bar on 'More Videos' section thumbnails"
+    "message": "Show progress bar on \"More Videos\" section thumbnails"
   },
   "settingsPausePlayClick": {
     "message": "Play/Pause by clicking inside video"

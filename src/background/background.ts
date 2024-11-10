@@ -34,7 +34,7 @@ chrome.tabs.onUpdated.addListener(function (
 
     msgTimeout = setTimeout(() => {
       return chrome.tabs.sendMessage(tabId, message);
-    }, 500);
+    }, 1000);
   });
 });
 

@@ -40,18 +40,18 @@ const Settings = function () {
 
   // Comment this block of chrome.storage calls so localhost works during development
 
-  useEffect(() => {
-    getSettings().then((value) => {
-      if (value) setOptions(value);
-    });
-  }, []);
-
-  useEffect(() => {
-    clearTimeout(storeSettingsTimeout);
-    storeSettingsTimeout = setTimeout(() => {
-      chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
-    }, 200);
-  }, [options]);
+  // useEffect(() => {
+  //   getSettings().then((value) => {
+  //     if (value) setOptions(value);
+  //   });
+  // }, []);
+  //
+  // useEffect(() => {
+  //   clearTimeout(storeSettingsTimeout);
+  //   storeSettingsTimeout = setTimeout(() => {
+  //     chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
+  //   }, 200);
+  // }, [options]);
 
   // End
 
