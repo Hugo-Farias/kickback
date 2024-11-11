@@ -44,7 +44,7 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
 export const getIdFromUrl = (url: string) => {
   const urlParts = url.split("/");
   const id = urlParts[urlParts.length - 1];
-  if (id.length < 8) return null;
+  if (!urlParts[urlParts.length - 2].includes("videos")) return null;
   return id;
 };
 
