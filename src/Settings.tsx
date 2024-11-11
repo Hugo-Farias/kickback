@@ -7,17 +7,15 @@ const settingsStorageLabel = "settings";
 const settingsRender = [
   {
     id: "progressBar",
-    label:
-      chrome.i18n.getMessage("settingsProgressBar") ||
-      "Show progress bar on 'More Videos' section thumbnails",
+    label: chrome.i18n.getMessage("settingsProgressBar"),
+    // "Show progress bar on 'More Videos' section thumbnails",
     type: "checkbox",
     checked: true,
   },
   {
     id: "pausePlayClick",
-    label:
-      chrome.i18n.getMessage("settingsPausePlayClick") ||
-      "Play/Pause by clicking inside video",
+    label: chrome.i18n.getMessage("settingsPausePlayClick"),
+    // "Play/Pause by clicking inside video",
     type: "checkbox",
     checked: false,
   },
@@ -84,7 +82,7 @@ const Settings = function () {
               return (
                 <label
                   className={
-                    "flex items-center gap-3 px-10 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
+                    "flex gap-3 px-10 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
                   }
                   htmlFor={value.id}
                   key={value.id}
@@ -102,6 +100,16 @@ const Settings = function () {
             })}
           </form>
         </div>
+        <footer className={"text-xs"}>
+          {chrome.i18n.getMessage("translationMsg")}{" "}
+          <a
+            className={"text-blue-500 underline hover:text-blue-200"}
+            target={"_blank"}
+            href={chrome.i18n.getMessage("translatorLink")}
+          >
+            {chrome.i18n.getMessage("translator")}
+          </a>
+        </footer>
       </div>
     </div>
   );

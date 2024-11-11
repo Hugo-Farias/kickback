@@ -11,5 +11,13 @@
   "settingsPausePlayClick": {
     "message": "Воспроизведение/пауза при нажатии внутри видео"
   },
-  "translator": { "message": "Переведено Граго" }
+  "translationMsg": {
+    "message": "Translated by"
+  },
+  "translator": {
+    "message": "yukazi"
+  },
+  "translatorLink": {
+    "message": "https://kick.com/yukazi"
+  }
 }

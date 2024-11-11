@@ -10,5 +10,11 @@
   },
   "settingsPausePlayClick": {
     "message": "Play/Pause by clicking inside video"
+  },
+  "translationMsg": {
+    "message": ""
+  },
+  "translator": {
+    "message": ""
   }
 }

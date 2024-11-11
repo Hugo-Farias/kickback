@@ -10,5 +10,14 @@
   },
   "settingsPausePlayClick": {
     "message": "Воспроизведение/пауза при нажатии внутри видео"
+  },
+  "translationMsg": {
+    "message": "Переведено"
+  },
+  "translator": {
+    "message": "yukazi"
+  },
+  "translatorLink": {
+    "message": "https://kick.com/yukazi"
   }
 }
