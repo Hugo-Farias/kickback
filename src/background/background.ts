@@ -20,7 +20,7 @@ chrome.tabs.onUpdated.addListener(function (
   if (changeInfo.status !== "complete") return;
   const url = tab.url;
   if (!url) return;
-  if (url.endsWith("kick.com/")) return;
+  if (!url.includes("/videos")) return;
 
   getSettings().then((settings) => {
     message = {
