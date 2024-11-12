@@ -3,7 +3,7 @@ import { currentId } from "./videoObserver.ts";
 import { MessageType } from "../background/background.ts";
 
 chrome.runtime.onMessage.addListener((message: MessageType) => {
-  if (message.settings && !message.settings.progressBar) return null;
+  if (!message.settings.progressBar) return null;
 
   const data = getDataFromStorage();
 

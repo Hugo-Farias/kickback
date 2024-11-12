@@ -11,6 +11,11 @@ export type MessageType = {
 let msgTimeout: number;
 let message: MessageType;
 
+export const settingsDefaults: SettingsValuesT = {
+  progressBar: true,
+  pausePlayClick: false,
+};
+
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (
   tabId: number,
@@ -29,14 +34,14 @@ chrome.tabs.onUpdated.addListener(function (
       type: "urlChanged",
       url: url,
       id: getIdFromUrl(url),
-      settings: settings,
+      settings: settings || settingsDefaults,
     };
 
     if (msgTimeout) clearTimeout(msgTimeout);
 
     msgTimeout = setTimeout(() => {
       return chrome.tabs.sendMessage(tabId, message);
-    }, 200);
+    }, 850);
   });
 });
 

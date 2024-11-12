@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
     removeAllIntervalls();
     // This Clause prevents atempting to resume and save data on livestreams
     if (!newId) return null;
-    // This prevents to re-run on the same video
+    // This prevents a re-run on the same video
     if (newId === currentId) return null;
     currentId = newId;
 

@@ -42,7 +42,6 @@ const Settings = function () {
 
   useEffect(() => {
     clearTimeout(storeSettingsTimeout);
-
     storeSettingsTimeout = setTimeout(() => {
       chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
     }, 200);

@@ -26,7 +26,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
     currentVideo = video;
 
     // Check for settings
-    if (message.settings && message.settings.pausePlayClick) {
+    if (message.settings.pausePlayClick) {
       // Set click event listenter on video;
       addEvent(video, "click", onClick);
     }
