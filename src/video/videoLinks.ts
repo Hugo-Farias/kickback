@@ -1,5 +1,4 @@
 import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
-import { currentId } from "./videoObserver.ts";
 import { MessageType } from "../background/background.ts";
 
 chrome.runtime.onMessage.addListener((message: MessageType) => {
@@ -16,7 +15,10 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
         // link.style.border = "2rem";
         // link.style.borderColor = "red";
 
-        if (currentId === id) {
+        if (!id) return null;
+        if (!data[id]) return null;
+
+        if (message.id === id) {
           const nowPlayingTag = document.createElement("div");
 
           // Adds thumbnail green border to currently playing video's link
@@ -28,9 +30,6 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
           nowPlayingTag.textContent = chrome.i18n.getMessage("nowPlaying");
           link.appendChild(nowPlayingTag);
         }
-
-        if (!id) return null;
-        if (!data[id]) return null;
 
         const currTime = data[id].curr;
         const totalTime = data[id].total;

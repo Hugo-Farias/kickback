@@ -19,8 +19,6 @@ deleteOldFromData(100);
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: MessageType) => {
-  const newId = message.id;
-
   waitForElement<HTMLVideoElement>("video", false).then((video) => {
     if (!video) return null;
     currentVideo = video;
@@ -33,10 +31,10 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
 
     removeAllIntervalls();
     // This Clause prevents atempting to resume and save data on livestreams
-    if (!newId) return null;
+    if (!message.id) return null;
     // This prevents a re-run on the same video
-    if (newId === currentId) return null;
-    currentId = newId;
+    if (message.id === currentId) return null;
+    currentId = message.id;
 
     // Set intervals on play
     addEvent(video, "play", onPlay);

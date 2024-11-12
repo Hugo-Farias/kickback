@@ -12,8 +12,8 @@ let msgTimeout: number;
 let message: MessageType;
 
 export const settingsDefaults: SettingsValuesT = {
-  pausePlayClick: false,
   progressBar: true,
+  pausePlayClick: false,
 };
 
 // send message to content Scripts every time the url updates

@@ -37,6 +37,8 @@ chrome.tabs.onUpdated.addListener(function (
       settings: settings || settingsDefaults,
     };
 
+    console.log(message.id);
+
     if (msgTimeout) clearTimeout(msgTimeout);
 
     msgTimeout = setTimeout(() => {
