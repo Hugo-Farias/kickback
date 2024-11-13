@@ -11,7 +11,7 @@ type ElementReturnType<
 
 export const waitForElement = <T extends Element, L extends boolean = false>(
   selector: string,
-  getList: L,
+  getList: L | boolean = false,
 ): Promise<ElementReturnType<T, L> | null> => {
   let timer: number;
   let clearTimer: number;

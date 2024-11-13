@@ -2,6 +2,7 @@ import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
 import { MessageType } from "../background/background.ts";
 
 chrome.runtime.onMessage.addListener((message: MessageType) => {
+  console.log("videoLinks onMessage");
   if (!message.settings.progressBar) return null;
 
   const data = getDataFromStorage();
@@ -17,17 +18,20 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
 
         if (!id) return null;
         if (!data[id]) return null;
+        const primaryGreen = "#53FC18";
 
         if (message.id === id) {
           const nowPlayingTag = document.createElement("div");
 
           // Adds thumbnail green border to currently playing video's link
-          // link.style.border = "1px solid #53FC18";
+          // link.style.outline = `2px solid ${primaryGreen}`;
 
           // Adds 'now playing' tag
           nowPlayingTag.className =
             "z-controls absolute rounded bg-[#070809] bg-opacity-80 px-1.5 py-1 text-xs font-semibold top-1.5 right-1.5";
           nowPlayingTag.textContent = chrome.i18n.getMessage("nowPlaying");
+          // nowPlayingTag.style.backgroundColor = darkerGreen;
+          // nowPlayingTag.style.color = "black";
           link.appendChild(nowPlayingTag);
         }
 
@@ -37,14 +41,12 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
 
         const div = document.createElement("div");
 
-        const color = "#53FC18";
-
         // Adds progress bar to video link thumbnails
         div.style.position = "absolute";
         div.style.height = "3px";
         div.style.width = "100%";
         div.style.bottom = "0";
-        div.style.background = `linear-gradient(to right, ${color} ${percentage}%, #9c9c9c 0)`;
+        div.style.background = `linear-gradient(to right, ${primaryGreen} ${percentage}%, #9c9c9c 0)`;
         link.style.position = "relative";
 
         link.appendChild(div);

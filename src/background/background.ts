@@ -2,14 +2,12 @@ import { getIdFromUrl, getSettings } from "../helper.ts";
 import { SettingsValuesT } from "../Settings.tsx";
 
 export type MessageType = {
-  type: "urlChanged";
   url: string;
   id: string | null;
   settings: SettingsValuesT;
 };
 
 let msgTimeout: number;
-let message: MessageType;
 
 export const settingsDefaults: SettingsValuesT = {
   progressBar: true,
@@ -26,18 +24,15 @@ chrome.tabs.onUpdated.addListener(function (
   const url = tab.url;
   if (!url) return;
 
-  // For whatever reason this prevents the "Could not establish connection." Error. I don't get it
+  // Prevents the "Could not establish connection." Error. Don't remove it
   if (!url.includes("kick.com/")) return;
 
   getSettings().then((settings) => {
-    message = {
-      type: "urlChanged",
+    const message: MessageType = {
       url: url,
       id: getIdFromUrl(url),
       settings: settings || settingsDefaults,
     };
-
-    console.log(message.id);
 
     if (msgTimeout) clearTimeout(msgTimeout);
 

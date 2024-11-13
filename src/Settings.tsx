@@ -45,6 +45,8 @@ const Settings = function () {
 
     storeSettingsTimeout = setTimeout(() => {
       chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
+      console.log("options changed", options);
+      // chrome.tabs.sendMessage(0, { type: "settingsChanged" }).then();
     }, 200);
   }, [options]);
 
