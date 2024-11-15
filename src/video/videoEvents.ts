@@ -98,15 +98,6 @@ export const resume = () => {
   }, 1000);
 };
 
-export const addEvent = (
-  element: HTMLVideoElement,
-  trigger: keyof HTMLVideoElementEventMap,
-  execute: () => void,
-) => {
-  element.removeEventListener(trigger, execute);
-  element.addEventListener(trigger, execute);
-};
-
 export const deleteOldFromData = (amount: number) => {
   const localData = getDataFromStorage();
   const dataKeys = Object.keys(localData);

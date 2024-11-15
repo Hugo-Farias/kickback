@@ -11,6 +11,9 @@
   "settingsPausePlayClick": {
     "message": "Play/Pause by clicking inside video"
   },
+  "settingsChatStatus": {
+    "message": "Save chat sidebar status"
+  },
   "translationMsg": {
     "message": ""
   },

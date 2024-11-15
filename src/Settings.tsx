@@ -11,14 +11,18 @@ const settingsRender = [
     label: chrome.i18n.getMessage("settingsProgressBar"),
     // "Show progress bar on 'More Videos' section thumbnails",
     type: "checkbox",
-    checked: true,
   },
   {
     id: "pausePlayClick",
     label: chrome.i18n.getMessage("settingsPausePlayClick"),
     // "Play/Pause by clicking inside video",
     type: "checkbox",
-    checked: false,
+  },
+  {
+    id: "chatStatus",
+    label: chrome.i18n.getMessage("settingsChatStatus"),
+    // "Save chat sidebar status",
+    type: "checkbox",
   },
 ] as const;
 
@@ -45,8 +49,6 @@ const Settings = function () {
 
     storeSettingsTimeout = setTimeout(() => {
       chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
-      console.log("options changed", options);
-      // chrome.tabs.sendMessage(0, { type: "settingsChanged" }).then();
     }, 200);
   }, [options]);
 

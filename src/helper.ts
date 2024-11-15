@@ -41,6 +41,15 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
   });
 };
 
+export const addEvent = (
+  element: HTMLElement,
+  trigger: keyof HTMLVideoElementEventMap,
+  execute: () => void,
+) => {
+  element.removeEventListener(trigger, execute);
+  element.addEventListener(trigger, execute);
+};
+
 export const getIdFromUrl = (url: string) => {
   const urlParts = url.split("/");
   const id = urlParts[urlParts.length - 1];

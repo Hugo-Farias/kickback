@@ -1,7 +1,6 @@
 import { MessageType } from "../background/background.ts";
-import { waitForElement } from "../helper.ts";
+import { waitForElement, addEvent } from "../helper.ts";
 import {
-  addEvent,
   removeAllIntervalls,
   onPlay,
   onPause,
@@ -21,6 +20,8 @@ deleteOldFromData(100);
 chrome.runtime.onMessage.addListener((message: MessageType) => {
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
+    console.log(video.readyState);
+
     currentVideo = video;
 
     // Check for settings
@@ -29,13 +30,12 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
       addEvent(video, "click", onClick);
     }
 
-    // console.log(!(message.type === "urlChanged"));
-    // if (!(message.type === "urlChanged")) return null;
     removeAllIntervalls();
     // This Clause prevents atempting to resume and save data on livestreams
     if (!message.id) return null;
     // This prevents a re-run on the same video
     if (message.id === currentId) return null;
+
     currentId = message.id;
 
     // Set intervals on play

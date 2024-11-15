@@ -2,7 +2,6 @@ import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
 import { MessageType } from "../background/background.ts";
 
 chrome.runtime.onMessage.addListener((message: MessageType) => {
-  console.log("videoLinks onMessage");
   if (!message.settings.progressBar) return null;
 
   const data = getDataFromStorage();

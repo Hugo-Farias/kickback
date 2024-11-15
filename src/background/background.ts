@@ -12,6 +12,7 @@ let msgTimeout: number;
 export const settingsDefaults: SettingsValuesT = {
   progressBar: true,
   pausePlayClick: false,
+  chatStatus: false,
 };
 
 // send message to content Scripts every time the url updates
@@ -24,7 +25,7 @@ chrome.tabs.onUpdated.addListener(function (
   const url = tab.url;
   if (!url) return;
 
-  // Prevents the "Could not establish connection." Error. Don't remove it
+  // Prevents the "Could not establish connection." Error. Don't remove it unless there's a better solution
   if (!url.includes("kick.com/")) return;
 
   getSettings().then((settings) => {
@@ -38,7 +39,7 @@ chrome.tabs.onUpdated.addListener(function (
 
     msgTimeout = setTimeout(() => {
       return chrome.tabs.sendMessage(tabId, message);
-    }, 850);
+    }, 1000);
   });
 });
 
