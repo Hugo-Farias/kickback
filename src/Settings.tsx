@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import icon from "./assets/logo_48.png";
 import { getSettings } from "./helper.ts";
-import { settingsDefaults } from "./background/background.ts";
+import { settingsDefaults, SettingsValuesT } from "./background.ts";
 
 const settingsStorageLabel = "settings";
 
@@ -9,34 +9,31 @@ const settingsRender = [
   {
     id: "progressBar",
     label: chrome.i18n.getMessage("settingsProgressBar"),
-    // "Show progress bar on 'More Videos' section thumbnails",
+    // label: "Show progress bar on 'More Videos' section thumbnails",
     type: "checkbox",
   },
   {
     id: "pausePlayClick",
     label: chrome.i18n.getMessage("settingsPausePlayClick"),
-    // "Play/Pause by clicking inside video",
+    // label: "Play/Pause by clicking inside video",
     type: "checkbox",
+    children: null,
   },
   {
     id: "chatStatus",
     label: chrome.i18n.getMessage("settingsChatStatus"),
-    // "Save chat sidebar status",
-    type: "checkbox",
+    // label: "Save chat sidebar status",
+    type: " checkbox",
+    children: null,
   },
 ] as const;
-
-export type SettingsValuesT = Record<
-  (typeof settingsRender)[number]["id"],
-  boolean
->;
 
 let storeSettingsTimeout: number;
 
 const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(settingsDefaults);
 
-  // Comment this block of chrome.storage calls so localhost works during development
+  // Comment this block of chrome api calls so localhost works during development
 
   useEffect(() => {
     getSettings().then((value) => {
@@ -101,6 +98,7 @@ const Settings = function () {
             })}
           </form>
         </div>
+        {/*unconmment this when done with dev*/}
         <footer className={"text-xs"}>
           {chrome.i18n.getMessage("translationMsg")}{" "}
           <a

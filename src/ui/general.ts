@@ -1,4 +1,4 @@
-import { MessageType } from "../background/background.ts";
+import { MessageType } from "../background.ts";
 import { waitForElement, addEvent } from "../helper.ts";
 
 const logTest = function () {

@@ -1,5 +1,5 @@
 import { oldStamps, StoredStamps, Timestamp } from "./typeDef.ts";
-import { SettingsValuesT } from "./Settings.tsx";
+import { SettingsValuesT } from "./background.ts";
 
 const storageKey = "kb2stamps";
 const oldKey = "kbTimestamps";

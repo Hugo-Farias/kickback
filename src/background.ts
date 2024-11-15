@@ -1,5 +1,12 @@
-import { getIdFromUrl, getSettings } from "../helper.ts";
-import { SettingsValuesT } from "../Settings.tsx";
+import { getIdFromUrl, getSettings } from "./helper.ts";
+
+export const settingsDefaults = {
+  progressBar: true,
+  pausePlayClick: false,
+  chatStatus: false,
+};
+
+export type SettingsValuesT = typeof settingsDefaults;
 
 export type MessageType = {
   url: string;
@@ -8,12 +15,6 @@ export type MessageType = {
 };
 
 let msgTimeout: number;
-
-export const settingsDefaults: SettingsValuesT = {
-  progressBar: true,
-  pausePlayClick: false,
-  chatStatus: false,
-};
 
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (

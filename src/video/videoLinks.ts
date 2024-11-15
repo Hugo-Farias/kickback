@@ -1,5 +1,5 @@
 import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
-import { MessageType } from "../background/background.ts";
+import { MessageType } from "../background.ts";
 
 chrome.runtime.onMessage.addListener((message: MessageType) => {
   if (!message.settings.progressBar) return null;
