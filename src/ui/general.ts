@@ -1,10 +1,10 @@
 import { MessageType } from "../background.ts";
-import { waitForElement, addEvent } from "../helper.ts";
+import { waitForElement } from "../helper.ts";
 
-const logTest = function () {
-  const firstDiv = document.querySelector<HTMLDivElement>("body > div");
-  console.log(firstDiv?.dataset.chat);
-};
+// const logTest = function () {
+//   const firstDiv = document.querySelector<HTMLDivElement>("body > div");
+// console.log("clicked");
+// };
 
 chrome.runtime.onMessage.addListener((message: MessageType) => {
   if (!message.settings.chatStatus) return null;
@@ -16,11 +16,11 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
     //   ".h-fit.w-fit.cursor-pointer > button",
     // );
 
-    const closeChatBtn = document.querySelector("body");
+    // const closeChatBtn = document.querySelector("body");
 
-    if (closeChatBtn) {
-      addEvent(closeChatBtn, "click", logTest);
-    }
+    // if (closeChatBtn) {
+    //   addEvent(closeChatBtn, "click", logTest);
+    // }
 
     value.dataset.chat = "false";
   });

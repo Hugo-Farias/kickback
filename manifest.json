@@ -21,7 +21,8 @@
         "src/video/videoLinks.ts",
         "src/ui/general.ts"
       ],
-      "matches": ["https://*.kick.com/*"]
+      "run_at": "document_end",
+      "matches": ["*://*.kick.com/*"]
     }
   ]
 }

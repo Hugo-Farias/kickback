@@ -12,7 +12,7 @@
     "message": "Play/Pause by clicking inside video"
   },
   "settingsChatStatus": {
-    "message": "Save chat sidebar status"
+    "message": "Automatically close chat sidebar"
   },
   "translationMsg": {
     "message": ""

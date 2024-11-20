@@ -23,25 +23,29 @@ chrome.tabs.onUpdated.addListener(function (
   tab: chrome.tabs.Tab,
 ) {
   if (changeInfo.status !== "complete") return;
+
+  console.log(changeInfo.status);
+
   const url = tab.url;
   if (!url) return;
+  clearTimeout(msgTimeout);
 
   // Prevents the "Could not establish connection." Error. Don't remove it unless there's a better solution
   if (!url.includes("kick.com/")) return;
 
-  getSettings().then((settings) => {
-    const message: MessageType = {
-      url: url,
-      id: getIdFromUrl(url),
-      settings: settings || settingsDefaults,
-    };
+  msgTimeout = setTimeout(() => {
+    getSettings().then((settings) => {
+      const message: MessageType = {
+        url: url,
+        id: getIdFromUrl(url),
+        settings: settings || settingsDefaults,
+      };
 
-    if (msgTimeout) clearTimeout(msgTimeout);
+      console.log("message sent", message);
 
-    msgTimeout = setTimeout(() => {
-      return chrome.tabs.sendMessage(tabId, message);
-    }, 1000);
-  });
+      chrome.tabs.sendMessage(tabId, message).then();
+    });
+  }, 100);
 });
 
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {

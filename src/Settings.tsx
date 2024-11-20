@@ -23,7 +23,7 @@ const settingsRender = [
     id: "chatStatus",
     label: chrome.i18n.getMessage("settingsChatStatus"),
     // label: "Save chat sidebar status",
-    type: " checkbox",
+    type: "checkbox",
     children: null,
   },
 ] as const;
@@ -86,6 +86,7 @@ const Settings = function () {
                   key={value.id}
                 >
                   <input
+                    className={"text-black"}
                     type={value.type}
                     checked={options[value.id]}
                     aria-label={value.label}
