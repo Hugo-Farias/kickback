@@ -3,7 +3,7 @@
 export default {
   content: [
     "./src/Settings.tsx",
-    "./src/video/videoLinks.ts",
+    "./src/video/videoThumbs.ts",
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],

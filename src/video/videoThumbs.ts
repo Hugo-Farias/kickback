@@ -1,7 +1,7 @@
 import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
 import { MessageType } from "../background.ts";
 
-chrome.runtime.onMessage.addListener((message: MessageType) => {
+export const progressBarRender = (message: MessageType) => {
   if (!message.settings.progressBar) return null;
 
   const data = getDataFromStorage();
@@ -52,4 +52,4 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
       });
     },
   );
-});
+};

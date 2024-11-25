@@ -1,5 +1,5 @@
-import { MessageType } from "../background.ts";
-import { waitForElement, addEvent } from "../helper.ts";
+import { MessageType } from "./background.ts";
+import { waitForElement, addEvent } from "./helper.ts";
 import {
   removeAllIntervalls,
   onPlay,
@@ -8,7 +8,9 @@ import {
   resume,
   deleteOldFromData,
   onClick,
-} from "./videoEvents.ts";
+} from "./video/videoEvents.ts";
+import { progressBarRender } from "./video/videoThumbs.ts";
+import { closeChat } from "./ui/chat.ts";
 
 export let currentId: string;
 export let currentVideo: HTMLVideoElement;
@@ -49,5 +51,13 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
 
     // init
     resume();
+
+    if (message.settings.progressBar) {
+      progressBarRender(message);
+    }
+
+    if (message.settings.chatStatus) {
+      closeChat();
+    }
   });
 });

@@ -1,6 +1,6 @@
 import { getDataFromStorage, storeData, storeTimestamp } from "../helper.ts";
 import { StoredStamps, Timestamp } from "../typeDef.ts";
-import { currentId, currentVideo } from "./videoObserver.ts";
+import { currentId, currentVideo } from "../init.ts";
 
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;

@@ -1,4 +1,3 @@
-import { MessageType } from "../background.ts";
 import { waitForElement } from "../helper.ts";
 
 // const logTest = function () {
@@ -6,9 +5,7 @@ import { waitForElement } from "../helper.ts";
 // console.log("clicked");
 // };
 
-chrome.runtime.onMessage.addListener((message: MessageType) => {
-  if (!message.settings.chatStatus) return null;
-
+export const closeChat = () => {
   waitForElement<HTMLDivElement>("body > div").then((value) => {
     if (!value) return null;
 
@@ -24,4 +21,4 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
 
     value.dataset.chat = "false";
   });
-});
+};
