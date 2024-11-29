@@ -33,6 +33,7 @@ const fillStamp = (id: string): Timestamp => {
 };
 
 const setTime = () => {
+  console.log("setTime Atempt");
   if (!currentId) return console.log("no id");
   const currentTime = currentVideo.currentTime;
 
@@ -41,8 +42,6 @@ const setTime = () => {
     currentTime > currentVideo.duration - timeClause
   )
     return null;
-
-  console.log("setTime", currentId);
 
   const storedTimestamp = data[currentId] ?? fillStamp(currentId);
 
@@ -55,9 +54,11 @@ const setTime = () => {
     },
   };
 
+  console.log("setTime", data);
+
   storeTimestamp(data[currentId]);
 };
-const removeAllIntervalls = () => {
+export const removeAllIntervalls = () => {
   for (const key of Object.keys(intervals)) {
     clearInterval(intervals[key]);
   }
@@ -117,8 +118,6 @@ export const deleteOldFromData = (amount: number) => {
 };
 
 export const resumeVideo = (message: MessageType, firstRun: boolean) => {
-  removeAllIntervalls();
-
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
     console.log(video.readyState);
@@ -126,28 +125,28 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
     currentVideo = video;
     currentId = message.id;
 
-    restoreTime(video, message.id);
+    if (!firstRun) {
+      addEvent(video, "play", () => {
+        console.log("onPlay");
+        clearInterval(intervals.play);
+        intervals.play = setInterval(setTime, 2000);
+      });
 
-    if (!firstRun) return null;
+      addEvent(video, "seeked", () => {
+        console.log("onSeek");
+        clearTimeout(seekTimeout);
+        seekTimeout = setTimeout(setTime, 2000);
+      });
 
-    addEvent(video, "play", () => {
-      console.log("onPlay");
-      clearInterval(intervals.play);
-      intervals.play = setInterval(setTime, 5000);
-    });
+      addEvent(video, "pause", () => clearInterval(intervals.play));
 
-    addEvent(video, "seeked", () => {
-      console.log("onSeek");
-      clearTimeout(seekTimeout);
-      seekTimeout = setTimeout(setTime, 2000);
-    });
+      if (message.settings.pausePlayClick) {
+        addEvent(video, "click", onClick);
+      }
 
-    addEvent(video, "pause", () => clearInterval(intervals.play));
-
-    if (message.settings.pausePlayClick) {
-      addEvent(video, "click", onClick);
+      firstRun = false;
     }
 
-    firstRun = false;
+    restoreTime(video, message.id);
   });
 };
