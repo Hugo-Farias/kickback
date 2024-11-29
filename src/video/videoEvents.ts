@@ -11,13 +11,15 @@ import { MessageType } from "../background.ts";
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
 
-export let data: StoredStamps = getDataFromStorage();
+let data: StoredStamps = getDataFromStorage();
 
+let currentVideo: HTMLVideoElement;
 let currentId: string | null;
 
+// Time in seconds before resuming video is allowed
 const timeClause = 90;
 
-const fillStamp = (currentVideo: HTMLVideoElement, id: string): Timestamp => {
+const fillStamp = (id: string): Timestamp => {
   return {
     curr: currentVideo.currentTime,
     total: currentVideo.duration,
@@ -30,9 +32,8 @@ const fillStamp = (currentVideo: HTMLVideoElement, id: string): Timestamp => {
   };
 };
 
-const setTime = (currentVideo: HTMLVideoElement) => {
+const setTime = () => {
   if (!currentId) return console.log("no id");
-  console.log("setTime", currentId);
   const currentTime = currentVideo.currentTime;
 
   if (
@@ -41,7 +42,9 @@ const setTime = (currentVideo: HTMLVideoElement) => {
   )
     return null;
 
-  const storedTimestamp = data[currentId] ?? fillStamp(currentVideo, currentId);
+  console.log("setTime", currentId);
+
+  const storedTimestamp = data[currentId] ?? fillStamp(currentId);
 
   data = {
     ...data,
@@ -54,23 +57,20 @@ const setTime = (currentVideo: HTMLVideoElement) => {
 
   storeTimestamp(data[currentId]);
 };
-export const removeAllIntervalls = () => {
+const removeAllIntervalls = () => {
   for (const key of Object.keys(intervals)) {
     clearInterval(intervals[key]);
   }
 };
 
-export const onClick = (currentVideo: HTMLVideoElement) => {
+const onClick = () => {
   console.log("click");
   if (currentVideo.paused)
     currentVideo.play().catch((e) => console.error("video play:", e));
   else currentVideo.pause();
 };
 
-export const restoreTime = (
-  currentVideo: HTMLVideoElement,
-  id: string | null,
-) => {
+const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
   if (!id) return console.log("no id");
   if (!data[id]) {
     currentVideo.currentTime = currentVideo.currentTime - 1;
@@ -117,38 +117,35 @@ export const deleteOldFromData = (amount: number) => {
 };
 
 export const resumeVideo = (message: MessageType, firstRun: boolean) => {
+  removeAllIntervalls();
+
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
     console.log(video.readyState);
 
-    removeAllIntervalls();
-
+    currentVideo = video;
     currentId = message.id;
 
-    // init
     restoreTime(video, message.id);
 
-    // Prevent re-run
     if (!firstRun) return null;
-
-    const callSetTime = () => setTime(video);
 
     addEvent(video, "play", () => {
       console.log("onPlay");
       clearInterval(intervals.play);
-      intervals.play = setInterval(callSetTime, 5000);
+      intervals.play = setInterval(setTime, 5000);
     });
 
     addEvent(video, "seeked", () => {
       console.log("onSeek");
       clearTimeout(seekTimeout);
-      seekTimeout = setTimeout(callSetTime, 2000);
+      seekTimeout = setTimeout(setTime, 2000);
     });
 
     addEvent(video, "pause", () => clearInterval(intervals.play));
 
     if (message.settings.pausePlayClick) {
-      addEvent(video, "click", () => onClick(video));
+      addEvent(video, "click", onClick);
     }
 
     firstRun = false;

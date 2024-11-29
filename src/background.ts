@@ -25,6 +25,7 @@ chrome.tabs.onUpdated.addListener(function (
   tab: chrome.tabs.Tab,
 ) {
   if (changeInfo.status !== "complete") return;
+  console.log(changeInfo.status);
 
   const url = tab.url;
   if (!url) return;
@@ -42,7 +43,7 @@ chrome.tabs.onUpdated.addListener(function (
       };
       chrome.tabs.sendMessage(tabId, message).then();
     });
-    // msgSpeed = 100;
+    msgSpeed = 300;
   }, msgSpeed);
 });
 
