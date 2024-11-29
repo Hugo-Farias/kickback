@@ -14,6 +14,8 @@ export type MessageType = {
   settings: SettingsValuesT;
 };
 
+let msgTimeout: number;
+
 let firstRun = false;
 
 // send message to content Scripts every time the url updates
@@ -27,19 +29,21 @@ chrome.tabs.onUpdated.addListener(function (
 
   const url = tab.url;
   if (!url) return;
-  // clearTimeout(msgTimeout);
+  clearTimeout(msgTimeout);
 
   // Prevents the "Could not establish connection." Error. Don't remove it unless there's a better solution
   // if (!url.includes("kick.com/")) return;
 
-  getSettings().then((settings) => {
-    const message: MessageType = {
-      url: url,
-      id: getIdFromUrl(url),
-      settings: settings || settingsDefaults,
-    };
-    chrome.tabs.sendMessage(tabId, message).then();
-  });
+  msgTimeout = setTimeout(() => {
+    getSettings().then((settings) => {
+      const message: MessageType = {
+        url: url,
+        id: getIdFromUrl(url),
+        settings: settings || settingsDefaults,
+      };
+      chrome.tabs.sendMessage(tabId, message).then();
+    });
+  }, 300);
 });
 
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
