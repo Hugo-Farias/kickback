@@ -16,6 +16,8 @@ export type MessageType = {
 
 let msgTimeout: number;
 
+let msgSpeed = 1000;
+
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (
   tabId: number,
@@ -23,8 +25,6 @@ chrome.tabs.onUpdated.addListener(function (
   tab: chrome.tabs.Tab,
 ) {
   if (changeInfo.status !== "complete") return;
-
-  console.log(changeInfo.status);
 
   const url = tab.url;
   if (!url) return;
@@ -40,12 +40,10 @@ chrome.tabs.onUpdated.addListener(function (
         id: getIdFromUrl(url),
         settings: settings || settingsDefaults,
       };
-
-      console.log("message sent", message);
-
       chrome.tabs.sendMessage(tabId, message).then();
     });
-  }, 1000);
+    // msgSpeed = 100;
+  }, msgSpeed);
 });
 
 // chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {

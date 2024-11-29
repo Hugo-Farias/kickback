@@ -16,7 +16,7 @@
   "options_page": "index.html",
   "content_scripts": [
     {
-      "js": ["src/init.ts", "src/video/videoThumbs.ts", "src/ui/general.ts"],
+      "js": ["src/init.ts", "src/ui/videoThumbs.ts", "src/ui/chat.ts"],
       "matches": ["*://*.kick.com/*"]
     }
   ]

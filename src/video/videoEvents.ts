@@ -1,15 +1,23 @@
-import { getDataFromStorage, storeData, storeTimestamp } from "../helper.ts";
+import {
+  addEvent,
+  getDataFromStorage,
+  storeData,
+  storeTimestamp,
+  waitForElement,
+} from "../helper.ts";
 import { StoredStamps, Timestamp } from "../typeDef.ts";
-import { currentId, currentVideo } from "../init.ts";
+import { MessageType } from "../background.ts";
 
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
 
 export let data: StoredStamps = getDataFromStorage();
 
+let currentId: string | null;
+
 const timeClause = 90;
 
-const fillStamp = (): Timestamp => {
+const fillStamp = (currentVideo: HTMLVideoElement, id: string): Timestamp => {
   return {
     curr: currentVideo.currentTime,
     total: currentVideo.duration,
@@ -17,12 +25,14 @@ const fillStamp = (): Timestamp => {
       .querySelector(".flex.min-w-0.max-w-full.shrink.gap-1.overflow-hidden")
       ?.textContent?.trim(),
     streamer: document.querySelector("#channel-username")?.textContent?.trim(),
-    id: currentId,
+    id: id,
     storageTime: Date.now(),
   };
 };
 
-const setTime = () => {
+const setTime = (currentVideo: HTMLVideoElement) => {
+  if (!currentId) return console.log("no id");
+  console.log("setTime", currentId);
   const currentTime = currentVideo.currentTime;
 
   if (
@@ -31,7 +41,7 @@ const setTime = () => {
   )
     return null;
 
-  const storedTimestamp = data[currentId] ?? fillStamp();
+  const storedTimestamp = data[currentId] ?? fillStamp(currentVideo, currentId);
 
   data = {
     ...data,
@@ -50,40 +60,31 @@ export const removeAllIntervalls = () => {
   }
 };
 
-export const onPause = () => {
-  clearInterval(intervals.play);
-};
-
-export const onPlay = () => {
-  clearInterval(intervals.play);
-  intervals.play = setInterval(setTime, 20000);
-};
-
-export const onSeek = () => {
-  clearTimeout(seekTimeout);
-  seekTimeout = setTimeout(setTime, 2000);
-};
-
-export const onClick = () => {
+export const onClick = (currentVideo: HTMLVideoElement) => {
+  console.log("click");
   if (currentVideo.paused)
     currentVideo.play().catch((e) => console.error("video play:", e));
   else currentVideo.pause();
 };
 
-export const resume = () => {
-  if (!data[currentId]) {
+export const restoreTime = (
+  currentVideo: HTMLVideoElement,
+  id: string | null,
+) => {
+  if (!id) return console.log("no id");
+  if (!data[id]) {
     currentVideo.currentTime = currentVideo.currentTime - 1;
     return null;
   }
-  if (data[currentId].curr < timeClause) {
-    delete data[currentId];
+  if (data[id].curr < timeClause) {
+    delete data[id];
     return null;
   }
 
   data = {
     ...data,
-    [currentId]: {
-      ...data[currentId],
+    [id]: {
+      ...data[id],
       storageTime: Date.now(),
     },
   };
@@ -94,7 +95,7 @@ export const resume = () => {
       clearInterval(intervals.resume);
       return null;
     }
-    currentVideo.currentTime = data[currentId].curr;
+    currentVideo.currentTime = data[id].curr;
   }, 1000);
 };
 
@@ -113,4 +114,43 @@ export const deleteOldFromData = (amount: number) => {
   }
 
   storeData(localData);
+};
+
+export const resumeVideo = (message: MessageType, firstRun: boolean) => {
+  waitForElement<HTMLVideoElement>("video").then((video) => {
+    if (!video) return null;
+    console.log(video.readyState);
+
+    removeAllIntervalls();
+
+    currentId = message.id;
+
+    // init
+    restoreTime(video, message.id);
+
+    // Prevent re-run
+    if (!firstRun) return null;
+
+    const callSetTime = () => setTime(video);
+
+    addEvent(video, "play", () => {
+      console.log("onPlay");
+      clearInterval(intervals.play);
+      intervals.play = setInterval(callSetTime, 5000);
+    });
+
+    addEvent(video, "seeked", () => {
+      console.log("onSeek");
+      clearTimeout(seekTimeout);
+      seekTimeout = setTimeout(callSetTime, 2000);
+    });
+
+    addEvent(video, "pause", () => clearInterval(intervals.play));
+
+    if (message.settings.pausePlayClick) {
+      addEvent(video, "click", () => onClick(video));
+    }
+
+    firstRun = false;
+  });
 };

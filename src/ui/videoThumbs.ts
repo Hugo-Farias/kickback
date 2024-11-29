@@ -2,8 +2,6 @@ import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
 import { MessageType } from "../background.ts";
 
 export const progressBarRender = (message: MessageType) => {
-  if (!message.settings.progressBar) return null;
-
   const data = getDataFromStorage();
 
   waitForElement<HTMLAnchorElement, true>("section > div > a[href]", true).then(
@@ -16,10 +14,13 @@ export const progressBarRender = (message: MessageType) => {
         // link.style.borderColor = "red";
 
         if (!id) return null;
-        if (!data[id]) return null;
+        // if (!data[id]) return null;
         const primaryGreen = "#53FC18";
 
+        console.log(id, message.id === id);
+
         if (message.id === id) {
+          console.log("now playing tag rendered");
           const nowPlayingTag = document.createElement("div");
 
           // Adds thumbnail green border to currently playing video's link

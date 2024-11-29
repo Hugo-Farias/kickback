@@ -19,7 +19,10 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
 
   // Wait for element, check for element in 1 second intervals
   return new Promise((resolve) => {
+    clearInterval(timer);
+    clearTimeout(clearTimer);
     timer = setInterval(() => {
+      console.log("wait for element", selector);
       if (getList) {
         const temp = document.querySelectorAll<T>(selector);
         if (temp.length > 0) element = temp;
@@ -37,7 +40,7 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
     clearTimer = setTimeout(() => {
       clearInterval(timer);
       resolve(null);
-    }, 30000);
+    }, 3000);
   });
 };
 
@@ -52,9 +55,8 @@ export const addEvent = (
 
 export const getIdFromUrl = (url: string) => {
   const urlParts = url.split("/");
-  const id = urlParts[urlParts.length - 1];
   if (!urlParts[urlParts.length - 2].includes("videos")) return null;
-  return id;
+  return urlParts[urlParts.length - 1];
 };
 
 export const getDataFromStorage = (): StoredStamps => {
