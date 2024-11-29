@@ -37,11 +37,10 @@ const setTime = () => {
   if (!currentId) return console.log("no id");
   const currentTime = currentVideo.currentTime;
 
-  if (
-    currentTime < timeClause ||
-    currentTime > currentVideo.duration - timeClause
-  )
+  if (currentTime < timeClause) {
+    delete data[currentId];
     return null;
+  }
 
   const storedTimestamp = data[currentId] ?? fillStamp(currentId);
 
@@ -73,12 +72,10 @@ const onClick = () => {
 
 const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
   if (!id) return console.log("no id");
+  currentVideo.pause();
   if (!data[id]) {
-    currentVideo.currentTime = currentVideo.currentTime - 1;
-    return null;
-  }
-  if (data[id].curr < timeClause) {
-    delete data[id];
+    currentVideo.currentTime = currentVideo.currentTime++;
+    currentVideo.play();
     return null;
   }
 
@@ -97,6 +94,7 @@ const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
       return null;
     }
     currentVideo.currentTime = data[id].curr;
+    currentVideo.play();
   }, 1000);
 };
 

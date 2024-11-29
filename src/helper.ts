@@ -22,7 +22,6 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
     clearInterval(timer);
     clearTimeout(clearTimer);
     timer = setInterval(() => {
-      console.log("wait for element", selector);
       if (getList) {
         const temp = document.querySelectorAll<T>(selector);
         if (temp.length > 0) element = temp;
