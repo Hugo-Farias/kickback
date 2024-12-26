@@ -20,7 +20,9 @@ export const progressBarRender = (message: MessageType) => {
           const nowPlayingTag = document.createElement("div");
 
           // Adds thumbnail green border to currently playing video's link
-          link.style.outline = `2px solid ${primaryGreen}`;
+          if (message.settings.playingBorder) {
+            link.style.outline = `2px solid ${primaryGreen}`;
+          }
 
           // Adds 'now playing' tag
           nowPlayingTag.className =

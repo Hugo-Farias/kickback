@@ -11,6 +11,13 @@ const settingsRender = [
     label: chrome.i18n.getMessage("settingsProgressBar"),
     // label: "Show progress bar on 'More Videos' section thumbnails",
     type: "checkbox",
+    children: {
+      id: "playingBorder",
+      label: chrome.i18n.getMessage("settingsPlayingBorder"),
+      // label: "Display border around currently playing video",
+      type: "checkbox",
+      children: null,
+    },
   },
   {
     id: "pausePlayClick",

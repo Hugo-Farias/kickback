@@ -53,7 +53,7 @@ const setTime = () => {
     },
   };
 
-  console.log("setTime", data);
+  // console.log("setTime", data);
 
   storeTimestamp(data[currentId]);
 };
@@ -75,7 +75,7 @@ const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
   currentVideo.pause();
   if (!data[id]) {
     currentVideo.currentTime = currentVideo.currentTime++;
-    currentVideo.play();
+    currentVideo.play().then();
     return null;
   }
 
@@ -94,7 +94,7 @@ const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
       return null;
     }
     currentVideo.currentTime = data[id].curr;
-    currentVideo.play();
+    currentVideo.play().then();
   }, 1000);
 };
 
@@ -122,8 +122,10 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
 
     currentVideo = video;
     currentId = message.id;
+    console.log(currentId);
 
     if (!firstRun) {
+      console.log("first run");
       addEvent(video, "play", () => {
         console.log("onPlay");
         clearInterval(intervals.play);
@@ -141,8 +143,6 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
       if (message.settings.pausePlayClick) {
         addEvent(video, "click", onClick);
       }
-
-      firstRun = false;
     }
 
     restoreTime(video, message.id);
