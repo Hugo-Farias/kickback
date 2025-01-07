@@ -1,62 +1,74 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import icon from "./assets/logo_48.png";
-import { getSettings } from "./helper.ts";
-import { settingsDefaults, SettingsValuesT } from "./background.ts";
+// import { getSettings } from "./helper.ts";
+// import { settingsDefaults, SettingsValuesT } from "./background.ts";
 
-const settingsStorageLabel = "settings";
+// const settingsStorageLabel = "settings";
 
 const settingsRender = [
   {
     id: "progressBar",
-    label: chrome.i18n.getMessage("settingsProgressBar"),
-    // label: "Show progress bar on 'More Videos' section thumbnails",
+    // label: chrome.i18n.getMessage("settingsProgressBar"),
+    label: "Show progress bar on 'More Videos' section thumbnails",
     type: "checkbox",
     children: {
       id: "playingBorder",
-      label: chrome.i18n.getMessage("settingsPlayingBorder"),
-      // label: "Display border around currently playing video",
+      // label: chrome.i18n.getMessage("settingsPlayingBorder"),
+      label: "Display border around currently playing video thumbnail",
       type: "checkbox",
       children: null,
     },
   },
   {
     id: "pausePlayClick",
-    label: chrome.i18n.getMessage("settingsPausePlayClick"),
-    // label: "Play/Pause by clicking inside video",
+    // label: chrome.i18n.getMessage("settingsPausePlayClick"),
+    label: "Play/Pause by clicking inside video",
     type: "checkbox",
     children: null,
   },
   {
     id: "chatStatus",
-    label: chrome.i18n.getMessage("settingsChatStatus"),
-    // label: "Save chat sidebar status",
+    // label: chrome.i18n.getMessage("settingsChatStatus"),
+    label: "Save chat sidebar status",
     type: "checkbox",
     children: null,
   },
 ] as const;
 
-let storeSettingsTimeout: number;
+// let storeSettingsTimeout: number;
+export const settingsDefaults = {
+  progressBar: true,
+  pausePlayClick: false,
+  chatStatus: false,
+  playingBorder: false,
+};
+
+export type SettingsValuesT = typeof settingsDefaults;
+
+export type MessageType = {
+  url: string;
+  id: string | null;
+  settings: SettingsValuesT;
+};
 
 const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(settingsDefaults);
 
-  // Comment this block of chrome api calls so localhost works during development
+  // Comment chrome api calls so localhost works during development
 
-  useEffect(() => {
-    getSettings().then((value) => {
-      if (value) setOptions(value);
-    });
-  }, []);
-
-  useEffect(() => {
-    clearTimeout(storeSettingsTimeout);
-
-    storeSettingsTimeout = setTimeout(() => {
-      chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
-    }, 200);
-  }, [options]);
-
-  // End
+  // useEffect(() => {
+  //   getSettings().then((value) => {
+  //     if (value) setOptions(value);
+  //   });
+  // }, []);
+  //
+  // useEffect(() => {
+  //   clearTimeout(storeSettingsTimeout);
+  //
+  //   storeSettingsTimeout = setTimeout(() => {
+  //     chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
+  //   }, 200);
+  // }, [options]);
 
   const onCheck = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -106,17 +118,16 @@ const Settings = function () {
             })}
           </form>
         </div>
-        {/*unconmment this when done with dev*/}
-        <footer className={"text-xs"}>
-          {chrome.i18n.getMessage("translationMsg")}{" "}
-          <a
-            className={"text-blue-500 underline hover:text-blue-200"}
-            target={"_blank"}
-            href={chrome.i18n.getMessage("translatorLink")}
-          >
-            {chrome.i18n.getMessage("translator")}
-          </a>
-        </footer>
+        {/*<footer className={"text-xs"}>*/}
+        {/*  {chrome.i18n.getMessage("translationMsg")}{" "}*/}
+        {/*  <a*/}
+        {/*    className={"text-blue-500 underline hover:text-blue-200"}*/}
+        {/*    target={"_blank"}*/}
+        {/*    href={chrome.i18n.getMessage("translatorLink")}*/}
+        {/*  >*/}
+        {/*    {chrome.i18n.getMessage("translator")}*/}
+        {/*  </a>*/}
+        {/*</footer>*/}
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ import { MessageType } from "../background.ts";
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
 
-let data: StoredStamps = getDataFromStorage();
+let data: StoredStamps;
 
 let currentVideo: HTMLVideoElement;
 let currentId: string | null;
@@ -53,7 +53,7 @@ const setTime = () => {
     },
   };
 
-  // console.log("setTime", data);
+  console.log("setTime", data);
 
   storeTimestamp(data[currentId]);
 };
@@ -74,6 +74,7 @@ const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
   if (!id) return console.log("no id");
   currentVideo.pause();
   if (!data[id]) {
+    console.log("no data");
     currentVideo.currentTime = currentVideo.currentTime++;
     currentVideo.play().then();
     return null;
@@ -86,6 +87,8 @@ const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
       storageTime: Date.now(),
     },
   };
+
+  console.log(data);
 
   intervals.resume = setInterval(() => {
     clearTimeout(seekTimeout);
@@ -118,13 +121,14 @@ export const deleteOldFromData = (amount: number) => {
 export const resumeVideo = (message: MessageType, firstRun: boolean) => {
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
+    data = getDataFromStorage();
     console.log(video.readyState);
 
     currentVideo = video;
     currentId = message.id;
     console.log(currentId);
 
-    if (!firstRun) {
+    if (firstRun) {
       console.log("first run");
       addEvent(video, "play", () => {
         console.log("onPlay");

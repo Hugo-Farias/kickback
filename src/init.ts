@@ -14,6 +14,7 @@ let firstRun = true;
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: MessageType) => {
+  console.log(firstRun);
   resumeVideo(message, firstRun);
 
   // Clear all intervals related to video
