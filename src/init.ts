@@ -12,8 +12,6 @@ let firstRun = true;
 chrome.runtime.onMessage.addListener((message: MessageType) => {
   resumeVideo(message, firstRun);
 
-  console.log(message.settings.progressBar);
-
   if (message.settings.progressBar) {
     progressBarRender(message);
   }
