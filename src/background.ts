@@ -47,7 +47,7 @@ chrome.tabs.onUpdated.addListener(function (
       console.log("msg");
       chrome.tabs.sendMessage(tabId, message).then();
     });
-  }, 1000);
+  }, 400);
 });
 
 // chrome.webNavigation.onCompleted.addListener((details) => {

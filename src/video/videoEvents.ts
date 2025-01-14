@@ -17,7 +17,7 @@ let currentVideo: HTMLVideoElement;
 let currentId: string | null;
 
 // Time in seconds before saving video time is allowed
-const timeClause = 90;
+const timeClause = 30;
 
 const fillStamp = (videoEl: HTMLVideoElement, id: string): Timestamp => {
   return {
@@ -35,10 +35,14 @@ const fillStamp = (videoEl: HTMLVideoElement, id: string): Timestamp => {
 const setTime = () => {
   console.log("=>(videoEvents.ts:51) id", currentId);
   console.log("=>(videoEvents.ts:52) videoEl", currentVideo.currentTime);
+
   if (!currentId) return console.log("no id");
   const currentTime = currentVideo.currentTime;
 
-  if (currentTime < timeClause) return null;
+  if (currentTime < timeClause && currentTime > 10) {
+    return null;
+  }
+  console.log("stored");
 
   const storedTimestamp = timestamp ?? fillStamp(currentVideo, currentId);
 
@@ -58,12 +62,7 @@ const removeAllIntervalls = () => {
   }
 };
 
-const restoreTime = (
-  currentVideo: HTMLVideoElement,
-  storedTime: number | null,
-) => {
-  if (!storedTime) return null;
-
+const restoreTime = (currentVideo: HTMLVideoElement, storedTime: number) => {
   timestamp = {
     ...timestamp,
     storageTime: Date.now(),
@@ -90,10 +89,9 @@ export const deleteOldFromData = (amount: number) => {
 };
 
 const onClick = (videoEl: HTMLVideoElement) => {
-  console.log("click");
-  if (videoEl.paused)
-    videoEl.play().catch((e) => console.error("video play:", e));
-  else videoEl.pause();
+  // console.log("click");
+  if (videoEl.paused) return null;
+  videoEl.pause();
 };
 
 export const resumeVideo = (message: MessageType, firstRun: boolean) => {
@@ -101,28 +99,28 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!message.id) return null;
     if (!video) return null;
-
     removeAllIntervalls();
+
+    video.pause();
     currentId = message.id;
     currentVideo = video;
     timestamp = getDataFromStorage()[message.id];
-    // console.log(timestamp);
 
     if (firstRun) {
       addEvent(video, "play", () => {
-        // console.log("onPlay");
+        console.log("onPlay");
         clearInterval(intervals.play);
         intervals.play = setInterval(setTime, 10000);
       });
 
       addEvent(video, "seeked", () => {
-        // console.log("onSeek");
+        console.log("onSeek");
         clearTimeout(seekTimeout);
         seekTimeout = setTimeout(setTime, 2000);
       });
 
       addEvent(video, "pause", () => {
-        // console.log("onPause");
+        console.log("onPause");
         clearInterval(intervals.play);
       });
 
@@ -131,6 +129,9 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
       }
     }
 
+    video.play().catch((e) => console.error("video play:", e));
+
+    if (!timestamp) return null;
     restoreTime(video, timestamp.curr);
   });
 };

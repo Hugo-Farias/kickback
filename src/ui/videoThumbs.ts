@@ -1,6 +1,9 @@
 import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
 import { MessageType } from "../background.ts";
 
+const primaryGreen = "#53FC18";
+// const darkerGreen = "#4fda1b";
+
 export const progressBarRender = (message: MessageType) => {
   const data = getDataFromStorage();
 
@@ -9,21 +12,11 @@ export const progressBarRender = (message: MessageType) => {
       if (!vidLinks) return null;
 
       vidLinks.forEach((link) => {
-        const id = getIdFromUrl(link.href);
-        // link.style.border = "2rem";
-        // link.style.borderColor = "red";
+        const idFromUrl = getIdFromUrl(link.href);
+        if (!idFromUrl) return null;
 
-        if (!id) return null;
-        const primaryGreen = "#53FC18";
-        // const darkerGreen = "#4fda1b";
-
-        if (message.id === id) {
+        if (message.id === idFromUrl) {
           const nowPlayingTag = document.createElement("div");
-
-          // Adds thumbnail green border to currently playing video's link
-          // if (message.settings.progressBar) {
-          // link.style.outline = `2px solid ${primaryGreen}`;
-          // }
 
           // Adds 'now playing' tag
           nowPlayingTag.className =
@@ -34,9 +27,9 @@ export const progressBarRender = (message: MessageType) => {
           link.appendChild(nowPlayingTag);
         }
 
-        if (!data[id]) return null;
-        const currTime = data[id].curr;
-        const totalTime = data[id].total;
+        if (!data[idFromUrl]) return null;
+        const currTime = data[idFromUrl].curr;
+        const totalTime = data[idFromUrl].total;
         const percentage = (currTime / totalTime) * 100;
 
         const div = document.createElement("div");
