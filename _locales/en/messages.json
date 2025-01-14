@@ -5,16 +5,16 @@
   "nowPlaying": {
     "message": "Now Playing"
   },
-  "settingsProgressBar": {
+  "progressBar": {
     "message": "Show progress bar on \"More Videos\" section thumbnails"
   },
-  "settingsPausePlayClick": {
+  "pausePlayClick": {
     "message": "Play/Pause by clicking inside video"
   },
-  "settingsChatStatus": {
+  "chatStatus": {
     "message": "Automatically close chat sidebar"
   },
-  "settingsPlayingBorder": {
+  "playingBorder": {
     "message": "Display border around currently playing video in \"More Videos\" section"
   },
   "translationMsg": {

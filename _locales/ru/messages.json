@@ -5,16 +5,16 @@
   "nowPlaying": {
     "message": "Воспроизводится"
   },
-  "settingsProgressBar": {
+  "progressBar": {
     "message": "Показывать полосу прогресса на миниатюрах раздела «Видео»"
   },
-  "settingsPausePlayClick": {
+  "pausePlayClick": {
     "message": "Воспроизведение/пауза при нажатии внутри видео"
   },
-  "settingsChatStatus": {
+  "chatStatus": {
     "message": "Автоматически закрывать боковую панель чата"
   },
-  "settingsPlayingBorder": {
+  "playingBorder": {
     "message": "Отображать рамку вокруг воспроизводимого видео в разделе «Видео»"
   },
   "translationMsg": {

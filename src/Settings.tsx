@@ -10,10 +10,10 @@ let storeSettingsTimeout: number;
 
 // TODO remove block before compile and import settingsDefaults from background
 // const settingsDefaults = {
-//   settingsProgressBar: true,
-//   settingsPlayingBorder: false,
-//   settingsPausePlayClick: false,
-//   settingsChatStatus: false,
+//   progressBar: true,
+//   playingBorder: false,
+//   pausePlayClick: false,
+//   chatStatus: false,
 // };
 
 // Block end
@@ -23,6 +23,8 @@ const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(settingsDefaults);
 
   // Comment block chrome api calls so localhost works during development
+
+  console.log(options);
 
   useEffect(() => {
     getSettings().then((value) => {
@@ -62,24 +64,19 @@ const Settings = function () {
         >
           <form className={"mx-auto text-lg contain-content"}>
             <Option
-              id={"settingsProgressBar"}
+              id={"progressBar"}
               onChange={onCheck}
-              checked={options.settingsProgressBar}
+              checked={options.progressBar}
             />
             <Option
-              id={"settingsPlayingBorder"}
+              id={"pausePlayClick"}
               onChange={onCheck}
-              checked={options.settingsPlayingBorder}
+              checked={options.pausePlayClick}
             />
             <Option
-              id={"settingsPausePlayClick"}
+              id={"chatStatus"}
               onChange={onCheck}
-              checked={options.settingsPausePlayClick}
-            />
-            <Option
-              id={"settingsChatStatus"}
-              onChange={onCheck}
-              checked={options.settingsChatStatus}
+              checked={options.chatStatus}
             />
           </form>
         </div>

@@ -15,14 +15,15 @@ export const progressBarRender = (message: MessageType) => {
 
         if (!id) return null;
         const primaryGreen = "#53FC18";
+        // const darkerGreen = "#4fda1b";
 
         if (message.id === id) {
           const nowPlayingTag = document.createElement("div");
 
           // Adds thumbnail green border to currently playing video's link
-          if (message.settings.settingsProgressBar) {
-            link.style.outline = `2px solid ${primaryGreen}`;
-          }
+          // if (message.settings.progressBar) {
+          // link.style.outline = `2px solid ${primaryGreen}`;
+          // }
 
           // Adds 'now playing' tag
           nowPlayingTag.className =

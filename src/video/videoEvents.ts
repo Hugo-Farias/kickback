@@ -37,6 +37,7 @@ const setTime = () => {
   const currentTime = currentVideo.currentTime;
 
   if (currentTime < timeClause) return null;
+  console.log("=>(videoEvents.ts:54) setTime");
 
   const storedTimestamp = data[currentId] ?? fillStamp(currentId);
 
@@ -64,6 +65,7 @@ const restoreTime = (
   id: string,
   storedTime: number,
 ) => {
+  console.log("=>(videoEvents.ts:87) restoreTime");
   if (!id) return console.log("no id");
   // currentVideo.pause();
   if (!data[id]) {
@@ -138,7 +140,7 @@ export const resumeVideo = (message: MessageType) => {
 
     addEvent(video, "pause", () => clearInterval(intervals.play));
 
-    if (message.settings.settingsPausePlayClick) {
+    if (message.settings.pausePlayClick) {
       addEvent(video, "click", onClick);
     }
 

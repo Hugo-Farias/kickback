@@ -12,16 +12,17 @@ let firstRun = true;
 chrome.runtime.onMessage.addListener((message: MessageType) => {
   resumeVideo(message);
 
-  if (message.settings.settingsProgressBar) {
+  console.log(message.settings.progressBar);
+
+  if (message.settings.progressBar) {
     progressBarRender(message);
   }
 
   // Only run once section
   if (!firstRun) return null;
+  firstRun = false;
 
-  if (message.settings.settingsChatStatus) {
+  if (message.settings.chatStatus) {
     closeChat();
   }
-
-  firstRun = false;
 });
