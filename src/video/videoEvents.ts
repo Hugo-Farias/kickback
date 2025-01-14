@@ -33,7 +33,6 @@ const fillStamp = (id: string): Timestamp => {
 };
 
 const setTime = () => {
-  console.log("setTime Atempt");
   if (!currentId) return console.log("no id");
   const currentTime = currentVideo.currentTime;
 
@@ -50,26 +49,23 @@ const setTime = () => {
     },
   };
 
-  console.log("setTime", data);
-
   storeTimestamp(data[currentId]);
 };
-export const removeAllIntervalls = () => {
+
+const removeAllIntervalls = () => {
+  clearTimeout(seekTimeout);
   for (const key of Object.keys(intervals)) {
     clearInterval(intervals[key]);
   }
 };
 
-const onClick = () => {
-  console.log("click");
-  if (currentVideo.paused)
-    currentVideo.play().catch((e) => console.error("video play:", e));
-  else currentVideo.pause();
-};
-
-const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
+const restoreTime = (
+  currentVideo: HTMLVideoElement,
+  id: string,
+  storedTime: number,
+) => {
   if (!id) return console.log("no id");
-  currentVideo.pause();
+  // currentVideo.pause();
   if (!data[id]) {
     console.log("no data");
     currentVideo.currentTime = currentVideo.currentTime++;
@@ -85,17 +81,8 @@ const restoreTime = (currentVideo: HTMLVideoElement, id: string | null) => {
     },
   };
 
-  console.log(data);
-
-  intervals.resume = setInterval(() => {
-    clearTimeout(seekTimeout);
-    if (currentVideo.currentTime >= timeClause) {
-      clearInterval(intervals.resume);
-      return null;
-    }
-    currentVideo.currentTime = data[id].curr;
-    currentVideo.play().then();
-  }, 1000);
+  currentVideo.currentTime = storedTime;
+  currentVideo.play().then();
 };
 
 export const deleteOldFromData = (amount: number) => {
@@ -115,36 +102,46 @@ export const deleteOldFromData = (amount: number) => {
   storeData(localData);
 };
 
-export const resumeVideo = (message: MessageType, firstRun: boolean) => {
+const onPlay = function () {
+  console.log("onPlay");
+  clearInterval(intervals.play);
+  intervals.play = setInterval(setTime, 20000);
+};
+
+const onSeek = function () {
+  console.log("onSeek");
+  clearTimeout(seekTimeout);
+  seekTimeout = setTimeout(setTime, 3000);
+};
+
+const onClick = () => {
+  console.log("click");
+  if (currentVideo.paused)
+    currentVideo.play().catch((e) => console.error("video play:", e));
+  else currentVideo.pause();
+};
+
+export const resumeVideo = (message: MessageType) => {
+  removeAllIntervalls();
   waitForElement<HTMLVideoElement>("video").then((video) => {
-    if (!video) return null;
-    data = getDataFromStorage();
+    if (!video || !message.id) return null;
 
-    currentVideo = video;
     currentId = message.id;
-    console.log(currentId);
+    currentVideo = video;
+    data = getDataFromStorage();
+    console.log(data[message.id]);
 
-    if (firstRun) {
-      console.log("first run");
-      addEvent(video, "play", () => {
-        console.log("onPlay");
-        clearInterval(intervals.play);
-        intervals.play = setInterval(setTime, 2000);
-      });
+    console.log("first run");
+    addEvent(video, "play", onPlay);
 
-      addEvent(video, "seeked", () => {
-        console.log("onSeek");
-        clearTimeout(seekTimeout);
-        seekTimeout = setTimeout(setTime, 2000);
-      });
+    addEvent(video, "seeked", () => onSeek);
 
-      addEvent(video, "pause", () => clearInterval(intervals.play));
+    addEvent(video, "pause", () => clearInterval(intervals.play));
 
-      if (message.settings.settingsPausePlayClick) {
-        addEvent(video, "click", onClick);
-      }
+    if (message.settings.settingsPausePlayClick) {
+      addEvent(video, "click", onClick);
     }
 
-    restoreTime(video, message.id);
+    restoreTime(video, message.id, data[message.id].curr);
   });
 };

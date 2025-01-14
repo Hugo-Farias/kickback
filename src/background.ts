@@ -1,5 +1,4 @@
 import { getIdFromUrl, getSettings } from "./helper.ts";
-// import { init } from "./init.ts";
 
 export const settingsDefaults = {
   settingsProgressBar: true,
@@ -44,6 +43,7 @@ chrome.tabs.onUpdated.addListener(function (
         id: getIdFromUrl(url),
         settings: settings || settingsDefaults,
       };
+
       console.log("msg");
       chrome.tabs.sendMessage(tabId, message).then();
     });
