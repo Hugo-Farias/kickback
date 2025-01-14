@@ -5,18 +5,18 @@ import {
   storeTimestamp,
   waitForElement,
 } from "../helper.ts";
-import { StoredStamps, Timestamp } from "../typeDef.ts";
+import { Timestamp } from "../typeDef.ts";
 import { MessageType } from "../background.ts";
 
 const intervals: { [key: string]: number } = {};
 let seekTimeout: number;
 
-let data: StoredStamps;
+let timestamp: Timestamp;
 
 let currentVideo: HTMLVideoElement;
 let currentId: string | null;
 
-// Time in seconds before resuming video is allowed
+// Time in seconds before saving video time is allowed
 const timeClause = 90;
 
 const fillStamp = (id: string): Timestamp => {
@@ -37,20 +37,16 @@ const setTime = () => {
   const currentTime = currentVideo.currentTime;
 
   if (currentTime < timeClause) return null;
-  console.log("=>(videoEvents.ts:54) setTime");
 
-  const storedTimestamp = data[currentId] ?? fillStamp(currentId);
+  const storedTimestamp = timestamp ?? fillStamp(currentId);
 
-  data = {
-    ...data,
-    [currentId]: {
-      ...storedTimestamp,
-      curr: currentTime,
-      total: currentVideo.duration,
-    },
+  timestamp = {
+    ...storedTimestamp,
+    curr: currentTime,
+    total: currentVideo.duration,
   };
 
-  storeTimestamp(data[currentId]);
+  storeTimestamp(timestamp);
 };
 
 const removeAllIntervalls = () => {
@@ -67,24 +63,18 @@ const restoreTime = (
 ) => {
   console.log("=>(videoEvents.ts:87) restoreTime");
   if (!id) return console.log("no id");
-  // currentVideo.pause();
-  if (!data[id]) {
+  if (!timestamp) {
     console.log("no data");
     currentVideo.currentTime = currentVideo.currentTime++;
-    currentVideo.play().then();
     return null;
   }
 
-  data = {
-    ...data,
-    [id]: {
-      ...data[id],
-      storageTime: Date.now(),
-    },
+  timestamp = {
+    ...timestamp,
+    storageTime: Date.now(),
   };
 
   currentVideo.currentTime = storedTime;
-  currentVideo.play().then();
 };
 
 export const deleteOldFromData = (amount: number) => {
@@ -113,7 +103,7 @@ const onPlay = function () {
 const onSeek = function () {
   console.log("onSeek");
   clearTimeout(seekTimeout);
-  seekTimeout = setTimeout(setTime, 3000);
+  seekTimeout = setTimeout(setTime, 2000);
 };
 
 const onClick = () => {
@@ -130,13 +120,12 @@ export const resumeVideo = (message: MessageType) => {
 
     currentId = message.id;
     currentVideo = video;
-    data = getDataFromStorage();
-    console.log(data[message.id]);
+    timestamp = getDataFromStorage()[message.id];
+    console.log(timestamp);
 
-    console.log("first run");
     addEvent(video, "play", onPlay);
 
-    addEvent(video, "seeked", () => onSeek);
+    addEvent(video, "seeked", onSeek);
 
     addEvent(video, "pause", () => clearInterval(intervals.play));
 
@@ -144,6 +133,6 @@ export const resumeVideo = (message: MessageType) => {
       addEvent(video, "click", onClick);
     }
 
-    restoreTime(video, message.id, data[message.id].curr);
+    restoreTime(video, message.id, timestamp.curr);
   });
 };
