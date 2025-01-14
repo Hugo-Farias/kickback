@@ -10,7 +10,7 @@ let firstRun = true;
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: MessageType) => {
-  resumeVideo(message);
+  resumeVideo(message, firstRun);
 
   console.log(message.settings.progressBar);
 

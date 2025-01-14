@@ -58,16 +58,11 @@ const removeAllIntervalls = () => {
 
 const restoreTime = (
   currentVideo: HTMLVideoElement,
-  id: string,
-  storedTime: number,
+  storedTime: number | null,
 ) => {
   console.log("=>(videoEvents.ts:87) restoreTime");
-  if (!id) return console.log("no id");
-  if (!timestamp) {
-    console.log("no data");
-    currentVideo.currentTime = currentVideo.currentTime++;
-    return null;
-  }
+
+  if (!storedTime) return null;
 
   timestamp = {
     ...timestamp,
@@ -94,18 +89,6 @@ export const deleteOldFromData = (amount: number) => {
   storeData(localData);
 };
 
-const onPlay = function () {
-  console.log("onPlay");
-  clearInterval(intervals.play);
-  intervals.play = setInterval(setTime, 20000);
-};
-
-const onSeek = function () {
-  console.log("onSeek");
-  clearTimeout(seekTimeout);
-  seekTimeout = setTimeout(setTime, 2000);
-};
-
 const onClick = () => {
   console.log("click");
   if (currentVideo.paused)
@@ -113,7 +96,7 @@ const onClick = () => {
   else currentVideo.pause();
 };
 
-export const resumeVideo = (message: MessageType) => {
+export const resumeVideo = (message: MessageType, firstRun: boolean) => {
   removeAllIntervalls();
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video || !message.id) return null;
@@ -123,16 +106,29 @@ export const resumeVideo = (message: MessageType) => {
     timestamp = getDataFromStorage()[message.id];
     console.log(timestamp);
 
-    addEvent(video, "play", onPlay);
+    if (firstRun) {
+      addEvent(video, "play", () => {
+        console.log("onPlay");
+        clearInterval(intervals.play);
+        intervals.play = setInterval(setTime, 20000);
+      });
 
-    addEvent(video, "seeked", onSeek);
+      addEvent(video, "seeked", () => {
+        console.log("onSeek");
+        clearTimeout(seekTimeout);
+        seekTimeout = setTimeout(setTime, 2000);
+      });
 
-    addEvent(video, "pause", () => clearInterval(intervals.play));
+      addEvent(video, "pause", () => {
+        console.log("onPause");
+        clearInterval(intervals.play);
+      });
 
-    if (message.settings.pausePlayClick) {
-      addEvent(video, "click", onClick);
+      if (message.settings.pausePlayClick) {
+        addEvent(video, "click", onClick);
+      }
     }
 
-    restoreTime(video, message.id, timestamp.curr);
+    restoreTime(video, timestamp ? timestamp.curr : null);
   });
 };

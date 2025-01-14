@@ -48,7 +48,7 @@ export const addEvent = (
   trigger: keyof HTMLVideoElementEventMap,
   execute: () => void,
 ) => {
-  element.removeEventListener(trigger, execute);
+  // element.removeEventListener(trigger, execute);
   element.addEventListener(trigger, execute);
 };
 
