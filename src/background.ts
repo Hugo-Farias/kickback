@@ -2,10 +2,10 @@ import { getIdFromUrl, getSettings } from "./helper.ts";
 // import { init } from "./init.ts";
 
 export const settingsDefaults = {
-  progressBar: true,
-  pausePlayClick: false,
-  chatStatus: false,
-  playingBorder: false,
+  settingsProgressBar: true,
+  settingsPlayingBorder: false,
+  settingsPausePlayClick: false,
+  settingsChatStatus: false,
 };
 
 export type SettingsValuesT = typeof settingsDefaults;

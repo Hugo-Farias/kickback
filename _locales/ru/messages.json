@@ -11,6 +11,12 @@
   "settingsPausePlayClick": {
     "message": "Воспроизведение/пауза при нажатии внутри видео"
   },
+  "settingsChatStatus": {
+    "message": "Автоматически закрывать боковую панель чата"
+  },
+  "settingsPlayingBorder": {
+    "message": "Отображать рамку вокруг воспроизводимого видео в разделе «Видео»"
+  },
   "translationMsg": {
     "message": "Переведено"
   },

@@ -14,20 +14,19 @@ let firstRun = true;
 
 // Receive message from background and trigger every url updated event
 chrome.runtime.onMessage.addListener((message: MessageType) => {
-  console.log(firstRun);
   resumeVideo(message, firstRun);
 
   // Clear all intervals related to video
   removeAllIntervalls();
 
-  if (message.settings.progressBar) {
+  if (message.settings.settingsProgressBar) {
     progressBarRender(message);
   }
 
   // Only run once section
   if (!firstRun) return null;
 
-  if (message.settings.chatStatus) {
+  if (message.settings.settingsChatStatus) {
     closeChat();
   }
 

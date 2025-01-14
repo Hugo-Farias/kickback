@@ -37,10 +37,7 @@ const setTime = () => {
   if (!currentId) return console.log("no id");
   const currentTime = currentVideo.currentTime;
 
-  if (currentTime < timeClause) {
-    delete data[currentId];
-    return null;
-  }
+  if (currentTime < timeClause) return null;
 
   const storedTimestamp = data[currentId] ?? fillStamp(currentId);
 
@@ -122,7 +119,6 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
     data = getDataFromStorage();
-    console.log(video.readyState);
 
     currentVideo = video;
     currentId = message.id;
@@ -144,7 +140,7 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
 
       addEvent(video, "pause", () => clearInterval(intervals.play));
 
-      if (message.settings.pausePlayClick) {
+      if (message.settings.settingsPausePlayClick) {
         addEvent(video, "click", onClick);
       }
     }

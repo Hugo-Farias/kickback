@@ -10,5 +10,17 @@
   },
   "settingsPausePlayClick": {
     "message": "Reproducir/Pausar al hacer clic dentro del video"
+  },
+  "settingsChatStatus": {
+    "message": "Cerrar automáticamente la barra lateral del chat"
+  },
+  "settingsPlayingBorder": {
+    "message": "Mostrar borde alrededor del video que se está reproduciendo en la sección \"Más videos\""
+  },
+  "translationMsg": {
+    "message": ""
+  },
+  "translator": {
+    "message": ""
   }
 }

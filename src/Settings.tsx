@@ -1,81 +1,47 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import icon from "./assets/logo_48.png";
-// import { getSettings } from "./helper.ts";
-// import { settingsDefaults, SettingsValuesT } from "./background.ts";
+import Option from "./components/settings/Option.tsx";
+import { getSettings } from "./helper.ts";
+import { SettingsValuesT } from "./background.ts";
+import { settingsDefaults } from "./background.ts";
 
-// const settingsStorageLabel = "settings";
+const settingsStorageLabel = "settings";
+let storeSettingsTimeout: number;
 
-const settingsRender = [
-  {
-    id: "progressBar",
-    // label: chrome.i18n.getMessage("settingsProgressBar"),
-    label: "Show progress bar on 'More Videos' section thumbnails",
-    type: "checkbox",
-    children: {
-      id: "playingBorder",
-      // label: chrome.i18n.getMessage("settingsPlayingBorder"),
-      label: "Display border around currently playing video thumbnail",
-      type: "checkbox",
-      children: null,
-    },
-  },
-  {
-    id: "pausePlayClick",
-    // label: chrome.i18n.getMessage("settingsPausePlayClick"),
-    label: "Play/Pause by clicking inside video",
-    type: "checkbox",
-    children: null,
-  },
-  {
-    id: "chatStatus",
-    // label: chrome.i18n.getMessage("settingsChatStatus"),
-    label: "Save chat sidebar status",
-    type: "checkbox",
-    children: null,
-  },
-] as const;
+// TODO remove block before compile and import settingsDefaults from background
+// const settingsDefaults = {
+//   settingsProgressBar: true,
+//   settingsPlayingBorder: false,
+//   settingsPausePlayClick: false,
+//   settingsChatStatus: false,
+// };
 
-// let storeSettingsTimeout: number;
-export const settingsDefaults = {
-  progressBar: true,
-  pausePlayClick: false,
-  chatStatus: false,
-  playingBorder: false,
-};
+// Block end
 
-export type SettingsValuesT = typeof settingsDefaults;
-
-export type MessageType = {
-  url: string;
-  id: string | null;
-  settings: SettingsValuesT;
-};
-
+// TODO finish revamped ui for settings page
 const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(settingsDefaults);
 
-  // Comment chrome api calls so localhost works during development
+  // Comment block chrome api calls so localhost works during development
 
-  // useEffect(() => {
-  //   getSettings().then((value) => {
-  //     if (value) setOptions(value);
-  //   });
-  // }, []);
-  //
-  // useEffect(() => {
-  //   clearTimeout(storeSettingsTimeout);
-  //
-  //   storeSettingsTimeout = setTimeout(() => {
-  //     chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
-  //   }, 200);
-  // }, [options]);
+  useEffect(() => {
+    getSettings().then((value) => {
+      if (value) setOptions(value);
+    });
+  }, []);
+
+  useEffect(() => {
+    clearTimeout(storeSettingsTimeout);
+
+    storeSettingsTimeout = setTimeout(() => {
+      chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
+    }, 200);
+  }, [options]);
+
+  // Block end
 
   const onCheck = (e: ChangeEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-
-    setOptions((prev) => {
-      return { ...prev, [target.id]: target.checked };
-    });
+    setOptions({ ...options, [e.target.id]: e.target.checked });
   };
 
   return (
@@ -95,27 +61,26 @@ const Settings = function () {
           className={"mx-auto w-full justify-center rounded bg-white/10 py-5"}
         >
           <form className={"mx-auto text-lg contain-content"}>
-            {settingsRender.map((value) => {
-              return (
-                <label
-                  className={
-                    "flex gap-3 px-10 py-2 transition-colors hover:cursor-pointer hover:bg-black/30"
-                  }
-                  htmlFor={value.id}
-                  key={value.id}
-                >
-                  <input
-                    className={"text-black"}
-                    type={value.type}
-                    checked={options[value.id]}
-                    aria-label={value.label}
-                    id={value.id}
-                    onChange={onCheck}
-                  />
-                  {value.label}
-                </label>
-              );
-            })}
+            <Option
+              id={"settingsProgressBar"}
+              onChange={onCheck}
+              checked={options.settingsProgressBar}
+            />
+            <Option
+              id={"settingsPlayingBorder"}
+              onChange={onCheck}
+              checked={options.settingsPlayingBorder}
+            />
+            <Option
+              id={"settingsPausePlayClick"}
+              onChange={onCheck}
+              checked={options.settingsPausePlayClick}
+            />
+            <Option
+              id={"settingsChatStatus"}
+              onChange={onCheck}
+              checked={options.settingsChatStatus}
+            />
           </form>
         </div>
         {/*<footer className={"text-xs"}>*/}
