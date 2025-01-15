@@ -23,9 +23,6 @@ const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(settingsDefaults);
 
   // Comment block chrome api calls so localhost works during development
-
-  console.log(options);
-
   useEffect(() => {
     getSettings().then((value) => {
       if (value) setOptions(value);

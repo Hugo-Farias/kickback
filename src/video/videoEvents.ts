@@ -33,11 +33,11 @@ const fillStamp = (videoEl: HTMLVideoElement, id: string): Timestamp => {
 };
 
 const setTime = () => {
-  console.log("setTime called");
+  // console.log("setTime called");
   const currentTime = currentVideo.currentTime;
 
   if (currentTime < timeClause) return null;
-  console.log("stored");
+  // console.log("stored");
 
   const storedTimestamp = timestamp ?? fillStamp(currentVideo, currentId);
 
@@ -92,8 +92,10 @@ const onClick = (videoEl: HTMLVideoElement) => {
 };
 
 export const resumeVideo = (message: MessageType, firstRun: boolean) => {
+  if (!message.url.includes("videos/")) return null;
   if (currentId === message.id) return null;
-  waitForElement<HTMLVideoElement>("video").then((video) => {
+  // console.log("=>(videoEvents.ts:97) ", "resumeVideo");
+  waitForElement<HTMLVideoElement>("video", false, true).then((video) => {
     if (!message.id) return null;
     if (!video) return null;
 
@@ -106,19 +108,19 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
 
     if (firstRun) {
       addEvent(video, "play", () => {
-        console.log("onPlay");
+        // console.log("onPlay");
         clearInterval(intervals.play);
         intervals.play = setInterval(setTime, 10000);
       });
 
       addEvent(video, "seeked", () => {
-        console.log("onSeek");
+        // console.log("onSeek");
         clearTimeout(seekTimeout);
         seekTimeout = setTimeout(setTime, 2000);
       });
 
       addEvent(video, "pause", () => {
-        console.log("onPause");
+        // console.log("onPause");
         clearInterval(intervals.play);
       });
 
@@ -127,6 +129,7 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
       }
     }
 
+    // TODO compare location.pathname with loaded video url to check if it's the same
     if (!timestamp) {
       // this is so the eventListeners trigger without user interaction on page first load
       video.currentTime = video.currentTime + 0.1;

@@ -19,10 +19,10 @@ export const closeChat = () => {
     //   addEvent(closeChatBtn, "click", logTest);
     // }
 
-    if (!divElement.dataset.chat) return null;
+    if (divElement.dataset.chat === "false") return null;
 
     const chatButton: HTMLButtonElement | null = divElement.querySelector(
-      "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > main > div:nth-of-type(1) > div:nth-of-type(1) > button",
+      ".h-fit.w-fit.cursor-pointer > button",
     );
 
     if (!chatButton) return null;

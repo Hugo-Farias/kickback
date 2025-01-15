@@ -9,33 +9,51 @@ type ElementReturnType<
   L extends boolean = false,
 > = L extends true ? NodeListOf<T> : T;
 
-export const waitForElement = <T extends Element, L extends boolean = false>(
+export const waitForElement = <
+  T extends ElementReturnType<Element>,
+  L extends boolean = false,
+>(
   selector: string,
   getList: L | boolean = false,
+  checkforVideoId = false,
 ): Promise<ElementReturnType<T, L> | null> => {
   let timer: number;
   let clearTimer: number;
   let element: NodeListOf<T> | T | null;
+  let videoId: string | null;
 
   // Wait for element, check for element in 1 second intervals
   return new Promise((resolve) => {
     clearInterval(timer);
     clearTimeout(clearTimer);
+
     timer = setInterval(() => {
+      console.log("waiting for ", selector);
       if (getList) {
-        const temp = document.querySelectorAll<T>(selector);
-        if (temp.length > 0) element = temp;
+        element = document.querySelectorAll<T>(selector);
       } else {
         element = document.querySelector<T>(selector);
       }
 
-      if (element) {
+      if (checkforVideoId) {
+        const linkElement: HTMLLinkElement | null = document.querySelector(
+          'link[rel="canonical"]',
+        );
+        if (linkElement) {
+          videoId = linkElement.href;
+          console.log(videoId);
+          console.log(location.href);
+        }
+      }
+
+      if (element && (checkforVideoId ? videoId === location.href : true)) {
         clearInterval(timer);
         clearTimeout(clearTimer);
         resolve(element as ElementReturnType<T, L>);
       }
-    }, 200);
-    // Timeout after 30 seconds
+    }, 500);
+
+    // Timeout after n seconds
     clearTimer = setTimeout(() => {
       clearInterval(timer);
       resolve(null);

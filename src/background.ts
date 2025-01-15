@@ -21,13 +21,15 @@ let messagesSent = 0;
 
 const sendMsg = function (tabId: number, message: MessageType) {
   console.log(`Attempt ${++messagesSent} to send message`);
-  chrome.tabs.sendMessage(tabId, message).catch(() => {
-    if (messagesSent > 100) {
-      console.error("failed");
-      return null;
-    }
-    sendMsg(tabId, message);
-  });
+  setTimeout(() => {
+    chrome.tabs.sendMessage(tabId, message).catch(() => {
+      if (messagesSent > 100) {
+        console.error("failed");
+        return null;
+      }
+      sendMsg(tabId, message);
+    });
+  }, 100);
 };
 
 // send message to content Scripts every time the url updates
@@ -58,7 +60,7 @@ chrome.tabs.onUpdated.addListener(function (
 
       sendMsg(tabId, message);
     });
-  }, 200);
+  }, 100);
 });
 
 // chrome.webNavigation.onCompleted.addListener((details) => {
