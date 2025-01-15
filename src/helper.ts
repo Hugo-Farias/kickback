@@ -34,12 +34,12 @@ export const waitForElement = <T extends Element, L extends boolean = false>(
         clearTimeout(clearTimer);
         resolve(element as ElementReturnType<T, L>);
       }
-    }, 1000);
+    }, 200);
     // Timeout after 30 seconds
     clearTimer = setTimeout(() => {
       clearInterval(timer);
       resolve(null);
-    }, 3000);
+    }, 10000);
   });
 };
 

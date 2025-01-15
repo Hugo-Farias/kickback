@@ -14,10 +14,10 @@ let seekTimeout: number;
 let timestamp: Timestamp;
 
 let currentVideo: HTMLVideoElement;
-let currentId: string | null;
+let currentId: string;
 
 // Time in seconds before saving video time is allowed
-const timeClause = 30;
+const timeClause = 90;
 
 const fillStamp = (videoEl: HTMLVideoElement, id: string): Timestamp => {
   return {
@@ -33,15 +33,10 @@ const fillStamp = (videoEl: HTMLVideoElement, id: string): Timestamp => {
 };
 
 const setTime = () => {
-  console.log("=>(videoEvents.ts:51) id", currentId);
-  console.log("=>(videoEvents.ts:52) videoEl", currentVideo.currentTime);
-
-  if (!currentId) return console.log("no id");
+  console.log("setTime called");
   const currentTime = currentVideo.currentTime;
 
-  if (currentTime < timeClause && currentTime > 10) {
-    return null;
-  }
+  if (currentTime < timeClause) return null;
   console.log("stored");
 
   const storedTimestamp = timestamp ?? fillStamp(currentVideo, currentId);
@@ -69,6 +64,8 @@ const restoreTime = (currentVideo: HTMLVideoElement, storedTime: number) => {
   };
 
   currentVideo.currentTime = storedTime;
+  // console.log(currentVideo.currentTime, storedTime);
+  return null;
 };
 
 export const deleteOldFromData = (amount: number) => {
@@ -99,9 +96,10 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!message.id) return null;
     if (!video) return null;
+
     removeAllIntervalls();
 
-    video.pause();
+    // video.pause();
     currentId = message.id;
     currentVideo = video;
     timestamp = getDataFromStorage()[message.id];
@@ -129,9 +127,12 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
       }
     }
 
-    video.play().catch((e) => console.error("video play:", e));
+    if (!timestamp) {
+      // this is so the eventListeners trigger without user interaction on page first load
+      video.currentTime = video.currentTime + 0.1;
+      return null;
+    }
 
-    if (!timestamp) return null;
     restoreTime(video, timestamp.curr);
   });
 };

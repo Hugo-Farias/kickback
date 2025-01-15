@@ -17,17 +17,29 @@ export type MessageType = {
 
 let msgTimeout: number;
 
-let firstRun = false;
+let messagesSent = 0;
 
-// TODO find a better way to init on page load
+const sendMsg = function (tabId: number, message: MessageType) {
+  console.log(`Attempt ${++messagesSent} to send message`);
+  chrome.tabs.sendMessage(tabId, message).catch(() => {
+    if (messagesSent > 100) {
+      console.error("failed");
+      return null;
+    }
+    sendMsg(tabId, message);
+  });
+};
+
 // send message to content Scripts every time the url updates
 chrome.tabs.onUpdated.addListener(function (
   tabId: number,
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab,
 ) {
-  if (!firstRun && changeInfo.status !== "complete") return;
-  firstRun = true;
+  console.log(changeInfo);
+  if (changeInfo.status !== "complete") return;
+
+  messagesSent = 0;
 
   const url = tab.url;
   if (!url) return;
@@ -44,10 +56,9 @@ chrome.tabs.onUpdated.addListener(function (
         settings: settings || settingsDefaults,
       };
 
-      console.log("msg");
-      chrome.tabs.sendMessage(tabId, message).then();
+      sendMsg(tabId, message);
     });
-  }, 400);
+  }, 200);
 });
 
 // chrome.webNavigation.onCompleted.addListener((details) => {
