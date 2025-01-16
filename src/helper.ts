@@ -9,6 +9,7 @@ type ElementReturnType<
   L extends boolean = false,
 > = L extends true ? NodeListOf<T> : T;
 
+// TODO waitForElement returning null before timeout
 export const waitForElement = <
   T extends ElementReturnType<Element>,
   L extends boolean = false,
@@ -41,10 +42,11 @@ export const waitForElement = <
         );
         if (linkElement) {
           videoId = linkElement.href;
-          console.log(videoId);
-          console.log(location.href);
         }
       }
+
+      console.log(videoId);
+      console.log(location.href);
 
       if (element && (checkforVideoId ? videoId === location.href : true)) {
         clearInterval(timer);

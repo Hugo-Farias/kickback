@@ -9,6 +9,10 @@ export const progressBarRender = (message: MessageType) => {
 
   waitForElement<HTMLAnchorElement, true>("section > div > a[href]", true).then(
     (vidLinks) => {
+      console.log(
+        "vidlinks debug",
+        document.querySelector("section > div > a[href]"),
+      );
       if (!vidLinks) return null;
 
       vidLinks.forEach((link) => {
