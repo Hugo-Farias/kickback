@@ -23,7 +23,7 @@ const sendMsg = function (tabId: number, message: MessageType) {
   console.log(`Attempt ${++messagesSent} to send message`);
   setTimeout(() => {
     chrome.tabs.sendMessage(tabId, message).catch(() => {
-      if (messagesSent > 100) {
+      if (messagesSent > 500) {
         console.error("failed");
         return null;
       }
@@ -60,7 +60,7 @@ chrome.tabs.onUpdated.addListener(function (
 
       sendMsg(tabId, message);
     });
-  }, 100);
+  }, 200);
 });
 
 // chrome.webNavigation.onCompleted.addListener((details) => {

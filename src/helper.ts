@@ -16,7 +16,6 @@ export const waitForElement = <
 >(
   selector: string,
   getList: L | boolean = false,
-  checkforVideoId = false,
 ): Promise<ElementReturnType<T, L> | null> => {
   let timer: number;
   let clearTimer: number;
@@ -36,24 +35,23 @@ export const waitForElement = <
         element = document.querySelector<T>(selector);
       }
 
-      if (checkforVideoId) {
-        const linkElement: HTMLLinkElement | null = document.querySelector(
-          'link[rel="canonical"]',
-        );
-        if (linkElement) {
-          videoId = linkElement.href;
-        }
+      const linkElement = document.querySelector<HTMLLinkElement>(
+        'link[rel="canonical"]',
+      );
+      if (linkElement) {
+        videoId = linkElement.href;
       }
 
       console.log(videoId);
       console.log(location.href);
 
-      if (element && (checkforVideoId ? videoId === location.href : true)) {
+      if (element && videoId === location.href) {
+        console.log("=>(helper.ts:50) ", document.readyState);
         clearInterval(timer);
         clearTimeout(clearTimer);
         resolve(element as ElementReturnType<T, L>);
       }
-    }, 500);
+    }, 1000);
 
     // Timeout after n seconds
     clearTimer = setTimeout(() => {
@@ -63,12 +61,13 @@ export const waitForElement = <
   });
 };
 
+// TODO remove element before adding new one
 export const addEvent = (
   element: HTMLElement,
   trigger: keyof HTMLVideoElementEventMap,
   execute: () => void,
 ) => {
-  // element.removeEventListener(trigger, execute);
+  element.removeEventListener(trigger, execute);
   element.addEventListener(trigger, execute);
 };
 

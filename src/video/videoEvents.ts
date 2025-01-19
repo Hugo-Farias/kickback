@@ -91,13 +91,13 @@ const onClick = (videoEl: HTMLVideoElement) => {
   videoEl.pause();
 };
 
-export const resumeVideo = (message: MessageType, firstRun: boolean) => {
+export const resumeVideo = (message: MessageType) => {
   if (!message.url.includes("videos/")) return null;
   if (currentId === message.id) return null;
-  // console.log("=>(videoEvents.ts:97) ", "resumeVideo");
-  waitForElement<HTMLVideoElement>("video", false, true).then((video) => {
-    if (!message.id) return null;
+
+  waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
+    if (!message.id) return null;
 
     removeAllIntervalls();
 
@@ -106,28 +106,28 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
     currentVideo = video;
     timestamp = getDataFromStorage()[message.id];
 
-    if (firstRun) {
-      addEvent(video, "play", () => {
-        // console.log("onPlay");
-        clearInterval(intervals.play);
-        intervals.play = setInterval(setTime, 10000);
-      });
+    // if (firstRun) {
+    addEvent(video, "play", () => {
+      console.log("onPlay");
+      clearInterval(intervals.play);
+      intervals.play = setInterval(setTime, 10000);
+    });
 
-      addEvent(video, "seeked", () => {
-        // console.log("onSeek");
-        clearTimeout(seekTimeout);
-        seekTimeout = setTimeout(setTime, 2000);
-      });
+    addEvent(video, "seeked", () => {
+      console.log("onSeek");
+      clearTimeout(seekTimeout);
+      seekTimeout = setTimeout(setTime, 2000);
+    });
 
-      addEvent(video, "pause", () => {
-        // console.log("onPause");
-        clearInterval(intervals.play);
-      });
+    addEvent(video, "pause", () => {
+      console.log("onPause");
+      clearInterval(intervals.play);
+    });
 
-      if (message.settings.pausePlayClick) {
-        addEvent(video, "click", () => onClick(video));
-      }
+    if (message.settings.pausePlayClick) {
+      addEvent(video, "click", () => onClick(video));
     }
+    // }
 
     // TODO compare location.pathname with loaded video url to check if it's the same
     if (!timestamp) {

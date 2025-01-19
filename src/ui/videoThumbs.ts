@@ -1,25 +1,30 @@
 import { getDataFromStorage, getIdFromUrl, waitForElement } from "../helper.ts";
-import { MessageType } from "../background.ts";
 
 const primaryGreen = "#53FC18";
 // const darkerGreen = "#4fda1b";
 
-export const progressBarRender = (message: MessageType) => {
+export const progressBarRender = () => {
   const data = getDataFromStorage();
 
   waitForElement<HTMLAnchorElement, true>("section > div > a[href]", true).then(
     (vidLinks) => {
-      console.log(
-        "vidlinks debug",
-        document.querySelector("section > div > a[href]"),
-      );
       if (!vidLinks) return null;
+
+      const loadedVideo = document.querySelector<HTMLLinkElement>(
+        'link[rel="canonical"]',
+      );
+
+      let loadedVideoId: string;
+
+      // console.log("=>(videoThumbs.ts:25) loadedVideo.src", loadedVideo.href);
+
+      if (loadedVideo) loadedVideoId = getIdFromUrl(loadedVideo.href) || "";
 
       vidLinks.forEach((link) => {
         const idFromUrl = getIdFromUrl(link.href);
         if (!idFromUrl) return null;
 
-        if (message.id === idFromUrl) {
+        if (loadedVideoId === idFromUrl) {
           const nowPlayingTag = document.createElement("div");
 
           // Adds 'now playing' tag
@@ -47,6 +52,7 @@ export const progressBarRender = (message: MessageType) => {
         link.style.position = "relative";
 
         link.appendChild(div);
+        // });
       });
     },
   );
