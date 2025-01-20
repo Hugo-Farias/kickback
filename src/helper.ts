@@ -9,7 +9,6 @@ type ElementReturnType<
   L extends boolean = false,
 > = L extends true ? NodeListOf<T> : T;
 
-// TODO waitForElement returning null before timeout
 export const waitForElement = <
   T extends ElementReturnType<Element>,
   L extends boolean = false,
@@ -20,7 +19,7 @@ export const waitForElement = <
   let timer: number;
   let clearTimer: number;
   let element: NodeListOf<T> | T | null;
-  let videoId: string | null;
+  let pageId: string | null;
 
   // Wait for element, check for element in 1 second intervals
   return new Promise((resolve) => {
@@ -39,14 +38,14 @@ export const waitForElement = <
         'link[rel="canonical"]',
       );
       if (linkElement) {
-        videoId = linkElement.href;
+        pageId = linkElement.href;
       }
 
-      console.log(videoId);
+      console.log(pageId);
       console.log(location.href);
 
-      if (element && videoId === location.href) {
-        console.log("=>(helper.ts:50) ", document.readyState);
+      console.log("=>(helper.ts:48) ", document.readyState);
+      if (element && pageId === location.href) {
         clearInterval(timer);
         clearTimeout(clearTimer);
         resolve(element as ElementReturnType<T, L>);
@@ -61,7 +60,6 @@ export const waitForElement = <
   });
 };
 
-// TODO remove element before adding new one
 export const addEvent = (
   element: HTMLElement,
   trigger: keyof HTMLVideoElementEventMap,

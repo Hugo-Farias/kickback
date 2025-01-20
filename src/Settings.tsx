@@ -1,14 +1,10 @@
 import { ChangeEvent, useState, useEffect } from "react";
 import icon from "./assets/logo_48.png";
 import Option from "./components/settings/Option.tsx";
-import { getSettings } from "./helper.ts";
 import { SettingsValuesT } from "./background.ts";
 import { settingsDefaults } from "./background.ts";
+import { getSettings } from "./helper.ts";
 
-const settingsStorageLabel = "settings";
-let storeSettingsTimeout: number;
-
-// TODO remove block before compile and import settingsDefaults from background
 // const settingsDefaults = {
 //   progressBar: true,
 //   playingBorder: false,
@@ -16,9 +12,9 @@ let storeSettingsTimeout: number;
 //   chatStatus: false,
 // };
 
-// Block end
+const settingsStorageLabel = "settings";
+let storeSettingsTimeout: number;
 
-// TODO finish revamped ui for settings page
 const Settings = function () {
   const [options, setOptions] = useState<SettingsValuesT>(settingsDefaults);
 
@@ -36,8 +32,6 @@ const Settings = function () {
       chrome.storage.local.set({ [settingsStorageLabel]: options }).then();
     }, 200);
   }, [options]);
-
-  // Block end
 
   const onCheck = (e: ChangeEvent<HTMLInputElement>) => {
     setOptions({ ...options, [e.target.id]: e.target.checked });
@@ -59,7 +53,7 @@ const Settings = function () {
         <div
           className={"mx-auto w-full justify-center rounded bg-white/10 py-5"}
         >
-          <form className={"mx-auto text-lg contain-content"}>
+          <form className={"mx-auto contain-content"}>
             <Option
               id={"progressBar"}
               onChange={onCheck}
@@ -77,16 +71,16 @@ const Settings = function () {
             />
           </form>
         </div>
-        {/*<footer className={"text-xs"}>*/}
-        {/*  {chrome.i18n.getMessage("translationMsg")}{" "}*/}
-        {/*  <a*/}
-        {/*    className={"text-blue-500 underline hover:text-blue-200"}*/}
-        {/*    target={"_blank"}*/}
-        {/*    href={chrome.i18n.getMessage("translatorLink")}*/}
-        {/*  >*/}
-        {/*    {chrome.i18n.getMessage("translator")}*/}
-        {/*  </a>*/}
-        {/*</footer>*/}
+        <footer className={"text-xl"}>
+          {chrome.i18n.getMessage("translationMsg")}{" "}
+          <a
+            className={"text-blue-500 underline hover:text-blue-200"}
+            target={"_blank"}
+            href={chrome.i18n.getMessage("translatorLink")}
+          >
+            {chrome.i18n.getMessage("translator")}
+          </a>
+        </footer>
       </div>
     </div>
   );

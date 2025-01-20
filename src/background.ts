@@ -20,13 +20,13 @@ let msgTimeout: number;
 let messagesSent = 0;
 
 const sendMsg = function (tabId: number, message: MessageType) {
-  console.log(`Attempt ${++messagesSent} to send message`);
   setTimeout(() => {
     chrome.tabs.sendMessage(tabId, message).catch(() => {
-      if (messagesSent > 500) {
+      if (++messagesSent > 500) {
         console.error("failed");
         return null;
       }
+      console.log("Attempt #", messagesSent, "to send message");
       sendMsg(tabId, message);
     });
   }, 100);

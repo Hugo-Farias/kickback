@@ -1,8 +1,3 @@
-// const logTest = function () {
-//   const firstDiv = document.querySelector<HTMLDivElement>("body > div");
-// console.log("clicked");
-// };
-
 import { waitForElement } from "../helper.ts";
 
 export const closeChat = () => {

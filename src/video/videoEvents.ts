@@ -85,6 +85,23 @@ export const deleteOldFromData = (amount: number) => {
   storeData(localData);
 };
 
+const onPlay = () => {
+  console.log("onPlay");
+  clearInterval(intervals.play);
+  intervals.play = setInterval(setTime, 10000);
+};
+
+const onSeeked = function () {
+  console.log("onSeek");
+  clearTimeout(seekTimeout);
+  seekTimeout = setTimeout(setTime, 2000);
+};
+
+const onPause = () => {
+  console.log("onPause");
+  clearInterval(intervals.play);
+};
+
 const onClick = (videoEl: HTMLVideoElement) => {
   // console.log("click");
   if (videoEl.paused) return null;
@@ -92,7 +109,8 @@ const onClick = (videoEl: HTMLVideoElement) => {
 };
 
 export const resumeVideo = (message: MessageType) => {
-  if (!message.url.includes("videos/")) return null;
+  // if (!message.url.includes("/videos/")) return null;
+  if (location.href.split("/")[4] !== "videos") return null;
   if (currentId === message.id) return null;
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
@@ -107,29 +125,17 @@ export const resumeVideo = (message: MessageType) => {
     timestamp = getDataFromStorage()[message.id];
 
     // if (firstRun) {
-    addEvent(video, "play", () => {
-      console.log("onPlay");
-      clearInterval(intervals.play);
-      intervals.play = setInterval(setTime, 10000);
-    });
+    addEvent(video, "play", onPlay);
 
-    addEvent(video, "seeked", () => {
-      console.log("onSeek");
-      clearTimeout(seekTimeout);
-      seekTimeout = setTimeout(setTime, 2000);
-    });
+    addEvent(video, "seeked", onSeeked);
 
-    addEvent(video, "pause", () => {
-      console.log("onPause");
-      clearInterval(intervals.play);
-    });
+    addEvent(video, "pause", onPause);
 
     if (message.settings.pausePlayClick) {
       addEvent(video, "click", () => onClick(video));
     }
     // }
 
-    // TODO compare location.pathname with loaded video url to check if it's the same
     if (!timestamp) {
       // this is so the eventListeners trigger without user interaction on page first load
       video.currentTime = video.currentTime + 0.1;
