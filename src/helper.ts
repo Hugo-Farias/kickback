@@ -27,7 +27,6 @@ export const waitForElement = <
     clearTimeout(clearTimer);
 
     timer = setInterval(() => {
-      console.log("waiting for ", selector);
       if (getList) {
         element = document.querySelectorAll<T>(selector);
       } else {
@@ -41,10 +40,6 @@ export const waitForElement = <
         pageId = linkElement.href;
       }
 
-      console.log(pageId);
-      console.log(location.href);
-
-      console.log("=>(helper.ts:48) ", document.readyState);
       if (element && pageId === location.href) {
         clearInterval(timer);
         clearTimeout(clearTimer);

@@ -1,5 +1,7 @@
 import { waitForElement } from "../helper.ts";
 
+// TODO implement new features
+
 export const closeChat = () => {
   waitForElement<HTMLDivElement>("body > div").then((divElement) => {
     if (!divElement) return null;

@@ -16,8 +16,6 @@ export const progressBarRender = () => {
 
       let loadedVideoId: string;
 
-      // console.log("=>(videoThumbs.ts:25) loadedVideo.src", loadedVideo.href);
-
       if (loadedVideo) loadedVideoId = getIdFromUrl(loadedVideo.href) || "";
 
       vidLinks.forEach((link) => {

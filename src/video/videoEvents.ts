@@ -68,23 +68,6 @@ const restoreTime = (currentVideo: HTMLVideoElement, storedTime: number) => {
   return null;
 };
 
-export const deleteOldFromData = (amount: number) => {
-  const localData = getDataFromStorage();
-  const dataKeys = Object.keys(localData);
-
-  if (dataKeys.length < amount * 2) return null;
-
-  const keys = dataKeys
-    .sort((a, b) => localData[b].storageTime - localData[a].storageTime)
-    .reverse();
-
-  for (let i = 0; i < Math.ceil(amount); i++) {
-    delete localData[keys[i]];
-  }
-
-  storeData(localData);
-};
-
 const onPlay = () => {
   console.log("onPlay");
   clearInterval(intervals.play);
@@ -109,9 +92,10 @@ const onClick = (videoEl: HTMLVideoElement) => {
 };
 
 export const resumeVideo = (message: MessageType) => {
-  // if (!message.url.includes("/videos/")) return null;
   if (location.href.split("/")[4] !== "videos") return null;
   if (currentId === message.id) return null;
+
+  forceVideoQuality("1080");
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
@@ -119,12 +103,11 @@ export const resumeVideo = (message: MessageType) => {
 
     removeAllIntervalls();
 
-    // video.pause();
+    video.pause();
     currentId = message.id;
     currentVideo = video;
     timestamp = getDataFromStorage()[message.id];
 
-    // if (firstRun) {
     addEvent(video, "play", onPlay);
 
     addEvent(video, "seeked", onSeeked);
@@ -134,7 +117,6 @@ export const resumeVideo = (message: MessageType) => {
     if (message.settings.pausePlayClick) {
       addEvent(video, "click", () => onClick(video));
     }
-    // }
 
     if (!timestamp) {
       // this is so the eventListeners trigger without user interaction on page first load
@@ -144,4 +126,29 @@ export const resumeVideo = (message: MessageType) => {
 
     restoreTime(video, timestamp.curr);
   });
+};
+
+export const deleteOldFromData = (amount: number) => {
+  const localData = getDataFromStorage();
+  const dataKeys = Object.keys(localData);
+
+  if (dataKeys.length < amount * 2) return null;
+
+  const keys = dataKeys
+    .sort((a, b) => localData[b].storageTime - localData[a].storageTime)
+    .reverse();
+
+  for (let i = 0; i < Math.ceil(amount); i++) {
+    delete localData[keys[i]];
+  }
+
+  storeData(localData);
+};
+
+type VideoQualityT = "160" | "360" | "480" | "720" | "1080" | "0";
+
+export const forceVideoQuality = (videoQuality: VideoQualityT) => {
+  // console.log(document.querySelector('div[id^="radix-:"]').textContent);
+
+  document.cookie = `stream_quality_cookie=${videoQuality}; path=/;`;
 };
