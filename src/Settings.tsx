@@ -41,7 +41,7 @@ const Settings = function () {
     <div className={"bg-[#141517] py-10"}>
       <div
         className={
-          "mx-auto h-dvh max-w-screen-sm items-center space-y-6 font-inter text-gray-100"
+          "mx-auto h-dvh max-w-screen-sm items-center space-y-6 font-inter text-stone-300"
         }
       >
         <div className={"flex items-center gap-5"}>

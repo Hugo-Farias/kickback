@@ -91,18 +91,25 @@ const onClick = (videoEl: HTMLVideoElement) => {
   videoEl.pause();
 };
 
-export const resumeVideo = (message: MessageType) => {
-  if (location.href.split("/")[4] !== "videos") return null;
+export const resumeVideo = (message: MessageType, firstRun: boolean) => {
   if (currentId === message.id) return null;
 
-  forceVideoQuality("1080");
+  // forceVideoQuality("720");
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
+
+    if (message.settings.pausePlayClick && firstRun) {
+      addEvent(video, "click", onClick.bind(null, video));
+    }
+
     if (!message.id) return null;
+
+    if (location.href.split("/")[4] !== "videos") return null;
 
     removeAllIntervalls();
 
+    //TODO For testing only, remember to remove this before release
     video.pause();
     currentId = message.id;
     currentVideo = video;
@@ -113,10 +120,6 @@ export const resumeVideo = (message: MessageType) => {
     addEvent(video, "seeked", onSeeked);
 
     addEvent(video, "pause", onPause);
-
-    if (message.settings.pausePlayClick) {
-      addEvent(video, "click", () => onClick(video));
-    }
 
     if (!timestamp) {
       // this is so the eventListeners trigger without user interaction on page first load

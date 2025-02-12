@@ -2,7 +2,6 @@ import { getIdFromUrl, getSettings } from "./helper.ts";
 
 export const settingsDefaults = {
   progressBar: true,
-  playingBorder: false,
   pausePlayClick: false,
   chatStatus: false,
 };
