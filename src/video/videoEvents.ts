@@ -69,19 +69,19 @@ const restoreTime = (currentVideo: HTMLVideoElement, storedTime: number) => {
 };
 
 const onPlay = () => {
-  console.log("onPlay");
+  // console.log("onPlay");
   clearInterval(intervals.play);
   intervals.play = setInterval(setTime, 10000);
 };
 
 const onSeeked = function () {
-  console.log("onSeek");
+  // console.log("onSeek");
   clearTimeout(seekTimeout);
   seekTimeout = setTimeout(setTime, 2000);
 };
 
 const onPause = () => {
-  console.log("onPause");
+  // console.log("onPause");
   clearInterval(intervals.play);
 };
 
@@ -93,8 +93,6 @@ const onClick = (videoEl: HTMLVideoElement) => {
 
 export const resumeVideo = (message: MessageType, firstRun: boolean) => {
   if (currentId === message.id) return null;
-
-  // forceVideoQuality("720");
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
@@ -109,11 +107,10 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
 
     removeAllIntervalls();
 
-    //TODO For testing only, remember to remove this before release
-    video.pause();
     currentId = message.id;
     currentVideo = video;
     timestamp = getDataFromStorage()[message.id];
+    // console.log(self.document);
 
     addEvent(video, "play", onPlay);
 
@@ -148,10 +145,10 @@ export const deleteOldFromData = (amount: number) => {
   storeData(localData);
 };
 
-type VideoQualityT = "160" | "360" | "480" | "720" | "1080" | "0";
-
-export const forceVideoQuality = (videoQuality: VideoQualityT) => {
-  // console.log(document.querySelector('div[id^="radix-:"]').textContent);
-
-  document.cookie = `stream_quality_cookie=${videoQuality}; path=/;`;
-};
+// type VideoQualityT = "160" | "360" | "480" | "720" | "1080" | "0";
+//
+// export const forceVideoQuality = (videoQuality: VideoQualityT) => {
+//   // console.log(document.querySelector('div[id^="radix-:"]').textContent);
+//
+//   document.cookie = `stream_quality_cookie=${videoQuality}; path=/;`;
+// };
