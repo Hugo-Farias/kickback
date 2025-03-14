@@ -4,7 +4,6 @@ export const settingsDefaults = {
   progressBar: true,
   pausePlayClick: false,
   chatStatus: false,
-  over18Notice: true,
 };
 
 export type SettingsValuesT = typeof settingsDefaults;
