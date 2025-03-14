@@ -38,11 +38,9 @@ chrome.tabs.onUpdated.addListener(function (
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab,
 ) {
-  console.log(changeInfo);
+  //console.log(changeInfo);
   if (!tab.url?.includes("kick.com") && changeInfo.status !== "complete")
     return;
-
-  console.log(changeInfo);
 
   messagesSent = 0;
 
