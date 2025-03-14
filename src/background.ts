@@ -4,6 +4,7 @@ export const settingsDefaults = {
   progressBar: true,
   pausePlayClick: false,
   chatStatus: false,
+  over18Notice: true,
 };
 
 export type SettingsValuesT = typeof settingsDefaults;
@@ -38,7 +39,10 @@ chrome.tabs.onUpdated.addListener(function (
   tab: chrome.tabs.Tab,
 ) {
   console.log(changeInfo);
-  if (changeInfo.status !== "complete") return;
+  if (!tab.url?.includes("kick.com") && changeInfo.status !== "complete")
+    return;
+
+  console.log(changeInfo);
 
   messagesSent = 0;
 

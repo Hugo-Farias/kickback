@@ -17,6 +17,9 @@
   "playingBorder": {
     "message": "Mostrar borde alrededor del video que se está reproduciendo en la sección \"Más videos\""
   },
+  "over18Notice": {
+    "message": "Eliminar automáticamente el aviso de mayores de 18 años"
+  },
   "translationMsg": {
     "message": ""
   },

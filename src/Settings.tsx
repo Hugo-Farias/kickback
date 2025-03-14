@@ -69,6 +69,11 @@ const Settings = function () {
               onChange={onCheck}
               checked={options.chatStatus}
             />
+            <Option
+              id={"over18Notice"}
+              onChange={onCheck}
+              checked={options.over18Notice}
+            />
           </form>
         </div>
         <footer className={"text-xl"}>

@@ -107,3 +107,12 @@ export const getSettings = (): Promise<SettingsValuesT> => {
       .then((value) => value[settingsStorageLabel]),
   );
 };
+
+export const getCookies = (key: string, fallback: string): string => {
+  return (
+    document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(`${key}=`))
+      ?.split("=")[1] || fallback
+  );
+};

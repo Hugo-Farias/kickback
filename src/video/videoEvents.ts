@@ -1,5 +1,6 @@
 import {
   addEvent,
+  getCookies,
   getDataFromStorage,
   storeData,
   storeTimestamp,
@@ -96,6 +97,25 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
+
+    const over18Notice: HTMLDivElement | null = document.querySelector(
+      "#injected-channel-player > div.absolute",
+    );
+
+    if (message.settings.over18Notice && over18Notice) {
+      // remove over 18 notice
+      if (over18Notice) {
+        console.log("18+ notice removed");
+
+        over18Notice.classList.add("hidden");
+
+        // video.volume = 0.1;
+        const volume = getCookies("volume", "1");
+        console.log("=>(videoEvents.ts:113) volume", volume);
+        video.muted = false;
+        video.volume = Number(volume);
+      }
+    }
 
     if (message.settings.pausePlayClick && firstRun) {
       addEvent(video, "click", onClick.bind(null, video));

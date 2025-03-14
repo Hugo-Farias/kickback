@@ -17,6 +17,9 @@
   "playingBorder": {
     "message": "Exibir borda ao redor do vídeo que está sendo reproduzido na seção \"Mais vídeos\""
   },
+  "over18Notice": {
+    "message": "Remover automaticamente aviso de 18+"
+  },
   "translationMsg": {
     "message": ""
   },

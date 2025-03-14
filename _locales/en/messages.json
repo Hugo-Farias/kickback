@@ -17,6 +17,9 @@
   "playingBorder": {
     "message": "Display border around currently playing video in \"More Videos\" section"
   },
+  "over18Notice": {
+    "message": "Automatically remove 18+ notice"
+  },
   "translationMsg": {
     "message": ""
   },
