@@ -25,7 +25,7 @@ const sendMsg = function (tabId: number, message: MessageType) {
         console.error("failed");
         return null;
       }
-      console.log("Attempt #", messagesSent, "to send message");
+      console.log("Kickback: attempt", messagesSent, "to send message");
       sendMsg(tabId, message);
     });
   }, 100);

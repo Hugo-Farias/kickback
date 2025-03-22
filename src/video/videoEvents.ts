@@ -14,7 +14,7 @@ let seekTimeout: number;
 let timestamp: Timestamp;
 
 let currentVideo: HTMLVideoElement;
-let currentId: string;
+let currentId: string | null;
 
 // Time in seconds before saving video time is allowed
 const timeClause = 90;
@@ -33,6 +33,7 @@ const fillStamp = (videoEl: HTMLVideoElement, id: string): Timestamp => {
 };
 
 const setTime = () => {
+  if (!currentId) return null;
   // console.log("setTime called");
   const currentTime = currentVideo.currentTime;
 
@@ -92,7 +93,8 @@ const onClick = (videoEl: HTMLVideoElement) => {
 };
 
 export const resumeVideo = (message: MessageType, firstRun: boolean) => {
-  if (currentId === message.id) return null;
+  if (currentId === message.id) return null; // Prevents running multiple instances on the same page
+  currentId = message.id;
 
   waitForElement<HTMLVideoElement>("video").then((video) => {
     if (!video) return null;
@@ -100,14 +102,11 @@ export const resumeVideo = (message: MessageType, firstRun: boolean) => {
     if (message.settings.pausePlayClick && firstRun) {
       addEvent(video, "click", onClick.bind(null, video));
     }
-
     if (!message.id) return null;
 
     if (location.href.split("/")[4] !== "videos") return null;
 
     removeAllIntervalls();
-
-    currentId = message.id;
     currentVideo = video;
     timestamp = getDataFromStorage()[message.id];
     // console.log(self.document);
