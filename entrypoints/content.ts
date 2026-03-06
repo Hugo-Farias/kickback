@@ -5,7 +5,7 @@ const devFunc = (video: HTMLVideoElement) => {
 
   setTimeout(() => {
     video.pause();
-  }, 3000);
+  }, 500);
 
   return true;
 };
@@ -15,35 +15,41 @@ export default defineContentScript({
   runAt: "document_idle",
   main() {
     console.clear();
-    const url = window.location.href;
-    if (!url.includes("videos/")) return;
+    let url = "";
     // const parsedUrl = new URL(url);
     clog("init 🟢");
 
-    // TODO: Find a way to detect url changes
     window.navigation.addEventListener("navigate", () => {
       setTimeout(() => {
         clog("popstate event detected, re-initializing...");
-        clog("URL", url);
-        clog("window.location.href ==>", window.location.href);
+        if (window.location.href === url) {
+          clog("navigate event detected, but URL is the same, ignoring...");
+          return;
+        }
+
+        clog("URL", url, "=>", window.location.href);
+
+        url = window.location.href;
+
+        if (!url.includes("videos/")) return;
+
+        until(() => {
+          clog("checking if document is ready...");
+          const loadUrl = document.querySelector<HTMLLinkElement>(
+            "link[rel='canonical']",
+          );
+          if (!loadUrl) return;
+          if (loadUrl.href !== url) return;
+          if (document.readyState !== "complete") return;
+
+          const video = document.querySelector<HTMLVideoElement>("video");
+          if (video?.readyState !== 4) return;
+
+          clog("document is ready ✅");
+          devFunc(video);
+          return true;
+        }, 500);
       }, 500);
     });
-
-    until(() => {
-      clog("checking if document is ready...");
-      const loadUrl = document.querySelector<HTMLLinkElement>(
-        "link[rel='canonical']",
-      );
-      if (!loadUrl) return;
-      if (loadUrl.href !== url) return;
-      if (document.readyState !== "complete") return;
-
-      const video = document.querySelector<HTMLVideoElement>("video");
-      if (video?.readyState !== 4) return;
-
-      clog("document is ready ✅");
-      devFunc(video);
-      return true;
-    }, 500);
   },
 });

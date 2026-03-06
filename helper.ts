@@ -20,7 +20,6 @@ export const until = (fn: () => boolean | undefined, delay = 300) => {
 
   const id = setInterval(() => {
     count++;
-    console.log("count ==>", count);
 
     if (count >= 100) {
       clearInterval(id);
