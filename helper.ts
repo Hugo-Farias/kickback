@@ -14,8 +14,22 @@ export const wlog = (...content: Parameters<typeof warn>) => {
   warn(logPrefix, ...content);
 };
 
-export const until = (fn: () => boolean | undefined, delay = 100) => {
+// Wait until the function returns true, then clear the interval
+export const until = (fn: () => boolean | undefined, delay = 300) => {
+  let count = 0;
+
   const id = setInterval(() => {
-    if (fn()) clearInterval(id);
+    count++;
+    console.log("count ==>", count);
+
+    if (count >= 100) {
+      clearInterval(id);
+      elog("until: function did not return true within the specified attempts");
+    }
+
+    if (fn()) {
+      clearInterval(id);
+      return;
+    }
   }, delay);
 };
