@@ -1,3 +1,5 @@
+import type { StoredData } from "./types";
+
 const { log, warn, error } = console;
 
 const logPrefix = "kickback:";
@@ -31,4 +33,14 @@ export const until = (fn: () => boolean | undefined, delay = 300) => {
       return;
     }
   }, delay);
+};
+
+const getVideoId = (url: string) => {
+  const urlList = url.split("/");
+  return urlList[urlList.length - 1];
+};
+
+export const getCacheData = (url: string) => {
+  const data: StoredData = JSON.parse(localStorage.getItem("kb2stamps") || "");
+  return data[getVideoId(url)];
 };
