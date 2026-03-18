@@ -5,6 +5,7 @@ export type Timestamp = {
   streamer: string | undefined;
   id: string;
   storageTime: number;
+  thumbnailId: string;
 };
 
 // export type oldStamps = {

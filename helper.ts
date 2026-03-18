@@ -35,12 +35,49 @@ export const until = (fn: () => boolean | undefined, delay = 300) => {
   }, delay);
 };
 
-const getVideoId = (url: string) => {
+export const getVideoId = (url: string) => {
   const urlList = url.split("/");
   return urlList[urlList.length - 1];
 };
 
-export const getCacheData = (url: string) => {
+export const getCacheData = (url: string): StoredData[0] | null => {
   const data: StoredData = JSON.parse(localStorage.getItem("kb2stamps") || "");
+  if (!data) return null;
   return data[getVideoId(url)];
+};
+
+export const storeCacheTime = (data: StoredData[0], url: string) => {
+  const fullCache = JSON.parse(
+    localStorage.getItem("kb2stamps") || "",
+  ) as StoredData;
+
+  const videoId = getVideoId(url);
+
+  localStorage.setItem(
+    "kb2stamps",
+    JSON.stringify({ ...fullCache, [videoId]: data }),
+  );
+};
+
+export const makeObject = (
+  video: HTMLVideoElement,
+  url: string,
+): StoredData[0] => {
+  const id = getVideoId(url);
+  return {
+    curr: video.currentTime,
+    total: video.duration,
+    id: id,
+    storageTime: Date.now(),
+    streamer:
+      document.querySelector("#channel-username")?.textContent.trim() || "",
+    title:
+      document
+        .querySelector("span[data-testid='livestream-title']")
+        ?.textContent.trim() || "",
+    thumbnailId:
+      document
+        .querySelector<HTMLImageElement>(`a[href$='${id}'] > div > img`)
+        ?.src.match(/video_thumbnails\/([^/]+\/[^/]+)\//)?.[1] || "",
+  };
 };

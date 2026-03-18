@@ -1,12 +1,21 @@
-import { clog, getCacheData, until } from "@/helper";
+import {
+  clog,
+  getCacheData,
+  makeObject,
+  storeCacheTime,
+  until,
+} from "@/helper";
 
-const isPageReady = () => {
+const isPageReady = (video: HTMLVideoElement) => {
   clog("checking if document is ready...");
-  const loadUrl = document.querySelector<HTMLLinkElement>(
+  if (!video) return false;
+  if (video.readyState < 4) return false;
+
+  const loadedUrl = document.querySelector<HTMLLinkElement>(
     "link[rel='canonical']",
   );
-  if (!loadUrl) return false;
-  if (loadUrl.href !== window.location.href) return false;
+  if (!loadedUrl) return false;
+  if (loadedUrl.href !== window.location.href) return false;
 
   if (document.readyState !== "complete") return false;
 
@@ -15,15 +24,15 @@ const isPageReady = () => {
 };
 
 const devFunc = (video: HTMLVideoElement) => {
-  // video.currentTime = video.duration;
-
   setTimeout(() => {
     video.pause();
-  }, 2000);
+    // video.currentTime = 100;
+  }, 4000);
 };
 
 let lastTimeUpdate = 0;
 let firstRun = true;
+let mainTimeout: ReturnType<typeof setTimeout>;
 let timeoutSave: ReturnType<typeof setTimeout>;
 
 export default defineContentScript({
@@ -36,7 +45,8 @@ export default defineContentScript({
     clog("init 🟢");
 
     window.navigation.addEventListener("navigate", () => {
-      setTimeout(() => {
+      clearTimeout(mainTimeout);
+      mainTimeout = setTimeout(() => {
         clog("navigation event detected, re-initializing...");
         if (window.location.href === url) {
           clog("navigation event detected, but URL is the same, halting...");
@@ -48,25 +58,27 @@ export default defineContentScript({
         if (!url.includes("videos/")) return;
 
         until(() => {
-          if (!isPageReady()) return;
-
           const video = document.querySelector<HTMLVideoElement>("video");
           if (!video) return;
+          if (!isPageReady(video)) return;
 
           const data = getCacheData(url);
 
           if (data) {
-            video.currentTime = data.curr;
+            setTimeout(() => {
+              lastTimeUpdate = data.curr;
+              video.currentTime = lastTimeUpdate;
+            }, 500);
           }
 
-          // devFunc(video);
+          devFunc(video);
 
           if (!firstRun) return true; // Run code bellow ONlY ONCE
 
           firstRun = false;
 
           video.addEventListener("timeupdate", () => {
-            const curr = Math.floor(video.currentTime);
+            const curr = Math.trunc(video.currentTime);
 
             if (curr < 30) return;
             if (Math.abs(lastTimeUpdate - curr) < 10) return;
@@ -76,18 +88,20 @@ export default defineContentScript({
             // localStorage.setItem("kb2stamps", JSON.stringify(data));
 
             clearTimeout(timeoutSave);
-
             timeoutSave = setTimeout(() => {
-              console.log("Saved", Math.floor(video.currentTime), "🟢🟢🟢");
-            }, 2000);
+              console.log("Saved", Math.trunc(video.currentTime), "🟢🟢🟢");
+              storeCacheTime(makeObject(video, url), url);
+            }, 4000);
           });
 
           // Close Chat Replay
           const chatCloseBtn = document.querySelector<HTMLButtonElement>(
             "#channel-chatroom > div > div > button",
           );
-          if (!chatCloseBtn) return;
-          chatCloseBtn.click();
+
+          if (chatCloseBtn) {
+            chatCloseBtn.click();
+          }
 
           return true;
         });
