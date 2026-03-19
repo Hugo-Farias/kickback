@@ -16,6 +16,16 @@ export const wlog = (...content: Parameters<typeof warn>) => {
   warn(logPrefix, ...content);
 };
 
+let debounceTimeout: ReturnType<typeof setTimeout>;
+
+// Debounce funciton
+export const debounce = (callback: () => void, delay: number = 300) => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    callback();
+  }, delay);
+};
+
 // Wait until the function returns true, then clear the interval
 export const until = (fn: () => boolean | undefined, delay = 300) => {
   let count = 0;
@@ -41,14 +51,15 @@ export const getVideoId = (url: string) => {
 };
 
 export const getCacheData = (url: string): StoredData[0] | null => {
-  const data: StoredData = JSON.parse(localStorage.getItem("kb2stamps") || "");
+  const data = localStorage.getItem("kb2stamps");
   if (!data) return null;
-  return data[getVideoId(url)];
+  const parsedData: StoredData = JSON.parse(data);
+  return parsedData[getVideoId(url)];
 };
 
 export const storeCacheTime = (data: StoredData[0], url: string) => {
   const fullCache = JSON.parse(
-    localStorage.getItem("kb2stamps") || "",
+    localStorage.getItem("kb2stamps") || "{}",
   ) as StoredData;
 
   const videoId = getVideoId(url);

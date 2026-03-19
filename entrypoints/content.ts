@@ -1,5 +1,6 @@
 import {
   clog,
+  debounce,
   getCacheData,
   makeObject,
   storeCacheTime,
@@ -32,21 +33,19 @@ const devFunc = (video: HTMLVideoElement) => {
 
 let lastTimeUpdate = 0;
 let firstRun = true;
-let mainTimeout: ReturnType<typeof setTimeout>;
-let timeoutSave: ReturnType<typeof setTimeout>;
+let timeoutMain: ReturnType<typeof setTimeout>;
 
 export default defineContentScript({
   matches: ["*://kick.com/*"],
   runAt: "document_idle",
   main() {
-    console.clear();
     let url = "";
     // const parsedUrl = new URL(url);
     clog("init 🟢");
 
     window.navigation.addEventListener("navigate", () => {
-      clearTimeout(mainTimeout);
-      mainTimeout = setTimeout(() => {
+      clearTimeout(timeoutMain);
+      timeoutMain = setTimeout(() => {
         clog("navigation event detected, re-initializing...");
         if (window.location.href === url) {
           clog("navigation event detected, but URL is the same, halting...");
@@ -65,10 +64,16 @@ export default defineContentScript({
           const data = getCacheData(url);
 
           if (data) {
+            clog("Data found", data);
             setTimeout(() => {
               lastTimeUpdate = data.curr;
-              video.currentTime = lastTimeUpdate;
+              video.currentTime = data.curr;
             }, 500);
+
+            if (video.currentTime < 30) return;
+          } else {
+            clog("No data");
+            lastTimeUpdate = 0;
           }
 
           devFunc(video);
@@ -84,14 +89,11 @@ export default defineContentScript({
             if (Math.abs(lastTimeUpdate - curr) < 10) return;
 
             lastTimeUpdate = curr;
-            // TODO: And make this a function that takes in the data (typed)
-            // localStorage.setItem("kb2stamps", JSON.stringify(data));
 
-            clearTimeout(timeoutSave);
-            timeoutSave = setTimeout(() => {
-              console.log("Saved", Math.trunc(video.currentTime), "🟢🟢🟢");
+            debounce(() => {
+              clog("Saved", Math.trunc(video.currentTime), "🟢🟢🟢");
               storeCacheTime(makeObject(video, url), url);
-            }, 4000);
+            }, 3000);
           });
 
           // Close Chat Replay
