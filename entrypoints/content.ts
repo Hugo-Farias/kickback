@@ -1,7 +1,9 @@
 import {
   clog,
   debounce,
+  delFromCache,
   getCacheData,
+  getVideoId,
   makeObject,
   storeCacheTime,
   until,
@@ -53,23 +55,24 @@ export default defineContentScript({
         }
 
         url = window.location.href;
+        const videoId = getVideoId(url);
 
-        if (!url.includes("videos/")) return;
+        if (url.split("/")[4] !== "videos") return;
+        if (!videoId) return;
 
         until(() => {
           const video = document.querySelector<HTMLVideoElement>("video");
           if (!video) return;
           if (!isPageReady(video)) return;
 
-          const data = getCacheData(url);
+          const fullData = getCacheData();
+          const data = fullData?.[videoId];
 
           if (data) {
             clog("Data found", data);
-            setTimeout(() => {
-              lastTimeUpdate = data.curr;
-              video.currentTime = data.curr;
-            }, 500);
-
+            lastTimeUpdate = data.curr;
+            video.currentTime = data.curr;
+            if (data.curr < 30) delFromCache(videoId);
             if (video.currentTime < 30) return;
           } else {
             clog("No data");
@@ -78,7 +81,10 @@ export default defineContentScript({
 
           devFunc(video);
 
-          if (!firstRun) return true; // Run code bellow ONlY ONCE
+          // Render Progress Bar
+          // renderProgressBar(fullData);
+
+          if (!firstRun) return true; // Run code bellow ONlY on real full page load
 
           firstRun = false;
 
@@ -91,9 +97,9 @@ export default defineContentScript({
             lastTimeUpdate = curr;
 
             debounce(() => {
-              clog("Saved", Math.trunc(video.currentTime), "🟢🟢🟢");
-              storeCacheTime(makeObject(video, url), url);
-            }, 3000);
+              clog("Saved", curr, "🟢🟢🟢");
+              storeCacheTime(makeObject(video, curr, videoId), videoId);
+            }, 2000);
           });
 
           // Close Chat Replay

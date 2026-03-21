@@ -8,9 +8,4 @@ export type Timestamp = {
   thumbnailId: string;
 };
 
-// export type oldStamps = {
-//   timestamps: { [key: string]: Timestamp };
-//   lookup: string[];
-// };
-
 export type StoredData = { [key: string]: Timestamp };

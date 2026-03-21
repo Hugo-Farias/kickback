@@ -1,4 +1,4 @@
-import type { StoredData } from "./types";
+import type { StoredData, Timestamp } from "./types";
 
 const { log, warn, error } = console;
 
@@ -47,22 +47,22 @@ export const until = (fn: () => boolean | undefined, delay = 300) => {
 
 export const getVideoId = (url: string) => {
   const urlList = url.split("/");
-  return urlList[urlList.length - 1];
+  const id = urlList[5];
+  if (!id) return null;
+  return id;
 };
 
-export const getCacheData = (url: string): StoredData[0] | null => {
+export const getCacheData = (): StoredData | null => {
   const data = localStorage.getItem("kb2stamps");
   if (!data) return null;
   const parsedData: StoredData = JSON.parse(data);
-  return parsedData[getVideoId(url)];
+  return parsedData;
 };
 
-export const storeCacheTime = (data: StoredData[0], url: string) => {
+export const storeCacheTime = (data: Timestamp, videoId: string) => {
   const fullCache = JSON.parse(
     localStorage.getItem("kb2stamps") || "{}",
   ) as StoredData;
-
-  const videoId = getVideoId(url);
 
   localStorage.setItem(
     "kb2stamps",
@@ -70,15 +70,23 @@ export const storeCacheTime = (data: StoredData[0], url: string) => {
   );
 };
 
+export const delFromCache = (id: string) => {
+  const fullCache = JSON.parse(
+    localStorage.getItem("kb2stamps") || "{}",
+  ) as StoredData;
+  delete fullCache[id];
+  localStorage.setItem("kb2stamps", JSON.stringify(fullCache));
+};
+
 export const makeObject = (
   video: HTMLVideoElement,
-  url: string,
-): StoredData[0] => {
-  const id = getVideoId(url);
+  time: number,
+  videoId: string,
+): Timestamp => {
   return {
-    curr: video.currentTime,
+    curr: time,
     total: video.duration,
-    id: id,
+    id: videoId,
     storageTime: Date.now(),
     streamer:
       document.querySelector("#channel-username")?.textContent.trim() || "",
@@ -88,7 +96,7 @@ export const makeObject = (
         ?.textContent.trim() || "",
     thumbnailId:
       document
-        .querySelector<HTMLImageElement>(`a[href$='${id}'] > div > img`)
+        .querySelector<HTMLImageElement>(`a[href$='${videoId}'] > div > img`)
         ?.src.match(/video_thumbnails\/([^/]+\/[^/]+)\//)?.[1] || "",
   };
 };
