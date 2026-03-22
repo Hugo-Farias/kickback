@@ -1,6 +1,5 @@
 import {
   clog,
-  debounce,
   delFromCache,
   getCacheData,
   getVideoId,
@@ -36,17 +35,21 @@ const devFunc = (video: HTMLVideoElement) => {
 let lastTimeUpdate = 0;
 let firstRun = true;
 let timeoutMain: ReturnType<typeof setTimeout>;
+let timeoutSaveTime: ReturnType<typeof setTimeout>;
 
 export default defineContentScript({
   matches: ["*://kick.com/*"],
   runAt: "document_idle",
   main() {
     let url = "";
+    let videoId: string | null = "";
     // const parsedUrl = new URL(url);
     clog("init 🟢");
 
     window.navigation.addEventListener("navigate", () => {
       clearTimeout(timeoutMain);
+      clearTimeout(timeoutSaveTime);
+
       timeoutMain = setTimeout(() => {
         clog("navigation event detected, re-initializing...");
         if (window.location.href === url) {
@@ -55,18 +58,17 @@ export default defineContentScript({
         }
 
         url = window.location.href;
-        const videoId = getVideoId(url);
+        videoId = getVideoId(url);
 
-        if (url.split("/")[4] !== "videos") return;
+        const fullData = getCacheData();
         if (!videoId) return;
+        const data = fullData?.[videoId];
 
         until(() => {
           const video = document.querySelector<HTMLVideoElement>("video");
+          if (!videoId) return;
           if (!video) return;
           if (!isPageReady(video)) return;
-
-          const fullData = getCacheData();
-          const data = fullData?.[videoId];
 
           if (data) {
             clog("Data found", data);
@@ -96,8 +98,11 @@ export default defineContentScript({
 
             lastTimeUpdate = curr;
 
-            debounce(() => {
+            clearTimeout(timeoutSaveTime);
+
+            timeoutSaveTime = setTimeout(() => {
               clog("Saved", curr, "🟢🟢🟢");
+              if (!videoId) return;
               storeCacheTime(makeObject(video, curr, videoId), videoId);
             }, 2000);
           });
@@ -113,7 +118,7 @@ export default defineContentScript({
 
           return true;
         });
-      }, 500);
+      }, 1000);
     });
 
     // initial load

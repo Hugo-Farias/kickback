@@ -45,8 +45,9 @@ export const until = (fn: () => boolean | undefined, delay = 300) => {
   }, delay);
 };
 
-export const getVideoId = (url: string) => {
+export const getVideoId = (url: string): string | null => {
   const urlList = url.split("/");
+  if (urlList[4] !== "videos") return null;
   const id = urlList[5];
   if (!id) return null;
   return id;
