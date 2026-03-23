@@ -7,6 +7,7 @@ import {
   storeCacheTime,
   until,
 } from "@/helper";
+import { renderProgressBar } from "@/thumbnailUi";
 
 const isPageReady = (video: HTMLVideoElement) => {
   clog("checking if document is ready...");
@@ -59,6 +60,7 @@ export default defineContentScript({
 
         url = window.location.href;
         videoId = getVideoId(url);
+        const streamerPath = url.split("/")[3];
 
         const fullData = getCacheData();
         if (!videoId) return;
@@ -69,6 +71,8 @@ export default defineContentScript({
           if (!videoId) return;
           if (!video) return;
           if (!isPageReady(video)) return;
+
+          renderProgressBar(fullData, streamerPath);
 
           if (data) {
             clog("Data found", data);
@@ -84,7 +88,6 @@ export default defineContentScript({
           devFunc(video);
 
           // Render Progress Bar
-          // renderProgressBar(fullData);
 
           if (!firstRun) return true; // Run code bellow ONlY on real full page load
 
@@ -103,8 +106,8 @@ export default defineContentScript({
             timeoutSaveTime = setTimeout(() => {
               clog("Saved", curr, "🟢🟢🟢");
               if (!videoId) return;
-              storeCacheTime(makeObject(video, curr, videoId), videoId);
-            }, 2000);
+              storeCacheTime(makeObject(video, curr, videoId, url), videoId);
+            }, 3500);
           });
 
           // Close Chat Replay

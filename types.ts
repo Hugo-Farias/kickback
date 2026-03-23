@@ -6,6 +6,7 @@ export type Timestamp = {
   id: string;
   storageTime: number;
   thumbnailId: string;
+  streamerPath: string;
 };
 
 export type StoredData = { [key: string]: Timestamp };

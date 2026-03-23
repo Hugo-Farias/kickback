@@ -83,11 +83,12 @@ export const makeObject = (
   video: HTMLVideoElement,
   time: number,
   videoId: string,
+  url: string,
 ): Timestamp => {
   return {
     curr: time,
     total: video.duration,
-    id: videoId,
+    id: videoId || "",
     storageTime: Date.now(),
     streamer:
       document.querySelector("#channel-username")?.textContent.trim() || "",
@@ -99,5 +100,6 @@ export const makeObject = (
       document
         .querySelector<HTMLImageElement>(`a[href$='${videoId}'] > div > img`)
         ?.src.match(/video_thumbnails\/([^/]+\/[^/]+)\//)?.[1] || "",
+    streamerPath: url.split("/")[3],
   };
 };
