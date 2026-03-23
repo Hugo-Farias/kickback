@@ -5,6 +5,8 @@ export const renderProgressBar = (
   fullData: StoredData | null,
   streamerPath: string,
 ) => {
+  const checkForExistingBar = document.querySelector("span#progress-bar");
+  if (checkForExistingBar) return;
   const hrefSelector = `'/${streamerPath}/videos'`;
   if (!fullData) return;
   const elements = document.querySelectorAll<HTMLAnchorElement>(
@@ -20,7 +22,7 @@ export const renderProgressBar = (
 
     const percentage = (data.curr / data.total) * 100;
 
-    spanBar.classList.add("progress-bar");
+    spanBar.setAttribute("id", "progress-bar");
     spanBar.style.position = "absolute";
     spanBar.style.height = "3px";
     spanBar.style.width = "100%";

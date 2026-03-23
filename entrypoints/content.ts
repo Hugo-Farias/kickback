@@ -9,11 +9,7 @@ import {
 } from "@/helper";
 import { renderProgressBar } from "@/thumbnailUi";
 
-const isPageReady = (video: HTMLVideoElement) => {
-  clog("checking if document is ready...");
-  if (!video) return false;
-  if (video.readyState < 4) return false;
-
+const isPageReady = () => {
   const loadedUrl = document.querySelector<HTMLLinkElement>(
     "link[rel='canonical']",
   );
@@ -22,7 +18,6 @@ const isPageReady = (video: HTMLVideoElement) => {
 
   if (document.readyState !== "complete") return false;
 
-  clog("document is ready ✅");
   return true;
 };
 
@@ -31,12 +26,27 @@ const devFunc = (video: HTMLVideoElement) => {
     video.pause();
     // video.currentTime = 100;
   }, 4000);
+
+  // Close Chat Replay
+  const chatCloseBtn = document.querySelector<HTMLButtonElement>(
+    "#channel-chatroom > div > div > button",
+  );
+
+  isChatClosed =
+    !document.querySelector<HTMLDivElement>("#channel-chatroom")?.offsetWidth;
+
+  if (chatCloseBtn && !isChatClosed) {
+    chatCloseBtn.click();
+    isChatClosed = true;
+  }
 };
 
 let lastTimeUpdate = 0;
 let firstRun = true;
 let timeoutMain: ReturnType<typeof setTimeout>;
 let timeoutSaveTime: ReturnType<typeof setTimeout>;
+let timeoutRestoreTime: ReturnType<typeof setTimeout>;
+let isChatClosed = false;
 
 export default defineContentScript({
   matches: ["*://kick.com/*"],
@@ -50,6 +60,7 @@ export default defineContentScript({
     window.navigation.addEventListener("navigate", () => {
       clearTimeout(timeoutMain);
       clearTimeout(timeoutSaveTime);
+      clearTimeout(timeoutRestoreTime);
 
       timeoutMain = setTimeout(() => {
         clog("navigation event detected, re-initializing...");
@@ -67,27 +78,30 @@ export default defineContentScript({
         const data = fullData?.[videoId];
 
         until(() => {
-          const video = document.querySelector<HTMLVideoElement>("video");
-          if (!videoId) return;
-          if (!video) return;
-          if (!isPageReady(video)) return;
+          if (!isPageReady()) return;
 
           renderProgressBar(fullData, streamerPath);
 
+          const video = document.querySelector<HTMLVideoElement>("video");
+          if (!video) return;
+          if (video.readyState < 4) return;
+
           if (data) {
             clog("Data found", data);
-            lastTimeUpdate = data.curr;
-            video.currentTime = data.curr;
-            if (data.curr < 30) delFromCache(videoId);
-            if (video.currentTime < 30) return;
+            timeoutRestoreTime = setTimeout(() => {
+              lastTimeUpdate = data.curr;
+              video.currentTime = data.curr;
+              if (!videoId) return;
+              if (data.curr < 30) delFromCache(videoId);
+              console.log("video.currentTime ==>", video.currentTime);
+              if (video.currentTime < 30) return;
+            }, 800);
           } else {
             clog("No data");
             lastTimeUpdate = 0;
           }
 
           devFunc(video);
-
-          // Render Progress Bar
 
           if (!firstRun) return true; // Run code bellow ONlY on real full page load
 
@@ -110,18 +124,9 @@ export default defineContentScript({
             }, 3500);
           });
 
-          // Close Chat Replay
-          const chatCloseBtn = document.querySelector<HTMLButtonElement>(
-            "#channel-chatroom > div > div > button",
-          );
-
-          if (chatCloseBtn) {
-            chatCloseBtn.click();
-          }
-
           return true;
         });
-      }, 1000);
+      }, 300);
     });
 
     // initial load
