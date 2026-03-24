@@ -9,4 +9,8 @@ export type Timestamp = {
   streamerPath: string;
 };
 
+export type SettingsT = {
+  showProgressBar: boolean;
+};
+
 export type StoredData = { [key: string]: Timestamp };

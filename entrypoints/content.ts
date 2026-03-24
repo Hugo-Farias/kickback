@@ -24,7 +24,6 @@ const isPageReady = () => {
 const devFunc = (video: HTMLVideoElement) => {
   setTimeout(() => {
     video.pause();
-    // video.currentTime = 100;
   }, 4000);
 
   // Close Chat Replay
@@ -93,7 +92,6 @@ export default defineContentScript({
               video.currentTime = data.curr;
               if (!videoId) return;
               if (data.curr < 30) delFromCache(videoId);
-              console.log("video.currentTime ==>", video.currentTime);
               if (video.currentTime < 30) return;
             }, 800);
           } else {

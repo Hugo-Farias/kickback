@@ -14,11 +14,11 @@ export const renderProgressBar = (
     `section > div > a[href^=${hrefSelector}]`,
   );
 
+  const maincolor = "#8af648";
+
   elements.forEach((thumbnailEl) => {
     const id = getVideoId(thumbnailEl.href);
     if (!id) return;
-    const data = fullData[id];
-    if (!data) return;
 
     if (id === currentId) {
       const nowPlayingTag = document.createElement("div");
@@ -27,10 +27,11 @@ export const renderProgressBar = (
       nowPlayingTag.className =
         "z-controls state-layer-surface bg-surface-lowest tv:text-xs absolute rounded px-1 text-sm font-semibold top-1.5 right-1.5";
       nowPlayingTag.textContent = i18n.t("NowPlaying");
-      // nowPlayingTag.style.backgroundColor = darkerGreen;
-      // nowPlayingTag.style.color = "black";
       thumbnailEl.appendChild(nowPlayingTag);
     }
+
+    const data = fullData[id];
+    if (!data) return;
 
     const spanBar: HTMLSpanElement = document.createElement("span");
 
@@ -41,7 +42,7 @@ export const renderProgressBar = (
     spanBar.style.height = "3px";
     spanBar.style.width = "100%";
     spanBar.style.bottom = "0px";
-    spanBar.style.background = `linear-gradient(to right, #8af648 ${percentage}%, #9c9c9c 0)`;
+    spanBar.style.background = `linear-gradient(to right, ${maincolor} ${percentage}%, #9c9c9c 0)`;
     spanBar.style.zIndex = "2";
     thumbnailEl.appendChild(spanBar);
   });

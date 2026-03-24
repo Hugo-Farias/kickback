@@ -1,1 +1,3 @@
 NowPlaying: "Now Playing"
+settings:
+  showProgressBar: "Display Progress Bar on Thumbnails"
