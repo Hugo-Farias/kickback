@@ -1,0 +1,3 @@
+{
+  "plugins": [["module:@preact/signals-react-transform"]]
+}

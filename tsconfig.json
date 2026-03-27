@@ -1,7 +1,19 @@
 {
+  "$schema": "https://www.schemastore.org/tsconfig.json",
   "extends": "./.wxt/tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["preact"],
     "allowImportingTsExtensions": true,
-    "jsx": "react-jsx"
+    "allowUnusedLabels": false,
+    "noUncheckedSideEffectImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowUnreachableCode": false,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitOverride": true,
+    "erasableSyntaxOnly": true,
+    "exactOptionalPropertyTypes": true
   }
 }

@@ -100,6 +100,6 @@ export const makeObject = (
       document
         .querySelector<HTMLImageElement>(`a[href$='${videoId}'] > div > img`)
         ?.src.match(/video_thumbnails\/([^/]+\/[^/]+)\//)?.[1] || "",
-    streamerPath: url.split("/")[3],
+    streamerPath: url.split("/")[3] || "",
   };
 };
