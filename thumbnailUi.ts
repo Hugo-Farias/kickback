@@ -3,12 +3,13 @@ import { getVideoId } from "./helper";
 
 export const renderProgressBar = (
   fullData: StoredData | null,
-  streamerPath: string,
+  streamerPath: string | undefined,
 ) => {
+  if (!streamerPath) return;
+  if (!fullData) return;
   const checkForExistingBar = document.querySelector("span#progress-bar");
   if (checkForExistingBar) return;
   const hrefSelector = `'/${streamerPath}/videos'`;
-  if (!fullData) return;
   const currentId = window.location.href.split("/").slice(-1)[0];
   const elements = document.querySelectorAll<HTMLAnchorElement>(
     `section > div > a[href^=${hrefSelector}]`,

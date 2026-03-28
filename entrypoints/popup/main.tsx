@@ -1,10 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
-import './style.css';
+import { render } from "preact";
+import { StrictMode } from "preact/compat";
+import App from "./App.tsx";
+import "./style.css";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+if (import.meta.hot) {
+  import.meta.hot.on("vite:beforeUpdate", () => console.clear());
+}
+
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found. Application cannot be rendered.");
+}
+
+render(
+  <StrictMode>
     <App />
-  </React.StrictMode>,
+  </StrictMode>,
+  rootElement,
 );

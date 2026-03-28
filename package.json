@@ -16,11 +16,11 @@
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
     "@preact/preset-vite": "^2.10.5",
     "@tailwindcss/vite": "^4.2.2",
     "@types/chrome": "^0.1.38",
     "@wxt-dev/i18n": "^0.2.5",
-    "@wxt-dev/module-react": "^1.2.2",
     "tailwindcss": "^4.2.1",
     "ts-prune": "^0.10.3",
     "typescript": "^5.9.3",

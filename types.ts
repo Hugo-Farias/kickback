@@ -11,6 +11,7 @@ export type Timestamp = {
 
 export type SettingsT = {
   showProgressBar: boolean;
+  autoCloseChat: boolean;
 };
 
 export type StoredData = { [key: string]: Timestamp };

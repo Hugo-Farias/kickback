@@ -5,39 +5,43 @@ import type { SettingsT } from "@/types";
 
 const initialSettings: SettingsT = {
   showProgressBar: true,
+  autoCloseChat: false,
 };
 
+function isSettingKey(id: string): id is keyof SettingsT {
+  return id in initialSettings;
+}
 const settings = signal(initialSettings);
-const counter = signal(0);
 
 function App() {
-  console.log("click");
-
-  document.querySelector("input")?.click(); // TEST: Test line
-
-  const onChange = (e: TargetedEvent<HTMLInputElement>) => {
+  const booleanCallback = (e: TargetedEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
+    const id = target.id;
 
-    settings.value.showProgressBar = !target.checked;
-    console.log(settings.value.showProgressBar);
+    if (!isSettingKey(id)) return;
+
+    settings.value = {
+      ...settings.value,
+      [id]: target.checked,
+    };
   };
 
   return (
-    <div className="mx-5 my-2 text-nowrap text-white">
+    <div className="mx-5 my-2 space-y-2 text-nowrap text-stone-200">
       <OptionCheckBox
-        onChange={onChange}
+        onChange={booleanCallback}
         checked={settings.value.showProgressBar}
         id="showProgressBar"
-      />
-
-      <button
-        type="button"
-        onClick={() => counter.value++}
-        className="rounded bg-blue-500 px-3 py-1 text-white"
       >
-        Add
-      </button>
-      <div className="size-10 text-3xl">{counter}</div>
+        <div className={"text-4xl"}> TEST</div>
+      </OptionCheckBox>
+      <OptionCheckBox
+        onChange={booleanCallback}
+        checked={settings.value.autoCloseChat}
+        id="autoCloseChat"
+      >
+        <div className={"text-4xl"}> TEST</div>
+      </OptionCheckBox>
     </div>
   );
 }

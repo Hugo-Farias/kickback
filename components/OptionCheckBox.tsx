@@ -1,5 +1,6 @@
 import { effect, useSignal } from "@preact/signals";
 import type { ComponentChildren, TargetedEvent } from "preact";
+import { useRef } from "preact/hooks";
 import type { SettingsT } from "@/types";
 
 type PropsT = {
@@ -38,7 +39,7 @@ const OptionEl = (props: PropsT) => {
     <div>
       <label
         className={
-          "flex cursor-pointer items-center whitespace-nowrap transition-colors hover:text-stone-100"
+          "flex cursor-pointer items-center whitespace-nowrap transition-colors hover:text-white"
         }
         htmlFor={id}
       >
