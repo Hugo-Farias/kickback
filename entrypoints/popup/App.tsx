@@ -1,9 +1,12 @@
 import { signal } from "@preact/signals";
 import type { TargetedEvent } from "preact";
 import OptionCheckBox from "@/components/OptionCheckBox";
+import { debounce, getSettings } from "@/helper";
 import type { SettingsT } from "@/types";
 
-const initialSettings: SettingsT = {
+type InputT = "text" | "checkbox" | "radio" | "number" | "password" | "email";
+
+export const initialSettings: SettingsT = {
   showProgressBar: true,
   autoCloseChat: false,
 };
@@ -11,37 +14,53 @@ const initialSettings: SettingsT = {
 function isSettingKey(id: string): id is keyof SettingsT {
   return id in initialSettings;
 }
+
 const settings = signal(initialSettings);
 
+getSettings().then((storedSettings) => {
+  if (storedSettings) {
+    settings.value = { ...settings.value, ...storedSettings };
+  }
+});
+
 function App() {
-  const booleanCallback = (e: TargetedEvent<HTMLInputElement>) => {
+  const inputCallback = (e: TargetedEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
-    const id = target.id;
+    const type = target.type as InputT;
+    const { id } = target;
+    let output: boolean | string;
 
     if (!isSettingKey(id)) return;
 
-    settings.value = {
-      ...settings.value,
-      [id]: target.checked,
-    };
+    if (type === "checkbox") {
+      output = target.checked;
+    } else {
+      output = target.value;
+    }
+
+    const newSettings = { ...settings.value, [id]: output };
+
+    settings.value = newSettings;
+
+    // TODO: Chrome is not a global variable in this context, need to find a way to access it
+    debounce(() => {
+      console.log("Saving settings", newSettings);
+      chrome.storage.local.set(newSettings);
+    }, 200);
   };
 
   return (
     <div className="mx-5 my-2 space-y-2 text-nowrap text-stone-200">
       <OptionCheckBox
-        onChange={booleanCallback}
+        onChange={inputCallback}
         checked={settings.value.showProgressBar}
         id="showProgressBar"
-      >
-        <div className={"text-4xl"}> TEST</div>
-      </OptionCheckBox>
+      />
       <OptionCheckBox
-        onChange={booleanCallback}
+        onChange={inputCallback}
         checked={settings.value.autoCloseChat}
         id="autoCloseChat"
-      >
-        <div className={"text-4xl"}> TEST</div>
-      </OptionCheckBox>
+      />
     </div>
   );
 }

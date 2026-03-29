@@ -1,13 +1,20 @@
 import type { StoredData } from "@/types";
 import { getVideoId } from "./helper";
 
+export const removeProgressBar = () => {
+  const existingBar = document.querySelectorAll("span#kb2-progress-bar");
+  existingBar.forEach((bar) => {
+    bar.remove();
+  });
+};
+
 export const renderProgressBar = (
   fullData: StoredData | null,
   streamerPath: string | undefined,
 ) => {
   if (!streamerPath) return;
   if (!fullData) return;
-  const checkForExistingBar = document.querySelector("span#progress-bar");
+  const checkForExistingBar = document.querySelector("span#kb2-progress-bar");
   if (checkForExistingBar) return;
   const hrefSelector = `'/${streamerPath}/videos'`;
   const currentId = window.location.href.split("/").slice(-1)[0];
@@ -25,6 +32,7 @@ export const renderProgressBar = (
       const nowPlayingTag = document.createElement("div");
 
       // Adds 'now playing' tag
+      nowPlayingTag.setAttribute("id", "kb2-now-playing-tag");
       nowPlayingTag.className =
         "z-controls state-layer-surface bg-surface-lowest tv:text-xs absolute rounded px-1 text-sm font-semibold top-1.5 right-1.5";
       nowPlayingTag.textContent = i18n.t("NowPlaying");
@@ -38,7 +46,7 @@ export const renderProgressBar = (
 
     const percentage = (data.curr / data.total) * 100;
 
-    spanBar.setAttribute("id", "progress-bar");
+    spanBar.setAttribute("id", "kb2-progress-bar");
     spanBar.style.position = "absolute";
     spanBar.style.height = "3px";
     spanBar.style.width = "100%";

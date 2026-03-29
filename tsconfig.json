@@ -4,14 +4,13 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
-    "types": ["preact"],
+    "types": ["preact", "chrome"],
     "allowImportingTsExtensions": true,
     "allowUnusedLabels": false,
     "noUncheckedSideEffectImports": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
     "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
     "noImplicitOverride": true,
     "erasableSyntaxOnly": true,
     "exactOptionalPropertyTypes": true

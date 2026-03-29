@@ -1,4 +1,4 @@
-import type { StoredData, Timestamp } from "./types";
+import type { SettingsT, StoredData, Timestamp } from "./types";
 
 const { log, warn, error } = console;
 
@@ -14,6 +14,14 @@ export const elog = (...content: Parameters<typeof error>) => {
 
 export const wlog = (...content: Parameters<typeof warn>) => {
   warn(logPrefix, ...content);
+};
+
+export const getSettings = (): Promise<SettingsT> => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get((items: SettingsT) => {
+      resolve(items);
+    });
+  });
 };
 
 let debounceTimeout: ReturnType<typeof setTimeout>;

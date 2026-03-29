@@ -11,5 +11,6 @@ export default defineConfig({
   manifest: {
     default_locale: "en",
     version: "0.0.1",
+    permissions: ["storage"],
   },
 });

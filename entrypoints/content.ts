@@ -1,13 +1,16 @@
 import {
   clog,
+  debounce,
   delFromCache,
   getCacheData,
+  getSettings,
   getVideoId,
   makeObject,
   storeCacheTime,
   until,
 } from "@/helper";
-import { renderProgressBar } from "@/thumbnailUi";
+import { removeProgressBar, renderProgressBar } from "@/thumbnailUi";
+import { initialSettings } from "./popup/App";
 
 const isPageReady = () => {
   const loadedUrl = document.querySelector<HTMLLinkElement>(
@@ -53,6 +56,13 @@ export default defineContentScript({
   main() {
     let url = "";
     let videoId: string | null = "";
+    const fullData = getCacheData();
+
+    getSettings().then((s) => {
+      if (Object.keys(s).length) return;
+      chrome.storage.local.set(initialSettings);
+    });
+
     // const parsedUrl = new URL(url);
     clog("init 🟢");
 
@@ -72,18 +82,20 @@ export default defineContentScript({
         videoId = getVideoId(url);
         const streamerPath = url.split("/")[3];
 
-        const fullData = getCacheData();
         if (!videoId) return;
         const data = fullData?.[videoId];
 
         until(() => {
           if (!isPageReady()) return;
 
-          renderProgressBar(fullData, streamerPath);
-
           const video = document.querySelector<HTMLVideoElement>("video");
           if (!video) return;
           if (video.readyState < 4) return;
+
+          getSettings().then((settings) => {
+            if (!settings.showProgressBar) return;
+            renderProgressBar(fullData, streamerPath);
+          });
 
           if (data) {
             clog("Data found", data);
@@ -127,6 +139,19 @@ export default defineContentScript({
       }, 300);
     });
 
+    chrome.storage.onChanged.addListener((res) => {
+      if (!fullData) return;
+      if (!getVideoId(url)) return;
+
+      debounce(() => {
+        if (res.showProgressBar?.newValue === false) {
+          removeProgressBar();
+          return;
+        } else {
+          renderProgressBar(fullData, fullData[videoId || ""]?.streamerPath);
+        }
+      });
+    });
     // initial load
     window.navigation.dispatchEvent(new Event("navigate"));
   },
