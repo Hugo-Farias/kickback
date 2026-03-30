@@ -1,4 +1,4 @@
-import type { StoredData } from "@/types";
+import type { SettingsT, StoredData } from "@/types";
 import { getVideoId } from "./helper";
 
 export const removeProgressBar = () => {
@@ -8,14 +8,20 @@ export const removeProgressBar = () => {
   });
 };
 
+export const removeNowPlayingTag = () => {
+  const existingTag = document.querySelectorAll("div#kb2-now-playing-tag");
+  existingTag.forEach((tag) => {
+    tag.remove();
+  });
+};
+
 export const renderProgressBar = (
   fullData: StoredData | null,
   streamerPath: string | undefined,
+  currentSettings: SettingsT | null,
 ) => {
   if (!streamerPath) return;
   if (!fullData) return;
-  const checkForExistingBar = document.querySelector("span#kb2-progress-bar");
-  if (checkForExistingBar) return;
   const hrefSelector = `'/${streamerPath}/videos'`;
   const currentId = window.location.href.split("/").slice(-1)[0];
   const elements = document.querySelectorAll<HTMLAnchorElement>(
@@ -28,7 +34,7 @@ export const renderProgressBar = (
     const id = getVideoId(thumbnailEl.href);
     if (!id) return;
 
-    if (id === currentId) {
+    if (currentSettings?.showNowPlayingTag && id === currentId) {
       const nowPlayingTag = document.createElement("div");
 
       // Adds 'now playing' tag
@@ -38,6 +44,12 @@ export const renderProgressBar = (
       nowPlayingTag.textContent = i18n.t("NowPlaying");
       thumbnailEl.appendChild(nowPlayingTag);
     }
+
+    if (!currentSettings?.showProgressBar) return;
+    const checkForExistingBar = thumbnailEl.querySelector(
+      "span#kb2-progress-bar",
+    );
+    if (checkForExistingBar) return;
 
     const data = fullData[id];
     if (!data) return;

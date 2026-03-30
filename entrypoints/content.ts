@@ -9,7 +9,12 @@ import {
   storeCacheTime,
   until,
 } from "@/helper";
-import { removeProgressBar, renderProgressBar } from "@/thumbnailUi";
+import {
+  removeNowPlayingTag,
+  removeProgressBar,
+  renderProgressBar,
+} from "@/thumbnailUi";
+import type { SettingsChanges, SettingsT } from "@/types";
 import { initialSettings } from "./popup/App";
 
 const isPageReady = () => {
@@ -28,19 +33,6 @@ const devFunc = (video: HTMLVideoElement) => {
   setTimeout(() => {
     video.pause();
   }, 4000);
-
-  // Close Chat Replay
-  const chatCloseBtn = document.querySelector<HTMLButtonElement>(
-    "#channel-chatroom > div > div > button",
-  );
-
-  isChatClosed =
-    !document.querySelector<HTMLDivElement>("#channel-chatroom")?.offsetWidth;
-
-  if (chatCloseBtn && !isChatClosed) {
-    chatCloseBtn.click();
-    isChatClosed = true;
-  }
 };
 
 let lastTimeUpdate = 0;
@@ -55,11 +47,16 @@ export default defineContentScript({
   runAt: "document_idle",
   main() {
     let url = "";
+    let streamerPath = window.location.href.split("/")[3];
     let videoId: string | null = "";
+    let currentSettings: SettingsT | null = null;
     const fullData = getCacheData();
 
     getSettings().then((s) => {
-      if (Object.keys(s).length) return;
+      if (Object.keys(s).length) {
+        currentSettings = s;
+        return;
+      }
       chrome.storage.local.set(initialSettings);
     });
 
@@ -80,7 +77,7 @@ export default defineContentScript({
 
         url = window.location.href;
         videoId = getVideoId(url);
-        const streamerPath = url.split("/")[3];
+        streamerPath = url.split("/")[3];
 
         if (!videoId) return;
         const data = fullData?.[videoId];
@@ -92,10 +89,7 @@ export default defineContentScript({
           if (!video) return;
           if (video.readyState < 4) return;
 
-          getSettings().then((settings) => {
-            if (!settings.showProgressBar) return;
-            renderProgressBar(fullData, streamerPath);
-          });
+          renderProgressBar(fullData, streamerPath, currentSettings);
 
           if (data) {
             clog("Data found", data);
@@ -112,6 +106,22 @@ export default defineContentScript({
           }
 
           devFunc(video);
+
+          if (currentSettings?.autoCloseChat) {
+            // Close Chat Replay
+            const chatCloseBtn = document.querySelector<HTMLButtonElement>(
+              "#channel-chatroom > div > div > button",
+            );
+
+            isChatClosed =
+              !document.querySelector<HTMLDivElement>("#channel-chatroom")
+                ?.offsetWidth;
+
+            if (chatCloseBtn && !isChatClosed) {
+              chatCloseBtn.click();
+              isChatClosed = true;
+            }
+          }
 
           if (!firstRun) return true; // Run code bellow ONlY on real full page load
 
@@ -131,7 +141,7 @@ export default defineContentScript({
               clog("Saved", curr, "🟢🟢🟢");
               if (!videoId) return;
               storeCacheTime(makeObject(video, curr, videoId, url), videoId);
-            }, 3500);
+            }, 2500);
           });
 
           return true;
@@ -139,19 +149,27 @@ export default defineContentScript({
       }, 300);
     });
 
-    chrome.storage.onChanged.addListener((res) => {
+    chrome.storage.onChanged.addListener((res: SettingsChanges) => {
+      getSettings().then((s: SettingsT) => {
+        currentSettings = s;
+      });
+
       if (!fullData) return;
       if (!getVideoId(url)) return;
 
       debounce(() => {
         if (res.showProgressBar?.newValue === false) {
           removeProgressBar();
-          return;
-        } else {
-          renderProgressBar(fullData, fullData[videoId || ""]?.streamerPath);
         }
+
+        if (res.showNowPlayingTag?.newValue === false) {
+          removeNowPlayingTag();
+        }
+
+        renderProgressBar(fullData, streamerPath, currentSettings);
       });
     });
+
     // initial load
     window.navigation.dispatchEvent(new Event("navigate"));
   },

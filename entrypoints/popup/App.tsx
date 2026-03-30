@@ -8,6 +8,7 @@ type InputT = "text" | "checkbox" | "radio" | "number" | "password" | "email";
 
 export const initialSettings: SettingsT = {
   showProgressBar: true,
+  showNowPlayingTag: true,
   autoCloseChat: false,
 };
 
@@ -42,7 +43,6 @@ function App() {
 
     settings.value = newSettings;
 
-    // TODO: Chrome is not a global variable in this context, need to find a way to access it
     debounce(() => {
       console.log("Saving settings", newSettings);
       chrome.storage.local.set(newSettings);
@@ -55,6 +55,11 @@ function App() {
         onChange={inputCallback}
         checked={settings.value.showProgressBar}
         id="showProgressBar"
+      />
+      <OptionCheckBox
+        onChange={inputCallback}
+        checked={settings.value.showNowPlayingTag}
+        id="showNowPlayingTag"
       />
       <OptionCheckBox
         onChange={inputCallback}

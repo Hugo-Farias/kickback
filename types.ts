@@ -11,7 +11,15 @@ export type Timestamp = {
 
 export type SettingsT = {
   showProgressBar: boolean;
+  showNowPlayingTag: boolean;
   autoCloseChat: boolean;
+};
+
+export type SettingsChanges = {
+  [K in keyof SettingsT]?: chrome.storage.StorageChange & {
+    oldValue?: SettingsT[K];
+    newValue?: SettingsT[K];
+  };
 };
 
 export type StoredData = { [key: string]: Timestamp };
