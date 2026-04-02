@@ -49,7 +49,7 @@ function App() {
   };
 
   return (
-    <div className="mx-5 my-2 space-y-2 text-nowrap text-stone-200">
+    <div className="mx-5 my-2 space-y-2 text-nowrap text-sm text-stone-200">
       <OptionCheckBox
         onChange={inputCallback}
         checked={settings.value.showProgressBar}

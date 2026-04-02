@@ -15,11 +15,17 @@ export const removeNowPlayingTag = () => {
   });
 };
 
-const addNowPlayingTag = (
+export const addNowPlayingTag = (
   currentSettings: SettingsT | null,
   currentId: string | null,
 ) => {
   if (!currentSettings?.showNowPlayingTag) return;
+
+  const checkForExistingTag = !!document.querySelector(
+    "div#kb2-now-playing-tag",
+  );
+
+  if (checkForExistingTag) return;
 
   const nowPlayingTag = document.createElement("div");
 
@@ -35,37 +41,31 @@ const addNowPlayingTag = (
   thumbnailEl.appendChild(nowPlayingTag);
 };
 
-export const renderProgressBar = (
+export const addProgressBar = (
   fullData: StoredData | null,
   streamerPath: string | undefined,
   currentSettings: SettingsT | null,
 ) => {
   if (!streamerPath) return;
-  if (!fullData) return;
 
-  const checkForExistingTag = !!document.querySelector(
-    "div#kb2-now-playing-tag",
+  const isProgressBarRendered = !!document.querySelector(
+    "span#kb2-progress-bar",
   );
-  const checkForExistingBar = !!document.querySelector("span#kb2-progress-bar");
+  if (isProgressBarRendered) return;
   const hrefSelector = `'/${streamerPath}/videos'`;
-  const currentId = getVideoId(window.location.href);
   const thumbnailNode = document.querySelectorAll<HTMLAnchorElement>(
     `section > div > a[href^=${hrefSelector}]`,
   );
 
-  if (currentSettings?.showProgressBar && !checkForExistingTag) {
-    addNowPlayingTag(currentSettings, currentId);
-  }
-
   const maincolor = "#8af648";
+
+  if (!fullData) return;
 
   thumbnailNode.forEach((thumbnailEl) => {
     const id = getVideoId(thumbnailEl.href);
     if (!id) return;
 
     if (!currentSettings?.showProgressBar) return;
-
-    if (checkForExistingBar) return;
 
     const data = fullData[id];
     if (!data) return;

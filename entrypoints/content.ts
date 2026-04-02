@@ -10,9 +10,10 @@ import {
   until,
 } from "@/helper";
 import {
+  addNowPlayingTag,
+  addProgressBar,
   removeNowPlayingTag,
   removeProgressBar,
-  renderProgressBar,
 } from "@/thumbnailUi";
 import type { SettingsChanges, SettingsT, StoredData } from "@/types";
 import { initialSettings } from "./popup/App";
@@ -24,6 +25,7 @@ let timeoutSaveTime: ReturnType<typeof setTimeout>;
 let timeoutRestoreTime: ReturnType<typeof setTimeout>;
 let timeoutCloseChat: ReturnType<typeof setTimeout>;
 let isChatClosed = false;
+let fullData: StoredData | null = null;
 
 const devFunc = (video: HTMLVideoElement) => {
   setTimeout(() => {
@@ -55,15 +57,13 @@ const closeChat = (settings: SettingsT) => {
 const resumeVideo = (
   video: HTMLVideoElement,
   videoId: string,
-  fullData: StoredData,
+  data: StoredData[0],
 ) => {
   const loadedUrl = document.querySelector<HTMLLinkElement>(
     "link[rel='canonical']",
   );
   if (!loadedUrl) return false;
   if (loadedUrl.href !== window.location.href) return false;
-
-  const data = fullData?.[videoId];
 
   if (data) {
     clog("Data found", data);
@@ -93,14 +93,17 @@ const storeVideoTime = (
   lastTimeUpdate = curr;
 
   clearTimeout(timeoutSaveTime);
-  console.log("timeoutSaveTime ==>", timeoutSaveTime);
 
   timeoutSaveTime = setTimeout(() => {
     if (!videoId) return;
-    storeCacheTime(makeObject(video, curr, videoId, url), videoId);
-  }, 2500);
+    console.log("Storing video time, current time:", curr);
+    const newData = makeObject(video, curr, videoId, url);
+
+    fullData = storeCacheTime(newData, videoId);
+  }, 2000);
 };
 
+// TODO: Add function to check for cache age and delete if it's too old
 export default defineContentScript({
   matches: ["*://kick.com/*"],
   runAt: "document_idle",
@@ -109,7 +112,9 @@ export default defineContentScript({
     let streamerPath = window.location.href.split("/")[3];
     let videoId: string | null = "";
     let currentSettings: SettingsT | null = null;
-    const fullData = getCacheData();
+    fullData = getCacheData();
+
+    clog("init 🟢");
 
     getSettings().then((settings) => {
       if (Object.keys(settings).length) {
@@ -120,13 +125,12 @@ export default defineContentScript({
       chrome.storage.local.set(initialSettings);
     });
 
-    // const parsedUrl = new URL(url);
-    clog("init 🟢");
-
     window.navigation.addEventListener("navigate", () => {
       clearTimeout(timeoutMain);
       clearTimeout(timeoutSaveTime);
       clearTimeout(timeoutRestoreTime);
+
+      fullData = getCacheData();
 
       timeoutMain = setTimeout(() => {
         clog("navigation event detected, re-initializing...");
@@ -142,17 +146,23 @@ export default defineContentScript({
         until(() => {
           if (document.readyState !== "complete") return;
 
-          renderProgressBar(fullData, streamerPath, currentSettings);
+          addProgressBar(fullData, streamerPath, currentSettings);
+          addNowPlayingTag(currentSettings, videoId);
 
+          if (!videoId) return true;
           const video = document.querySelector<HTMLVideoElement>("video");
-          if (!video && !videoId) return true;
           if (!video) return;
           if (video.readyState < 4) return;
 
           if (!videoId) return;
-          if (!fullData) return;
 
-          resumeVideo(video, videoId, fullData);
+          const data = fullData ? fullData?.[videoId] : null;
+
+          if (data && video.currentTime > 30) return;
+
+          if (data) {
+            resumeVideo(video, videoId, data);
+          }
 
           devFunc(video);
 
@@ -161,13 +171,13 @@ export default defineContentScript({
           firstRun = false;
 
           video.addEventListener("timeupdate", () => {
-            // biome-ignore lint/style/noNonNullAssertion: videoId is not null here
+            // biome-ignore lint/style/noNonNullAssertion: videoId can't be null here
             storeVideoTime(video, videoId!, url);
           });
 
           return true;
         });
-      }, 300);
+      }, 100);
     });
 
     chrome.storage.onChanged.addListener((res: SettingsChanges) => {
@@ -181,13 +191,15 @@ export default defineContentScript({
       debounce(() => {
         if (res.showProgressBar?.newValue === false) {
           removeProgressBar();
+        } else {
+          addProgressBar(fullData, streamerPath, currentSettings);
         }
 
         if (res.showNowPlayingTag?.newValue === false) {
           removeNowPlayingTag();
+        } else {
+          addNowPlayingTag(currentSettings, videoId);
         }
-
-        renderProgressBar(fullData, streamerPath, currentSettings);
       });
     });
 

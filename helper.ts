@@ -69,14 +69,14 @@ export const getCacheData = (): StoredData | null => {
 };
 
 export const storeCacheTime = (data: Timestamp, videoId: string) => {
-  const fullCache = JSON.parse(
-    localStorage.getItem("kb2stamps") || "{}",
-  ) as StoredData;
+  const fullCache = getCacheData() || {};
 
   localStorage.setItem(
     "kb2stamps",
     JSON.stringify({ ...fullCache, [videoId]: data }),
   );
+
+  return { ...fullCache, [videoId]: data };
 };
 
 export const delFromCache = (id: string) => {
