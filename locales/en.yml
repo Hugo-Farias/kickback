@@ -1,5 +1,5 @@
 NowPlaying: "Now Playing"
 settings:
-  showProgressBar: "Display Progress Bar on Thumbnails"
-  showNowPlayingTag: "Display 'Now Playing' Tag on Thumbnails"
-  autoCloseChat: "Automatically Close Chat"
+  showProgressBar: "Display progress bar"
+  showNowPlayingTag: "Display 'Now Playing' tag"
+  autoCloseChat: "Automatically close chat"

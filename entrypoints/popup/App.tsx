@@ -44,7 +44,6 @@ function App() {
     settings.value = newSettings;
 
     debounce(() => {
-      console.log("Saving settings", newSettings);
       chrome.storage.local.set(newSettings);
     }, 200);
   };
