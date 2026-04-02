@@ -171,8 +171,8 @@ export default defineContentScript({
     });
 
     chrome.storage.onChanged.addListener((res: SettingsChanges) => {
-      getSettings().then((s: SettingsT) => {
-        currentSettings = s;
+      getSettings().then((settings: SettingsT) => {
+        currentSettings = settings;
       });
 
       if (!fullData) return;

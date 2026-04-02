@@ -15,6 +15,26 @@ export const removeNowPlayingTag = () => {
   });
 };
 
+const addNowPlayingTag = (
+  currentSettings: SettingsT | null,
+  currentId: string | null,
+) => {
+  if (!currentSettings?.showNowPlayingTag) return;
+
+  const nowPlayingTag = document.createElement("div");
+
+  // Adds 'now playing' tag
+  nowPlayingTag.setAttribute("id", "kb2-now-playing-tag");
+  nowPlayingTag.className =
+    "z-controls state-layer-surface bg-surface-lowest tv:text-xs absolute rounded px-1 text-sm font-semibold top-1.5 right-1.5";
+  nowPlayingTag.textContent = i18n.t("NowPlaying");
+  const thumbnailEl = document.querySelector(
+    `section > div > a[href$=${`'/videos/${currentId}'`}]`,
+  );
+  if (!thumbnailEl) return;
+  thumbnailEl.appendChild(nowPlayingTag);
+};
+
 export const renderProgressBar = (
   fullData: StoredData | null,
   streamerPath: string | undefined,
@@ -22,33 +42,29 @@ export const renderProgressBar = (
 ) => {
   if (!streamerPath) return;
   if (!fullData) return;
+
+  const checkForExistingTag = !!document.querySelector(
+    "div#kb2-now-playing-tag",
+  );
+  const checkForExistingBar = !!document.querySelector("span#kb2-progress-bar");
   const hrefSelector = `'/${streamerPath}/videos'`;
-  const currentId = window.location.href.split("/").slice(-1)[0];
-  const elements = document.querySelectorAll<HTMLAnchorElement>(
+  const currentId = getVideoId(window.location.href);
+  const thumbnailNode = document.querySelectorAll<HTMLAnchorElement>(
     `section > div > a[href^=${hrefSelector}]`,
   );
 
+  if (currentSettings?.showProgressBar && !checkForExistingTag) {
+    addNowPlayingTag(currentSettings, currentId);
+  }
+
   const maincolor = "#8af648";
 
-  elements.forEach((thumbnailEl) => {
+  thumbnailNode.forEach((thumbnailEl) => {
     const id = getVideoId(thumbnailEl.href);
     if (!id) return;
 
-    if (currentSettings?.showNowPlayingTag && id === currentId) {
-      const nowPlayingTag = document.createElement("div");
-
-      // Adds 'now playing' tag
-      nowPlayingTag.setAttribute("id", "kb2-now-playing-tag");
-      nowPlayingTag.className =
-        "z-controls state-layer-surface bg-surface-lowest tv:text-xs absolute rounded px-1 text-sm font-semibold top-1.5 right-1.5";
-      nowPlayingTag.textContent = i18n.t("NowPlaying");
-      thumbnailEl.appendChild(nowPlayingTag);
-    }
-
     if (!currentSettings?.showProgressBar) return;
-    const checkForExistingBar = thumbnailEl.querySelector(
-      "span#kb2-progress-bar",
-    );
+
     if (checkForExistingBar) return;
 
     const data = fullData[id];
