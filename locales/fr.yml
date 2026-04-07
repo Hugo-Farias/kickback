@@ -1,0 +1,7 @@
+extDescription: "Marque automatiquement les vidéos kick.com pour qu'elles reprennent là où vous les avez laissées"
+nowPlaying: "En lecture"
+settings:
+  showProgressBar: "Afficher la barre de progression"
+  showNowPlayingTag: "Afficher le tag 'En lecture'"
+  autoCloseChat: "Fermer le chat automatiquement"
+  pausePlayClick: "Lecture/Pause en cliquant dans le cadre de la vidéo"

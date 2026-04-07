@@ -15,8 +15,8 @@ import {
   removeNowPlayingTag,
   removeProgressBar,
 } from "@/thumbnailUi";
-import type { SettingsChanges, SettingsT, StoredData } from "@/types";
-import { initialSettings } from "./popup/App";
+import type { FullCache, ItemCache, SettingsChanges, SettingsT } from "@/types";
+import { initialSettings } from "./popup/Settings";
 
 let lastTimeUpdate = 0;
 let firstRun = true;
@@ -25,12 +25,14 @@ let timeoutSaveTime: ReturnType<typeof setTimeout>;
 let timeoutRestoreTime: ReturnType<typeof setTimeout>;
 let timeoutCloseChat: ReturnType<typeof setTimeout>;
 let isChatClosed = false;
-let fullData: StoredData | null = null;
+let fullData: FullCache | null = null;
 
 const devFunc = (video: HTMLVideoElement) => {
-  setTimeout(() => {
-    video.pause();
-  }, 4000);
+  if (import.meta.env.DEV) {
+    setTimeout(() => {
+      video.pause();
+    }, 4000);
+  }
 };
 
 const closeChat = (settings: SettingsT) => {
@@ -57,21 +59,24 @@ const closeChat = (settings: SettingsT) => {
 const resumeVideo = (
   video: HTMLVideoElement,
   videoId: string,
-  data: StoredData[0],
+  videoData: ItemCache,
 ) => {
+  if (!videoId) return;
   const loadedUrl = document.querySelector<HTMLLinkElement>(
     "link[rel='canonical']",
   );
   if (!loadedUrl) return false;
   if (loadedUrl.href !== window.location.href) return false;
 
-  if (data) {
-    clog("Data found", data);
+  if (videoData) {
+    clog("Data found", videoData);
+    clog("Resuming video, time:", videoData.curr);
     timeoutRestoreTime = setTimeout(() => {
-      lastTimeUpdate = data.curr;
-      video.currentTime = data.curr;
-      if (!videoId) return;
-      if (data.curr < 30) delFromCache(videoId);
+      lastTimeUpdate = videoData.curr;
+      video.currentTime = videoData.curr;
+      if (videoData.curr < 30) {
+        fullData = delFromCache(videoId);
+      }
       if (video.currentTime < 30) return;
     }, 800);
   } else {
@@ -103,18 +108,32 @@ const storeVideoTime = (
   }, 2000);
 };
 
-// TODO: Add function to check for cache age and delete if it's too old
+const delOldCacheData = (fullData: FullCache, days: number) => {
+  const currentTime = Date.now();
+
+  for (const key in fullData) {
+    const item = fullData[key];
+    if (!item) continue;
+    if (currentTime - item.storageTime > 1000 * 60 * 60 * 24 * days) {
+      // If data is older than 7 days, delete it
+      clog("❌ Deleting old cache data for video ID:", key);
+      fullData = delFromCache(key);
+    }
+  }
+};
+
 export default defineContentScript({
   matches: ["*://kick.com/*"],
   runAt: "document_idle",
   main() {
+    clog("init 🟢");
     let url = "";
     let streamerPath = window.location.href.split("/")[3];
     let videoId: string | null = "";
     let currentSettings: SettingsT | null = null;
     fullData = getCacheData();
 
-    clog("init 🟢");
+    if (fullData) delOldCacheData(fullData, 180);
 
     getSettings().then((settings) => {
       if (Object.keys(settings).length) {
@@ -130,11 +149,11 @@ export default defineContentScript({
       clearTimeout(timeoutSaveTime);
       clearTimeout(timeoutRestoreTime);
 
-      fullData = getCacheData();
-
       timeoutMain = setTimeout(() => {
         clog("navigation event detected, re-initializing...");
         if (window.location.href === url) {
+          removeProgressBar();
+          addProgressBar(fullData, streamerPath, currentSettings);
           clog("navigation event detected, but URL is the same, halting...");
           return;
         }
@@ -156,12 +175,10 @@ export default defineContentScript({
 
           if (!videoId) return;
 
-          const data = fullData ? fullData?.[videoId] : null;
+          const videoData = fullData ? fullData?.[videoId] : null;
 
-          if (data && video.currentTime > 30) return;
-
-          if (data) {
-            resumeVideo(video, videoId, data);
+          if (videoData && video.currentTime < 30) {
+            resumeVideo(video, videoId, videoData);
           }
 
           devFunc(video);
@@ -171,13 +188,13 @@ export default defineContentScript({
           firstRun = false;
 
           video.addEventListener("timeupdate", () => {
-            // biome-ignore lint/style/noNonNullAssertion: videoId can't be null here
-            storeVideoTime(video, videoId!, url);
+            if (!videoId) return;
+            storeVideoTime(video, videoId, url);
           });
 
           return true;
-        });
-      }, 100);
+        }, 1000);
+      }, 500);
     });
 
     chrome.storage.onChanged.addListener((res: SettingsChanges) => {

@@ -1,0 +1,7 @@
+extDescription: "Marca automaticamente vídeos do kick.com para que continuem de onde você parou"
+nowPlaying: "Reproduzindo"
+settings:
+  showProgressBar: "Exibir barra de progresso"
+  showNowPlayingTag: "Exibir tag 'Reproduzindo'"
+  autoCloseChat: "Fechar chat automaticamente"
+  pausePlayClick: "Reproduzir/Pausar ao clicar dentro do vídeo"

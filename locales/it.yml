@@ -1,0 +1,7 @@
+extDescription: "Aggiunge automaticamente un segnalibro ai video di kick.com in modo che riprendano da dove li hai lasciati"
+nowPlaying: "In riproduzione"
+settings:
+  showProgressBar: "Visualizza barra di avanzamento"
+  showNowPlayingTag: "Visualizza tag 'In riproduzione'"
+  autoCloseChat: "Chiudi chat automaticamente"
+  pausePlayClick: "Riproduci/Metti in pausa cliccando all'interno della cornice del video"

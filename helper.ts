@@ -1,4 +1,4 @@
-import type { SettingsT, StoredData, Timestamp } from "./types";
+import type { FullCache, ItemCache, SettingsT } from "./types";
 
 const { log, warn, error } = console;
 
@@ -61,14 +61,14 @@ export const getVideoId = (url: string): string | null => {
   return id;
 };
 
-export const getCacheData = (): StoredData | null => {
+export const getCacheData = (): FullCache | null => {
   const data = localStorage.getItem("kb2stamps");
   if (!data) return null;
-  const parsedData: StoredData = JSON.parse(data);
+  const parsedData: FullCache = JSON.parse(data);
   return parsedData;
 };
 
-export const storeCacheTime = (data: Timestamp, videoId: string) => {
+export const storeCacheTime = (data: ItemCache, videoId: string) => {
   const fullCache = getCacheData() || {};
 
   localStorage.setItem(
@@ -82,9 +82,10 @@ export const storeCacheTime = (data: Timestamp, videoId: string) => {
 export const delFromCache = (id: string) => {
   const fullCache = JSON.parse(
     localStorage.getItem("kb2stamps") || "{}",
-  ) as StoredData;
+  ) as FullCache;
   delete fullCache[id];
   localStorage.setItem("kb2stamps", JSON.stringify(fullCache));
+  return fullCache;
 };
 
 export const makeObject = (
@@ -92,7 +93,7 @@ export const makeObject = (
   time: number,
   videoId: string,
   url: string,
-): Timestamp => {
+): ItemCache => {
   return {
     curr: time,
     total: video.duration,

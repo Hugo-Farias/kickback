@@ -1,4 +1,4 @@
-import type { SettingsT, StoredData } from "@/types";
+import type { FullCache, SettingsT } from "@/types";
 import { getVideoId } from "./helper";
 
 export const removeProgressBar = () => {
@@ -33,7 +33,7 @@ export const addNowPlayingTag = (
   nowPlayingTag.setAttribute("id", "kb2-now-playing-tag");
   nowPlayingTag.className =
     "z-controls state-layer-surface bg-surface-lowest tv:text-xs absolute rounded px-1 text-sm font-semibold top-1.5 right-1.5";
-  nowPlayingTag.textContent = i18n.t("NowPlaying");
+  nowPlayingTag.textContent = i18n.t("nowPlaying");
   const thumbnailEl = document.querySelector(
     `section > div > a[href$=${`'/videos/${currentId}'`}]`,
   );
@@ -42,7 +42,7 @@ export const addNowPlayingTag = (
 };
 
 export const addProgressBar = (
-  fullData: StoredData | null,
+  fullData: FullCache | null,
   streamerPath: string | undefined,
   currentSettings: SettingsT | null,
 ) => {

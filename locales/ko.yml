@@ -1,0 +1,7 @@
+extDescription: "kick.com 비디오를 자동으로 북마크하여 중단한 부분부터 다시 시작합니다"
+nowPlaying: "재생 중"
+settings:
+  showProgressBar: "진행률 표시줄 표시"
+  showNowPlayingTag: "'재생 중' 태그 표시"
+  autoCloseChat: "채팅 자동 닫기"
+  pausePlayClick: "비디오 프레임 내부 클릭으로 재생/일시 정지"

@@ -10,7 +10,7 @@ type PropsT = {
   children?: ComponentChildren;
 };
 
-const OptionEl = (props: PropsT) => {
+const OptionCheckBox = (props: PropsT) => {
   const { id, checked, onChange, children } = props;
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const childState = useSignal<boolean>(checked);
@@ -64,4 +64,4 @@ const OptionEl = (props: PropsT) => {
   );
 };
 
-export default OptionEl;
+export default OptionCheckBox;

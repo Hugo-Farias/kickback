@@ -1,0 +1,7 @@
+extDescription: "kick.comの動画を自動でブックマークし、中断した場所から再開します"
+nowPlaying: "再生中"
+settings:
+  showProgressBar: "プログレスバーを表示"
+  showNowPlayingTag: "'再生中'タグを表示"
+  autoCloseChat: "チャットを自動で閉じる"
+  pausePlayClick: "動画フレーム内をクリックで再生/一時停止"

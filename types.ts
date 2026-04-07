@@ -1,4 +1,4 @@
-export type Timestamp = {
+export type ItemCache = {
   curr: number;
   total: number;
   title: string | undefined;
@@ -22,4 +22,4 @@ export type SettingsChanges = {
   };
 };
 
-export type StoredData = { [key: string]: Timestamp };
+export type FullCache = { [key: string]: ItemCache };

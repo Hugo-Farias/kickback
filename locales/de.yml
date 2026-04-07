@@ -1,0 +1,7 @@
+extDescription: "Setzt kick.com Videos automatisch dort fort, wo Sie aufgehört haben"
+nowPlaying: "Wird abgespielt"
+settings:
+  showProgressBar: "Fortschrittsbalken anzeigen"
+  showNowPlayingTag: "Tag 'Wird abgespielt' anzeigen"
+  autoCloseChat: "Chat automatisch schließen"
+  pausePlayClick: "Wiedergabe/Pause durch Klicken in den Videobereich"
