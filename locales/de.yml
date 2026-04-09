@@ -1,4 +1,5 @@
-extDescription: "Setzt kick.com Videos automatisch dort fort, wo Sie aufgehört haben"
+extName: "KickResume"
+extDescription: "Speichert automatisch Ihren Fortschritt bei kick.com Videos, damit Sie dort weiterschauen können, wo Sie aufgehört haben"
 nowPlaying: "Wird abgespielt"
 settings:
   showProgressBar: "Fortschrittsbalken anzeigen"

@@ -1,4 +1,5 @@
-extDescription: "Marca automaticamente vídeos do kick.com para que continuem de onde você parou"
+extName: "KickResume"
+extDescription: "Salva automaticamente seu progresso nos vídeos do kick.com para continuar assistindo de onde parou"
 nowPlaying: "Reproduzindo"
 settings:
   showProgressBar: "Exibir barra de progresso"

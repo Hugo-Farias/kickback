@@ -1,4 +1,5 @@
-extDescription: "Aggiunge automaticamente un segnalibro ai video di kick.com in modo che riprendano da dove li hai lasciati"
+extName: "KickResume"
+extDescription: "Salva automaticamente i tuoi progressi nei video di kick.com per riprenderli da dove li hai lasciati"
 nowPlaying: "In riproduzione"
 settings:
   showProgressBar: "Visualizza barra di avanzamento"

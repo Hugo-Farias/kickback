@@ -133,7 +133,7 @@ export default defineContentScript({
     let currentSettings: SettingsT | null = null;
     fullData = getCacheData();
 
-    if (fullData) delOldCacheData(fullData, 180);
+    if (fullData) delOldCacheData(fullData, 200);
 
     getSettings().then((settings) => {
       if (Object.keys(settings).length) {

@@ -14,6 +14,17 @@ function App() {
       {/*   </button> */}
       {/* </div> */}
       <Settings />
+      <div className={"mt-3 ml-auto text-right"}>
+        <a
+          className={"text-blue-300 hover:underline"}
+          href={
+            "https://chromewebstore.google.com/detail/cclmmfbfmjjeafmilojlhmdekmagonmb/support"
+          }
+          aria-label={i18n.t("reportBug")}
+        >
+          {i18n.t("reportBug")}
+        </a>
+      </div>
     </div>
   );
 }

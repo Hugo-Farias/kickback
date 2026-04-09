@@ -1,4 +1,5 @@
-extDescription: "kick.comの動画を自動でブックマークし、中断した場所から再開します"
+extName: "KickResume（自動再開）"
+extDescription: "kick.comの動画の再生位置を自動で保存し、続きから再生できます"
 nowPlaying: "再生中"
 settings:
   showProgressBar: "プログレスバーを表示"
