@@ -11,7 +11,7 @@ type PropsT = {
 };
 
 const OptionCheckBox = (props: PropsT) => {
-  const { id, checked, onChange, children } = props;
+  const { id, checked, onChange } = props;
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const childState = useSignal<boolean>(checked);
 
@@ -53,13 +53,13 @@ const OptionCheckBox = (props: PropsT) => {
         />
         {i18n.t(`settings.${id}`)}
       </label>
-      <div
-        className={`grid transition-[grid-template-rows,opacity] ${checked ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-10"}`}
-      >
-        {children && childState.value && (
-          <div className="overflow-hidden p-px">{children}</div>
-        )}
-      </div>
+      {/* <div */}
+      {/*   className={`grid transition-[grid-template-rows,opacity] ${checked ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-10"}`} */}
+      {/* > */}
+      {/*   {children && childState.value && ( */}
+      {/*     <div className="overflow-hidden p-px">{children}</div> */}
+      {/*   )} */}
+      {/* </div> */}
     </div>
   );
 };

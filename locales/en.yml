@@ -1,9 +1,9 @@
 extName: "KickResume"
-extDescription: "Automatically saves your progress in kick.com videos so they resume where you left off"
+extDescription: "Automatically saves your progress in kick.com videos and lets you resume where you left off"
 nowPlaying: "Now Playing"
 reportBug: "Report a bug"
 settings:
   showProgressBar: "Display progress bar"
-  showNowPlayingTag: "Display 'Now Playing' tag"
+  showNowPlayingTag: 'Display "Now Playing" tag'
   autoCloseChat: "Automatically close chat"
   pausePlayClick: "Play/Pause by clicking inside video frame"

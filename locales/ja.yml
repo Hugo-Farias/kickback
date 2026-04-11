@@ -1,8 +1,9 @@
 extName: "KickResume（自動再開）"
-extDescription: "kick.comの動画の再生位置を自動で保存し、続きから再生できます"
+extDescription: "kick.comの動画の再生位置を自動で保存し、続きから再生します"
 nowPlaying: "再生中"
+reportBug: "バグを報告"
 settings:
   showProgressBar: "プログレスバーを表示"
-  showNowPlayingTag: "'再生中'タグを表示"
+  showNowPlayingTag: '"再生中"タグを表示'
   autoCloseChat: "チャットを自動で閉じる"
   pausePlayClick: "動画フレーム内をクリックで再生/一時停止"

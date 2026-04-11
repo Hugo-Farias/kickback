@@ -1,8 +1,8 @@
 import type { FullCache, ItemCache, SettingsT } from "./types";
 
-const { log, warn, error } = console;
+const { log, error } = console;
 
-const logPrefix = "kickback:";
+const logPrefix = "KickResume:";
 
 export const clog = (...content: Parameters<typeof log>) => {
   log(logPrefix, ...content);
@@ -10,10 +10,6 @@ export const clog = (...content: Parameters<typeof log>) => {
 
 export const elog = (...content: Parameters<typeof error>) => {
   error(logPrefix, ...content);
-};
-
-export const wlog = (...content: Parameters<typeof warn>) => {
-  warn(logPrefix, ...content);
 };
 
 export const getSettings = (): Promise<SettingsT> => {

@@ -1,8 +1,9 @@
 extName: "KickResume"
-extDescription: "Enregistre automatiquement votre progression dans les vidéos kick.com pour que vous puissiez reprendre là où vous vous êtes arrêté"
+extDescription: "Enregistre automatiquement votre progression dans les vidéos kick.com et permet de reprendre là où vous vous êtes arrêté"
 nowPlaying: "En lecture"
+reportBug: "Signaler un bug"
 settings:
   showProgressBar: "Afficher la barre de progression"
-  showNowPlayingTag: "Afficher le tag 'En lecture'"
+  showNowPlayingTag: 'Afficher l’étiquette "En lecture"'
   autoCloseChat: "Fermer le chat automatiquement"
   pausePlayClick: "Lecture/Pause en cliquant dans le cadre de la vidéo"

@@ -1,8 +1,9 @@
 extName: "KickResume（自动续播）"
-extDescription: "自动保存 kick.com 视频的播放进度，以便从上次位置继续播放"
+extDescription: "自动保存 kick.com 视频的播放进度，并从上次位置继续播放"
 nowPlaying: "正在播放"
+reportBug: "提交 BUG"
 settings:
   showProgressBar: "显示进度条"
-  showNowPlayingTag: "显示“正在播放”标签"
+  showNowPlayingTag: '显示“正在播放”标签'
   autoCloseChat: "自动关闭聊天"
   pausePlayClick: "点击视频框内播放/暂停"

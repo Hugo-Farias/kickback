@@ -1,8 +1,9 @@
 extName: "KickResume"
-extDescription: "Salva automaticamente seu progresso nos vídeos do kick.com para continuar assistindo de onde parou"
+extDescription: "Salve automaticamente seu progresso nos vídeos do kick.com e continue assistindo de onde parou"
 nowPlaying: "Reproduzindo"
+reportBug: "Reportar um bug"
 settings:
   showProgressBar: "Exibir barra de progresso"
-  showNowPlayingTag: "Exibir tag 'Reproduzindo'"
+  showNowPlayingTag: 'Exibir tag "Reproduzindo"'
   autoCloseChat: "Fechar chat automaticamente"
   pausePlayClick: "Reproduzir/Pausar ao clicar dentro do vídeo"

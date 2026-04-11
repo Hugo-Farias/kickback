@@ -1,8 +1,9 @@
 extName: "KickResume"
-extDescription: "Speichert automatisch Ihren Fortschritt bei kick.com Videos, damit Sie dort weiterschauen können, wo Sie aufgehört haben"
+extDescription: "Speichert automatisch Ihren Fortschritt in kick.com Videos und ermöglicht es, dort weiterzuschauen, wo Sie aufgehört haben"
 nowPlaying: "Wird abgespielt"
+reportBug: "Fehler melden"
 settings:
   showProgressBar: "Fortschrittsbalken anzeigen"
-  showNowPlayingTag: "Tag 'Wird abgespielt' anzeigen"
+  showNowPlayingTag: 'Tag "Wird abgespielt" anzeigen'
   autoCloseChat: "Chat automatisch schließen"
   pausePlayClick: "Wiedergabe/Pause durch Klicken in den Videobereich"
