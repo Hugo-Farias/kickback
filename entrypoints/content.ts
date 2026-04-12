@@ -65,7 +65,9 @@ const resumeVideo = (
   const loadedUrl = document.querySelector<HTMLLinkElement>(
     "link[rel='canonical']",
   );
+
   if (!loadedUrl) return false;
+
   if (loadedUrl.href !== window.location.href) return false;
 
   if (videoData) {
@@ -129,7 +131,7 @@ export default defineContentScript({
     clog("init 🟢");
     let url = "";
     let streamerPath = window.location.href.split("/")[3];
-    let videoId: string | null = "";
+    let videoId: string | null = getVideoId(window.location.href);
     let currentSettings: SettingsT | null = null;
     fullData = getCacheData();
 
@@ -177,8 +179,13 @@ export default defineContentScript({
 
           const videoData = fullData ? fullData?.[videoId] : null;
 
-          if (videoData && video.currentTime < 30) {
+          if (videoData) {
             resumeVideo(video, videoId, videoData);
+            setTimeout(() => {
+              if (video.currentTime < 30) {
+                return;
+              }
+            }, 50);
           }
 
           devFunc(video);
@@ -193,17 +200,17 @@ export default defineContentScript({
           });
 
           return true;
-        }, 1000);
+        }, 100);
       }, 500);
     });
 
     chrome.storage.onChanged.addListener((res: SettingsChanges) => {
+      console.log("res ==>", res);
       getSettings().then((settings: SettingsT) => {
         currentSettings = settings;
       });
 
       if (!fullData) return;
-      if (!getVideoId(url)) return;
 
       debounce(() => {
         if (res.showProgressBar?.newValue === false) {
@@ -212,6 +219,7 @@ export default defineContentScript({
           addProgressBar(fullData, streamerPath, currentSettings);
         }
 
+        if (!videoId) return;
         if (res.showNowPlayingTag?.newValue === false) {
           removeNowPlayingTag();
         } else {
