@@ -4,8 +4,16 @@ const { log, error } = console;
 
 const logPrefix = "KickResume:";
 
+const capitalize = (str: Parameters<typeof log>[0]) => {
+  if (!str) return str;
+
+  if (typeof str !== "string") return str;
+
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 export const clog = (...content: Parameters<typeof log>) => {
-  log(logPrefix, ...content);
+  log(logPrefix, ...content.map((val) => capitalize(val)));
 };
 
 export const elog = (...content: Parameters<typeof error>) => {

@@ -60,8 +60,8 @@ const resumeVideo = (
   video: HTMLVideoElement,
   videoId: string,
   videoData: ItemCache,
-) => {
-  if (!videoId) return;
+): number | false => {
+  if (!videoId) return false;
   const loadedUrl = document.querySelector<HTMLLinkElement>(
     "link[rel='canonical']",
   );
@@ -85,6 +85,8 @@ const resumeVideo = (
     clog("No data");
     lastTimeUpdate = 0;
   }
+
+  return video.currentTime;
 };
 
 const storeVideoTime = (
@@ -152,11 +154,9 @@ export default defineContentScript({
       clearTimeout(timeoutRestoreTime);
 
       timeoutMain = setTimeout(() => {
-        clog("navigation event detected, re-initializing...");
+        clog("Navigation event detected, re-initializing...");
         if (window.location.href === url) {
-          removeProgressBar();
-          addProgressBar(fullData, streamerPath, currentSettings);
-          clog("navigation event detected, but URL is the same, halting...");
+          clog("Navigation event detected, but URL is the same, halting...");
           return;
         }
 
@@ -166,6 +166,9 @@ export default defineContentScript({
 
         until(() => {
           if (document.readyState !== "complete") return;
+
+          removeNowPlayingTag();
+          removeProgressBar();
 
           addProgressBar(fullData, streamerPath, currentSettings);
           addNowPlayingTag(currentSettings, videoId);
@@ -180,9 +183,11 @@ export default defineContentScript({
           const videoData = fullData ? fullData?.[videoId] : null;
 
           if (videoData) {
-            resumeVideo(video, videoId, videoData);
+            const newTime = resumeVideo(video, videoId, videoData);
+            if (!newTime) return;
+
             setTimeout(() => {
-              if (video.currentTime < 30) {
+              if (newTime < 30) {
                 return;
               }
             }, 50);
@@ -200,12 +205,11 @@ export default defineContentScript({
           });
 
           return true;
-        }, 100);
+        }, 300);
       }, 500);
     });
 
     chrome.storage.onChanged.addListener((res: SettingsChanges) => {
-      console.log("res ==>", res);
       getSettings().then((settings: SettingsT) => {
         currentSettings = settings;
       });
