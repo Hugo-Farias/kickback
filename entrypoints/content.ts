@@ -176,7 +176,7 @@ export default defineContentScript({
           if (!videoId) return true;
           const video = document.querySelector<HTMLVideoElement>("video");
           if (!video) return;
-          if (video.readyState < 4) return;
+          if (video.readyState < 2) return;
 
           if (!videoId) return;
 
