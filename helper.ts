@@ -1,6 +1,6 @@
 import type { FullCache, ItemCache, SettingsT } from "./types";
 
-const { log, error } = console;
+const { log, error, warn } = console;
 
 const logPrefix = "KickResume:";
 
@@ -18,6 +18,10 @@ export const clog = (...content: Parameters<typeof log>) => {
 
 export const elog = (...content: Parameters<typeof error>) => {
   error(logPrefix, ...content);
+};
+
+export const wlog = (...content: Parameters<typeof warn>) => {
+  warn(logPrefix, ...content);
 };
 
 export const getSettings = (): Promise<SettingsT> => {
@@ -45,9 +49,11 @@ export const until = (fn: () => boolean | undefined, delay = 300) => {
   const id = setInterval(() => {
     count++;
 
-    if (count >= 100) {
+    if (count >= 500) {
       clearInterval(id);
-      elog("until: function did not return true within the specified attempts");
+      elog(
+        "until: function did not return true within the specified amount of attempts",
+      );
     }
 
     if (fn()) {
@@ -115,4 +121,8 @@ export const makeObject = (
         ?.src.match(/video_thumbnails\/([^/]+\/[^/]+)\//)?.[1] || "",
     streamerPath: url.split("/")[3] || "",
   };
+};
+
+export const checkElement = (element: string, identifier: string) => {
+  return !!document.querySelector(`${element}${identifier}`);
 };

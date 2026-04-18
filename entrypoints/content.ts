@@ -1,4 +1,5 @@
 import {
+  checkElement,
   clog,
   debounce,
   delFromCache,
@@ -8,6 +9,7 @@ import {
   makeObject,
   storeCacheTime,
   until,
+  wlog,
 } from "@/helper";
 import {
   addNowPlayingTag,
@@ -18,6 +20,7 @@ import {
 import type { FullCache, ItemCache, SettingsChanges, SettingsT } from "@/types";
 import { initialSettings } from "./popup/Settings";
 
+const minSecsForCaching = 60;
 let lastTimeUpdate = 0;
 let firstRun = true;
 let timeoutMain: ReturnType<typeof setTimeout>;
@@ -34,6 +37,9 @@ const devFunc = (video: HTMLVideoElement) => {
     }, 4000);
   }
 };
+
+// TODO: Create function to close sidebar
+// TODO: Create function to pause video when clicking inside the video frame
 
 const closeChat = (settings: SettingsT) => {
   if (settings?.autoCloseChat) {
@@ -76,10 +82,9 @@ const resumeVideo = (
     timeoutRestoreTime = setTimeout(() => {
       lastTimeUpdate = videoData.curr;
       video.currentTime = videoData.curr;
-      if (videoData.curr < 30) {
+      if (videoData.curr < minSecsForCaching) {
         fullData = delFromCache(videoId);
       }
-      if (video.currentTime < 30) return;
     }, 800);
   } else {
     clog("No data");
@@ -96,7 +101,7 @@ const storeVideoTime = (
 ) => {
   const curr = Math.trunc(video.currentTime);
 
-  if (curr < 30) return;
+  if (curr < minSecsForCaching) return;
   if (Math.abs(lastTimeUpdate - curr) < 10) return;
 
   lastTimeUpdate = curr;
@@ -105,7 +110,6 @@ const storeVideoTime = (
 
   timeoutSaveTime = setTimeout(() => {
     if (!videoId) return;
-    console.log("Storing video time, current time:", curr);
     const newData = makeObject(video, curr, videoId, url);
 
     fullData = storeCacheTime(newData, videoId);
@@ -137,7 +141,7 @@ export default defineContentScript({
     let currentSettings: SettingsT | null = null;
     fullData = getCacheData();
 
-    if (fullData) delOldCacheData(fullData, 200);
+    if (fullData) delOldCacheData(fullData, 100);
 
     getSettings().then((settings) => {
       if (Object.keys(settings).length) {
@@ -155,10 +159,14 @@ export default defineContentScript({
 
       timeoutMain = setTimeout(() => {
         clog("Navigation event detected, re-initializing...");
-        if (window.location.href === url) {
-          clog("Navigation event detected, but URL is the same, halting...");
-          return;
-        }
+
+        // if (window.location.href === url) {
+        //   clog("URL is the same, halting...");
+        //   return;
+        // }
+
+        removeNowPlayingTag();
+        removeProgressBar();
 
         url = window.location.href;
         videoId = getVideoId(url);
@@ -167,35 +175,51 @@ export default defineContentScript({
         until(() => {
           if (document.readyState !== "complete") return;
 
-          removeNowPlayingTag();
-          removeProgressBar();
+          const isProgressBarRendered = checkElement(
+            "span",
+            "#kb2-progress-bar",
+          );
 
-          addProgressBar(fullData, streamerPath, currentSettings);
-          addNowPlayingTag(currentSettings, videoId);
+          if (!isProgressBarRendered) {
+            addProgressBar(fullData, streamerPath, currentSettings);
+            return false;
+          }
+
+          const isTagRendered = checkElement("div", "#kb2-now-playing-tag");
+
+          if (!isTagRendered) {
+            addNowPlayingTag(currentSettings);
+            return false;
+          }
 
           if (!videoId) return true;
+
           const video = document.querySelector<HTMLVideoElement>("video");
           if (!video) return;
           if (video.readyState < 2) return;
 
           if (!videoId) return;
 
-          const videoData = fullData ? fullData?.[videoId] : null;
+          const videoData = fullData?.[videoId] ?? null;
 
           if (videoData) {
             const newTime = resumeVideo(video, videoId, videoData);
+
             if (!newTime) return;
 
             setTimeout(() => {
-              if (newTime < 30) {
+              if (newTime < minSecsForCaching) {
+                wlog(
+                  "Video Data found, but video time has not changed, re-attempting",
+                );
                 return;
               }
-            }, 50);
+            }, 20);
           }
 
           devFunc(video);
 
-          if (!firstRun) return true; // Run code bellow ONlY on real full page load
+          if (!firstRun) return true; // Run code bellow ONLY on real full page load
 
           firstRun = false;
 
@@ -205,7 +229,7 @@ export default defineContentScript({
           });
 
           return true;
-        }, 300);
+        }, 200);
       }, 500);
     });
 
@@ -217,6 +241,12 @@ export default defineContentScript({
       if (!fullData) return;
 
       debounce(() => {
+        if (res.autoCloseChat?.newValue === true) {
+          if (currentSettings) {
+            closeChat(currentSettings);
+          }
+        }
+
         if (res.showProgressBar?.newValue === false) {
           removeProgressBar();
         } else {
@@ -227,7 +257,7 @@ export default defineContentScript({
         if (res.showNowPlayingTag?.newValue === false) {
           removeNowPlayingTag();
         } else {
-          addNowPlayingTag(currentSettings, videoId);
+          addNowPlayingTag(currentSettings);
         }
       });
     });

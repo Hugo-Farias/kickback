@@ -15,17 +15,13 @@ export const removeNowPlayingTag = () => {
   });
 };
 
-export const addNowPlayingTag = (
-  currentSettings: SettingsT | null,
-  currentId: string | null,
-) => {
+export const addNowPlayingTag = (currentSettings: SettingsT | null): void => {
   if (!currentSettings?.showNowPlayingTag) return;
 
-  const checkForExistingTag = !!document.querySelector(
-    "div#kb2-now-playing-tag",
+  const currentId = getVideoId(
+    document.querySelector<HTMLLinkElement>("link[rel='canonical']")?.href ||
+      "",
   );
-
-  if (checkForExistingTag) return;
 
   const nowPlayingTag = document.createElement("div");
 
@@ -38,6 +34,7 @@ export const addNowPlayingTag = (
     `section > div > a[href$=${`'/videos/${currentId}'`}]`,
   );
   if (!thumbnailEl) return;
+
   thumbnailEl.appendChild(nowPlayingTag);
 };
 
@@ -45,13 +42,9 @@ export const addProgressBar = (
   fullData: FullCache | null,
   streamerPath: string | undefined,
   currentSettings: SettingsT | null,
-) => {
+): void => {
   if (!streamerPath) return;
 
-  const isProgressBarRendered = !!document.querySelector(
-    "span#kb2-progress-bar",
-  );
-  if (isProgressBarRendered) return;
   const hrefSelector = `'/${streamerPath}/videos'`;
   const thumbnailNode = document.querySelectorAll<HTMLAnchorElement>(
     `section > div > a[href^=${hrefSelector}]`,
