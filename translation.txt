@@ -1,120 +1,43 @@
---- locales\zh-CN.yml ---
-extName: "KickResume（自动续播）"
-extDescription: "自动保存 kick.com 视频的播放进度，并从上次位置继续播放"
-nowPlaying: "正在播放"
-reportBug: "提交 BUG"
-settings:
-  showProgressBar: "显示进度条"
-  showNowPlayingTag: '显示“正在播放”标签'
-  autoCloseChat: "自动关闭聊天"
-  pausePlayClick: "点击视频框内播放/暂停"
-
---- locales\ru.yml ---
-extName: "KickResume (Автовозобновление)"
-extDescription: "Автоматически сохраняет прогресс в видео на kick.com и позволяет продолжить просмотр с того места, где вы остановились"
-nowPlaying: "Воспроизводится"
-reportBug: "Сообщить о баге"
-settings:
-  showProgressBar: "Показывать индикатор выполнения"
-  showNowPlayingTag: 'Показывать тег "Воспроизводится"'
-  autoCloseChat: "Автоматически закрывать чат"
-  pausePlayClick: "Воспроизведение/Пауза по клику внутри видеокадра"
-
---- locales\pt-pt.yml ---
-extName: "KickResume"
-extDescription: "Guarde automaticamente o seu progresso nos vídeos do kick.com e continue a ver a partir de onde parou"
-nowPlaying: "A Reproduzir"
-reportBug: "Comunicar um erro"
-settings:
-  showProgressBar: "Mostrar barra de progresso"
-  showNowPlayingTag: 'Mostrar etiqueta "A Reproduzir"'
-  autoCloseChat: "Fechar chat automaticamente"
-  pausePlayClick: "Reproduzir/Pausar ao clicar dentro do vídeo"
-
---- locales\ko.yml ---
-extName: "KickResume (자동 이어보기)"
-extDescription: "kick.com 비디오의 시청 위치를 자동으로 저장하고 이어서 재생할 수 있습니다"
-nowPlaying: "재생 중"
-reportBug: "버그 신고"
-settings:
-  showProgressBar: "진행률 표시줄 표시"
-  showNowPlayingTag: '"재생 중" 태그 표시'
-  autoCloseChat: "채팅 자동 닫기"
-  pausePlayClick: "비디오 프레임 내부 클릭으로 재생/일시 정지"
-
---- locales\ja.yml ---
-extName: "KickResume（自動再開）"
-extDescription: "kick.comの動画の再生位置を自動で保存し、続きから再生します"
-nowPlaying: "再生中"
-reportBug: "バグを報告"
-settings:
-  showProgressBar: "プログレスバーを表示"
-  showNowPlayingTag: '"再生中"タグを表示'
-  autoCloseChat: "チャットを自動で閉じる"
-  pausePlayClick: "動画フレーム内をクリックで再生/一時停止"
-
---- locales\it.yml ---
-extName: "KickResume"
-extDescription: "Salva automaticamente i tuoi progressi nei video di kick.com e permette di riprendere da dove li hai lasciati"
-nowPlaying: "In riproduzione"
-reportBug: "Segnala un bug"
-settings:
-  showProgressBar: "Visualizza barra di avanzamento"
-  showNowPlayingTag: 'Visualizza tag "In riproduzione"'
-  autoCloseChat: "Chiudi chat automaticamente"
-  pausePlayClick: "Riproduci/Metti in pausa cliccando all'interno della cornice del video"
-
---- locales\fr.yml ---
-extName: "KickResume"
-extDescription: "Enregistre automatiquement votre progression dans les vidéos kick.com et permet de reprendre là où vous vous êtes arrêté"
-nowPlaying: "En lecture"
-reportBug: "Signaler un bug"
-settings:
-  showProgressBar: "Afficher la barre de progression"
-  showNowPlayingTag: 'Afficher l’étiquette "En lecture"'
-  autoCloseChat: "Fermer le chat automatiquement"
-  pausePlayClick: "Lecture/Pause en cliquant dans le cadre de la vidéo"
-
---- locales\es.yml ---
-extName: "KickResume"
-extDescription: "Guarda automáticamente tu progreso en los videos de kick.com y permite continuar donde los dejaste"
-nowPlaying: "Reproduciendo"
-reportBug: "Informar de un error"
-settings:
-  showProgressBar: "Mostrar barra de progreso"
-  showNowPlayingTag: 'Mostrar etiqueta "Reproduciendo"'
-  autoCloseChat: "Cerrar chat automáticamente"
-  pausePlayClick: "Reproducir/Pausar haciendo clic dentro del marco del video"
-
---- locales\de.yml ---
-extName: "KickResume"
-extDescription: "Speichert automatisch Ihren Fortschritt in kick.com Videos und ermöglicht es, dort weiterzuschauen, wo Sie aufgehört haben"
-nowPlaying: "Wird abgespielt"
-reportBug: "Fehler melden"
-settings:
-  showProgressBar: "Fortschrittsbalken anzeigen"
-  showNowPlayingTag: 'Tag "Wird abgespielt" anzeigen'
-  autoCloseChat: "Chat automatisch schließen"
-  pausePlayClick: "Wiedergabe/Pause durch Klicken in den Videobereich"
-
---- locales\pt-br.yml ---
-extName: "KickResume"
-extDescription: "Salve automaticamente seu progresso nos vídeos do kick.com e continue assistindo de onde parou"
-nowPlaying: "Reproduzindo"
-reportBug: "Reportar um bug"
-settings:
-  showProgressBar: "Exibir barra de progresso"
-  showNowPlayingTag: 'Exibir tag "Reproduzindo"'
-  autoCloseChat: "Fechar chat automaticamente"
-  pausePlayClick: "Reproduzir/Pausar ao clicar dentro do vídeo"
-
---- locales\en.yml ---
-extName: "KickResume"
-extDescription: "Automatically saves your progress in kick.com videos and lets you resume where you left off"
-nowPlaying: "Now Playing"
-reportBug: "Report a bug"
-settings:
-  showProgressBar: "Display progress bar"
-  showNowPlayingTag: 'Display "Now Playing" tag'
+en:
   autoCloseChat: "Automatically close chat"
-  pausePlayClick: "Play/Pause by clicking inside video frame"
+  autoCloseSidebar: "Automatically close the sidebar"
+
+de:
+  autoCloseChat: "Chat automatisch schließen"
+  autoCloseSidebar: "Seitenleiste automatisch ausblenden"
+
+es:
+  autoCloseChat: "Cerrar el chat automáticamente"
+  autoCloseSidebar: "Cerrar la barra lateral automáticamente"
+
+fr:
+  autoCloseChat: "Fermer le chat automatiquement"
+  autoCloseSidebar: "Fermer la barre latérale automatiquement"
+
+it:
+  autoCloseChat: "Chiudere automaticamente la chat"
+  autoCloseSidebar: "Chiudere automaticamente la barra laterale"
+
+ja:
+  autoCloseChat: "チャットを自動的に閉じる"
+  autoCloseSidebar: "サイドバーを自動的に閉じる"
+
+ko:
+  autoCloseChat: "채팅 자동으로 닫기"
+  autoCloseSidebar: "사이드바 자동으로 닫기"
+
+pt-br:
+  autoCloseChat: "Fechar o chat automaticamente"
+  autoCloseSidebar: "Fechar a barra lateral automaticamente"
+
+pt-pt:
+  autoCloseChat: "Fechar o chat automaticamente"
+  autoCloseSidebar: "Fechar a barra lateral automaticamente"
+
+ru:
+  autoCloseChat: "Автоматически закрывать чат"
+  autoCloseSidebar: "Автоматически закрывать боковую панель"
+
+zh-CN:
+  autoCloseChat: "自动关闭聊天"
+  autoCloseSidebar: "自动关闭侧边栏"

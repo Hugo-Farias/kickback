@@ -6,4 +6,5 @@ settings:
   showProgressBar: "显示进度条"
   showNowPlayingTag: '显示“正在播放”标签'
   autoCloseChat: "自动关闭聊天"
+  autoCloseSidebar: "自动关闭侧边栏"
   pausePlayClick: "点击视频框内播放/暂停"

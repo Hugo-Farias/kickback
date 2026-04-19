@@ -6,4 +6,6 @@ settings:
   showProgressBar: "Display progress bar"
   showNowPlayingTag: 'Display "Now Playing" tag'
   autoCloseChat: "Automatically close chat"
+  autoCloseSidebar: "Automatically close the sidebar"
   pausePlayClick: "Play/Pause by clicking inside video frame"
+

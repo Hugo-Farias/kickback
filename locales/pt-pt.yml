@@ -5,5 +5,6 @@ reportBug: "Comunicar um erro"
 settings:
   showProgressBar: "Mostrar barra de progresso"
   showNowPlayingTag: 'Mostrar etiqueta "A Reproduzir"'
-  autoCloseChat: "Fechar chat automaticamente"
+  autoCloseChat: "Fechar o chat automaticamente"
+  autoCloseSidebar: "Fechar a barra lateral automaticamente"
   pausePlayClick: "Reproduzir/Pausar ao clicar dentro do vídeo"

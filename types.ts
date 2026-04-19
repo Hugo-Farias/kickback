@@ -13,6 +13,7 @@ export type SettingsT = {
   showProgressBar: boolean;
   showNowPlayingTag: boolean;
   autoCloseChat: boolean;
+  autoCloseSidebar: boolean;
 };
 
 export type SettingsChanges = {

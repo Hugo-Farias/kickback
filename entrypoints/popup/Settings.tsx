@@ -9,6 +9,7 @@ export const initialSettings: SettingsT = {
   showProgressBar: true,
   showNowPlayingTag: true,
   autoCloseChat: false,
+  autoCloseSidebar: false,
 };
 
 getSettings().then((storedSettings) => {
@@ -63,6 +64,11 @@ const Settings = () => {
         onChange={inputCallback}
         checked={settings.value.autoCloseChat}
         id="autoCloseChat"
+      />
+      <OptionCheckBox
+        onChange={inputCallback}
+        checked={settings.value.autoCloseSidebar}
+        id="autoCloseSidebar"
       />
     </div>
   );

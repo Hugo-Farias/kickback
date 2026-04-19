@@ -6,4 +6,5 @@ settings:
   showProgressBar: "Показывать индикатор выполнения"
   showNowPlayingTag: 'Показывать тег "Воспроизводится"'
   autoCloseChat: "Автоматически закрывать чат"
+  autoCloseSidebar: "Автоматически закрывать боковую панель"
   pausePlayClick: "Воспроизведение/Пауза по клику внутри видеокадра"

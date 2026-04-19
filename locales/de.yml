@@ -6,4 +6,5 @@ settings:
   showProgressBar: "Fortschrittsbalken anzeigen"
   showNowPlayingTag: 'Tag "Wird abgespielt" anzeigen'
   autoCloseChat: "Chat automatisch schließen"
+  autoCloseSidebar: "Seitenleiste automatisch ausblenden"
   pausePlayClick: "Wiedergabe/Pause durch Klicken in den Videobereich"

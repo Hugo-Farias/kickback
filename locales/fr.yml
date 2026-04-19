@@ -6,4 +6,5 @@ settings:
   showProgressBar: "Afficher la barre de progression"
   showNowPlayingTag: 'Afficher l’étiquette "En lecture"'
   autoCloseChat: "Fermer le chat automatiquement"
+  autoCloseSidebar: "Fermer la barre latérale automatiquement"
   pausePlayClick: "Lecture/Pause en cliquant dans le cadre de la vidéo"

@@ -41,25 +41,35 @@ const devFunc = (video: HTMLVideoElement) => {
 // TODO: Create function to close sidebar
 // TODO: Create function to pause video when clicking inside the video frame
 
+const closeSidebar = (settings: SettingsT) => {
+  if (!settings?.autoCloseSidebar) return;
+
+  const sidebarBtn = document.querySelector<HTMLButtonElement>(
+    `button[aria-label^='Collapse sidebar']`,
+  );
+
+  if (!sidebarBtn) return;
+  sidebarBtn.click();
+};
+
 const closeChat = (settings: SettingsT) => {
-  if (settings?.autoCloseChat) {
-    // Close Chat Replay
-    clearTimeout(timeoutCloseChat);
-    timeoutCloseChat = setTimeout(() => {
-      const chatCloseBtn = document.querySelector<HTMLButtonElement>(
-        "#channel-chatroom > div > div > button",
-      );
+  if (!settings?.autoCloseChat) return;
 
-      isChatClosed =
-        !document.querySelector<HTMLDivElement>("#channel-chatroom")
-          ?.offsetWidth;
+  // Close Chat Replay
+  clearTimeout(timeoutCloseChat);
+  timeoutCloseChat = setTimeout(() => {
+    const chatCloseBtn = document.querySelector<HTMLButtonElement>(
+      "#channel-chatroom > div > div > button",
+    );
 
-      if (chatCloseBtn && !isChatClosed) {
-        chatCloseBtn.click();
-        isChatClosed = true;
-      }
-    }, 300);
-  }
+    isChatClosed =
+      !document.querySelector<HTMLDivElement>("#channel-chatroom")?.offsetWidth;
+
+    if (chatCloseBtn && !isChatClosed) {
+      chatCloseBtn.click();
+      isChatClosed = true;
+    }
+  }, 300);
 };
 
 const resumeVideo = (
@@ -147,6 +157,7 @@ export default defineContentScript({
       if (Object.keys(settings).length) {
         currentSettings = settings;
         closeChat(settings);
+        closeSidebar(settings);
         return;
       }
       chrome.storage.local.set(initialSettings);
@@ -214,7 +225,7 @@ export default defineContentScript({
                 );
                 return;
               }
-            }, 20);
+            }, 100);
           }
 
           devFunc(video);
@@ -241,10 +252,14 @@ export default defineContentScript({
       if (!fullData) return;
 
       debounce(() => {
+        if (!currentSettings) return
+
         if (res.autoCloseChat?.newValue === true) {
-          if (currentSettings) {
             closeChat(currentSettings);
-          }
+        }
+
+        if (res.autoCloseSidebar?.newValue === true) {
+            closeSidebar(currentSettings);
         }
 
         if (res.showProgressBar?.newValue === false) {
@@ -253,7 +268,8 @@ export default defineContentScript({
           addProgressBar(fullData, streamerPath, currentSettings);
         }
 
-        if (!videoId) return;
+        if (!videoId) return; // Only run code below when a video is loaded
+
         if (res.showNowPlayingTag?.newValue === false) {
           removeNowPlayingTag();
         } else {
