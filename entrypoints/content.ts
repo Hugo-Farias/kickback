@@ -180,7 +180,7 @@ export default defineContentScript({
             "#kb2-progress-bar",
           );
 
-          if (!isProgressBarRendered) {
+          if (fullData && !isProgressBarRendered) {
             addProgressBar(fullData, streamerPath, currentSettings);
             return false;
           }
