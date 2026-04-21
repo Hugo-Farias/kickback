@@ -10,6 +10,7 @@ export const initialSettings: SettingsT = {
   showNowPlayingTag: true,
   autoCloseChat: false,
   autoCloseSidebar: false,
+  pauseOnClick: false,
 };
 
 getSettings().then((storedSettings) => {
@@ -69,6 +70,11 @@ const Settings = () => {
         onChange={inputCallback}
         checked={settings.value.autoCloseSidebar}
         id="autoCloseSidebar"
+      />
+      <OptionCheckBox
+        onChange={inputCallback}
+        checked={settings.value.pauseOnClick}
+        id="pauseOnClick"
       />
     </div>
   );

@@ -14,6 +14,7 @@ export type SettingsT = {
   showNowPlayingTag: boolean;
   autoCloseChat: boolean;
   autoCloseSidebar: boolean;
+  pauseOnClick: boolean;
 };
 
 export type SettingsChanges = {

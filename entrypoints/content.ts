@@ -38,8 +38,18 @@ const devFunc = (video: HTMLVideoElement) => {
   }
 };
 
-// TODO: Create function to close sidebar
 // TODO: Create function to pause video when clicking inside the video frame
+
+const createClickVideoEvent = (
+  video: HTMLVideoElement,
+  currentSettings: SettingsT,
+) => {
+  if (!currentSettings?.pauseOnClick) return;
+
+  video.addEventListener("click", () => {
+    video.pause();
+  });
+};
 
 const closeSidebar = (settings: SettingsT) => {
   if (!settings?.autoCloseSidebar) return;
@@ -148,7 +158,7 @@ export default defineContentScript({
     let url = "";
     let streamerPath = window.location.href.split("/")[3];
     let videoId: string | null = getVideoId(window.location.href);
-    let currentSettings: SettingsT | null = null;
+    let currentSettings: SettingsT = initialSettings;
     fullData = getCacheData();
 
     if (fullData) delOldCacheData(fullData, 100);
@@ -232,6 +242,8 @@ export default defineContentScript({
 
           if (!firstRun) return true; // Run code bellow ONLY on real full page load
 
+          createClickVideoEvent(video, currentSettings);
+
           firstRun = false;
 
           video.addEventListener("timeupdate", () => {
@@ -252,14 +264,14 @@ export default defineContentScript({
       if (!fullData) return;
 
       debounce(() => {
-        if (!currentSettings) return
+        if (!currentSettings) return;
 
         if (res.autoCloseChat?.newValue === true) {
-            closeChat(currentSettings);
+          closeChat(currentSettings);
         }
 
         if (res.autoCloseSidebar?.newValue === true) {
-            closeSidebar(currentSettings);
+          closeSidebar(currentSettings);
         }
 
         if (res.showProgressBar?.newValue === false) {
