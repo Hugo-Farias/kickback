@@ -53,13 +53,13 @@ const Settings = () => {
     <div className="space-y-2">
       <OptionCheckBox
         onChange={inputCallback}
-        checked={settings.value.showProgressBar}
-        id="showProgressBar"
+        checked={settings.value.showNowPlayingTag}
+        id="showNowPlayingTag"
       />
       <OptionCheckBox
         onChange={inputCallback}
-        checked={settings.value.showNowPlayingTag}
-        id="showNowPlayingTag"
+        checked={settings.value.showProgressBar}
+        id="showProgressBar"
       />
       <OptionCheckBox
         onChange={inputCallback}

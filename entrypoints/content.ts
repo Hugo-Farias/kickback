@@ -9,7 +9,6 @@ import {
   makeObject,
   storeCacheTime,
   until,
-  wlog,
 } from "@/helper";
 import {
   addNowPlayingTag,
@@ -25,17 +24,16 @@ let lastTimeUpdate = 0;
 let firstRun = true;
 let timeoutMain: ReturnType<typeof setTimeout>;
 let timeoutSaveTime: ReturnType<typeof setTimeout>;
-let timeoutRestoreTime: ReturnType<typeof setTimeout>;
+// let timeoutRestoreTime: ReturnType<typeof setTimeout>;
 let timeoutCloseChat: ReturnType<typeof setTimeout>;
 let isChatClosed = false;
 let fullData: FullCache | null = null;
 
 const devFunc = (video: HTMLVideoElement) => {
-  if (import.meta.env.DEV) {
-    setTimeout(() => {
-      video.pause();
-    }, 4000);
-  }
+  if (!import.meta.env.DEV) return;
+  setTimeout(() => {
+    video.pause();
+  }, 4000);
 };
 
 // TODO: Create function to pause video when clicking inside the video frame
@@ -92,20 +90,18 @@ const resumeVideo = (
     "link[rel='canonical']",
   );
 
-  if (!loadedUrl) return false;
+  if (!loadedUrl) return 0;
 
-  if (loadedUrl.href !== window.location.href) return false;
+  if (loadedUrl.href !== window.location.href) return 0;
 
   if (videoData) {
     clog("Data found", videoData);
     clog("Resuming video, time:", videoData.curr);
-    timeoutRestoreTime = setTimeout(() => {
-      lastTimeUpdate = videoData.curr;
-      video.currentTime = videoData.curr;
-      if (videoData.curr < minSecsForCaching) {
-        fullData = delFromCache(videoId);
-      }
-    }, 800);
+    lastTimeUpdate = videoData.curr;
+    video.currentTime = videoData.curr;
+    if (videoData.curr < minSecsForCaching) {
+      fullData = delFromCache(videoId);
+    }
   } else {
     clog("No data");
     lastTimeUpdate = 0;
@@ -176,7 +172,7 @@ export default defineContentScript({
     window.navigation.addEventListener("navigate", () => {
       clearTimeout(timeoutMain);
       clearTimeout(timeoutSaveTime);
-      clearTimeout(timeoutRestoreTime);
+      // clearTimeout(timeoutRestoreTime);
 
       timeoutMain = setTimeout(() => {
         clog("Navigation event detected, re-initializing...");
@@ -223,19 +219,10 @@ export default defineContentScript({
 
           const videoData = fullData?.[videoId] ?? null;
 
-          if (videoData) {
+          if (videoData && video.currentTime < minSecsForCaching) {
             const newTime = resumeVideo(video, videoId, videoData);
 
-            if (!newTime) return;
-
-            setTimeout(() => {
-              if (newTime < minSecsForCaching) {
-                wlog(
-                  "Video Data found, but video time has not changed, re-attempting",
-                );
-                return;
-              }
-            }, 100);
+            if (!newTime || newTime < minSecsForCaching) return;
           }
 
           devFunc(video);

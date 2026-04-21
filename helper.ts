@@ -13,14 +13,17 @@ const capitalize = (str: Parameters<typeof log>[0]) => {
 };
 
 export const clog = (...content: Parameters<typeof log>) => {
+  if (!import.meta.env.DEV) return;
   log(logPrefix, ...content.map((val) => capitalize(val)));
 };
 
 export const elog = (...content: Parameters<typeof error>) => {
+  if (!import.meta.env.DEV) return;
   error(logPrefix, ...content);
 };
 
 export const wlog = (...content: Parameters<typeof warn>) => {
+  if (!import.meta.env.DEV) return;
   warn(logPrefix, ...content);
 };
 
