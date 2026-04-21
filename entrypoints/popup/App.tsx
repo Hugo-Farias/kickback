@@ -20,7 +20,9 @@ function App() {
           href={
             "https://chromewebstore.google.com/detail/cclmmfbfmjjeafmilojlhmdekmagonmb/support"
           }
+          target={"_blank"}
           aria-label={i18n.t("reportBug")}
+          rel="noopener"
         >
           {i18n.t("reportBug")}
         </a>

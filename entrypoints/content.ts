@@ -36,8 +36,6 @@ const devFunc = (video: HTMLVideoElement) => {
   }, 4000);
 };
 
-// TODO: Create function to pause video when clicking inside the video frame
-
 const createClickVideoEvent = (
   video: HTMLVideoElement,
   currentSettings: SettingsT,
