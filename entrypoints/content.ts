@@ -50,6 +50,7 @@ const createClickVideoEvent = (
 
 const closeSidebar = (settings: SettingsT) => {
   if (!settings?.autoCloseSidebar) return;
+  if (window.innerWidth < 1280) return; // Don't close sidebar on mobile, because it's needed for navigation
 
   const sidebarBtn = document.querySelector<HTMLButtonElement>(
     `button[aria-label^='Collapse sidebar']`,
