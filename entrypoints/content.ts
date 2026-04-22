@@ -28,6 +28,7 @@ let timeoutSaveTime: ReturnType<typeof setTimeout>;
 let timeoutCloseChat: ReturnType<typeof setTimeout>;
 let isChatClosed = false;
 let fullData: FullCache | null = null;
+let isVideoRestored = false;
 
 const devFunc = (video: HTMLVideoElement) => {
   if (!import.meta.env.DEV) return;
@@ -82,15 +83,15 @@ const resumeVideo = (
   video: HTMLVideoElement,
   videoId: string,
   videoData: ItemCache,
-): number | false => {
+): boolean => {
   if (!videoId) return false;
   const loadedUrl = document.querySelector<HTMLLinkElement>(
     "link[rel='canonical']",
   );
 
-  if (!loadedUrl) return 0;
+  if (!loadedUrl) return false;
 
-  if (loadedUrl.href !== window.location.href) return 0;
+  if (loadedUrl.href !== window.location.href) return false;
 
   if (videoData) {
     clog("Data found", videoData);
@@ -105,7 +106,7 @@ const resumeVideo = (
     lastTimeUpdate = 0;
   }
 
-  return video.currentTime;
+  return video.currentTime > minSecsForCaching;
 };
 
 const storeVideoTime = (
@@ -171,14 +172,10 @@ export default defineContentScript({
       clearTimeout(timeoutMain);
       clearTimeout(timeoutSaveTime);
       // clearTimeout(timeoutRestoreTime);
+      isVideoRestored = false;
 
       timeoutMain = setTimeout(() => {
         clog("Navigation event detected, re-initializing...");
-
-        // if (window.location.href === url) {
-        //   clog("URL is the same, halting...");
-        //   return;
-        // }
 
         removeNowPlayingTag();
         removeProgressBar();
@@ -217,13 +214,19 @@ export default defineContentScript({
 
           const videoData = fullData?.[videoId] ?? null;
 
-          if (videoData && video.currentTime < minSecsForCaching) {
-            const newTime = resumeVideo(video, videoId, videoData);
+          console.log("video.currentTime ==>", video.currentTime);
+          console.log("isVideoRestored ==>", isVideoRestored);
 
-            if (!newTime || newTime < minSecsForCaching) return;
+          if (videoData && !isVideoRestored) {
+            console.log("resuming... 🟢🟢🟢🟢");
+
+            isVideoRestored = resumeVideo(video, videoId, videoData);
+            console.log("isVideoRestored ==>", isVideoRestored);
+
+            if (!isVideoRestored) return;
           }
 
-          devFunc(video);
+          // devFunc(video);
 
           if (!firstRun) return true; // Run code bellow ONLY on real full page load
 
@@ -237,7 +240,7 @@ export default defineContentScript({
           });
 
           return true;
-        }, 200);
+        }, 500);
       }, 500);
     });
 
