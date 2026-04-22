@@ -46,7 +46,7 @@ const Settings = () => {
 
     debounce(() => {
       chrome.storage.local.set(newSettings);
-    }, 200);
+    }, 100);
   };
 
   return (

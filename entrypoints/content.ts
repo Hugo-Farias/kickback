@@ -229,7 +229,7 @@ export default defineContentScript({
 
           // devFunc(video);
 
-          if (!firstRun) return true; // Run code bellow ONLY on real full page load
+          if (!firstRun) return true; // Run code bellow ONLY on first real full page load
 
           createClickVideoEvent(video, currentSettings);
 
@@ -276,7 +276,7 @@ export default defineContentScript({
         } else {
           addNowPlayingTag(currentSettings);
         }
-      });
+      }, 100);
     });
 
     // initial load
