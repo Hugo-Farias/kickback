@@ -24,7 +24,6 @@ let lastTimeUpdate = 0;
 let firstRun = true;
 let timeoutMain: ReturnType<typeof setTimeout>;
 let timeoutSaveTime: ReturnType<typeof setTimeout>;
-// let timeoutRestoreTime: ReturnType<typeof setTimeout>;
 let timeoutCloseChat: ReturnType<typeof setTimeout>;
 let isChatClosed = false;
 let fullData: FullCache | null = null;
@@ -93,6 +92,8 @@ const resumeVideo = (
   if (!loadedUrl) return false;
 
   if (loadedUrl.href !== window.location.href) return false;
+
+  if (video.currentTime > minSecsForCaching) return true;
 
   if (videoData) {
     clog("Data found", videoData);
@@ -172,7 +173,6 @@ export default defineContentScript({
     window.navigation.addEventListener("navigate", () => {
       clearTimeout(timeoutMain);
       clearTimeout(timeoutSaveTime);
-      // clearTimeout(timeoutRestoreTime);
       isVideoRestored = false;
 
       timeoutMain = setTimeout(() => {
@@ -195,7 +195,6 @@ export default defineContentScript({
 
           if (fullData && !isProgressBarRendered) {
             addProgressBar(fullData, streamerPath, currentSettings);
-            return false;
           }
 
           const isTagRendered = checkElement("div", "#kb2-now-playing-tag");
@@ -215,14 +214,8 @@ export default defineContentScript({
 
           const videoData = fullData?.[videoId] ?? null;
 
-          console.log("video.currentTime ==>", video.currentTime);
-          console.log("isVideoRestored ==>", isVideoRestored);
-
           if (videoData && !isVideoRestored) {
-            console.log("resuming... 🟢🟢🟢🟢");
-
             isVideoRestored = resumeVideo(video, videoId, videoData);
-            console.log("isVideoRestored ==>", isVideoRestored);
 
             if (!isVideoRestored) return;
           }
