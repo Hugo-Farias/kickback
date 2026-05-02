@@ -140,7 +140,6 @@ const delOldCacheData = (fullData: FullCache, days: number) => {
     const item = fullData[key];
     if (!item) continue;
     if (currentTime - item.storageTime > 1000 * 60 * 60 * 24 * days) {
-      // If data is older than 7 days, delete it
       clog("❌ Deleting old cache data for video ID:", key);
       fullData = delFromCache(key);
     }
@@ -174,6 +173,7 @@ export default defineContentScript({
       clearTimeout(timeoutMain);
       clearTimeout(timeoutSaveTime);
       isVideoRestored = false;
+      fullData = getCacheData();
 
       timeoutMain = setTimeout(() => {
         clog("Navigation event detected, re-initializing...");
@@ -220,7 +220,7 @@ export default defineContentScript({
             if (!isVideoRestored) return;
           }
 
-          // devFunc(video);
+          devFunc(video);
 
           if (!firstRun) return true; // Run code bellow ONLY on first real full page load
 
