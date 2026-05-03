@@ -12,7 +12,7 @@ export default defineConfig({
     name: "__MSG_extName__",
     description: "__MSG_extDescription__",
     default_locale: "en",
-    version: "3.0.2",
+    version: "3.0.3",
     permissions: ["storage"],
   },
 });

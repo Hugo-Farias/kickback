@@ -2,7 +2,7 @@
   "name": "KickResume",
   "description": "Automatically bookmark kick.com videos so they resume from where you left off",
   "private": true,
-  "version": "3.0.2",
+  "version": "3.0.3",
   "type": "module",
   "scripts": {
     "dev": "wxt",
