@@ -12,7 +12,7 @@ This is a chrome extension for the purpose of automatically saving your progress
   - `Show Now Playing Tag`: Displays a tag indicating what's currently playing.
   - `Auto Close Chat`: Automatically closes the chat interface under certain conditions.
   - `Auto Close Sidebar`: Automatically closes the sidebar under certain conditions.
-  - `Pause On Click`: Automatically pauses playback when clicking outside certain areas.
+  - `Pause On Click`: Automatically pauses playback when clicking inside video frame (Like youtube).
 
 ## Installation
 
@@ -27,8 +27,8 @@ This project uses [WXT](https://wxt.dev/) for building browser extensions, [Reac
 
 ### Prerequisites
 
-- Node.js (LTS version recommended)
-- pnpm (or npm/yarn)
+- Node.js
+- pnpm (or npm)
 
 ### Setup
 
