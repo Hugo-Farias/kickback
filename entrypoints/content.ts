@@ -33,7 +33,7 @@ const devFunc = (video: HTMLVideoElement) => {
   if (!import.meta.env.DEV) return;
   setTimeout(() => {
     video.pause();
-  }, 4000);
+  }, 6000);
 };
 
 const createClickVideoEvent = (
@@ -47,8 +47,8 @@ const createClickVideoEvent = (
   });
 };
 
-const closeSidebar = (settings: SettingsT) => {
-  if (!settings?.autoCloseSidebar) return;
+const closeSidebar = (settings: boolean) => {
+  if (!settings) return;
   if (window.innerWidth < 1280) return; // Don't close sidebar on mobile, because it's needed for navigation
 
   const sidebarBtn = document.querySelector<HTMLButtonElement>(
@@ -59,8 +59,8 @@ const closeSidebar = (settings: SettingsT) => {
   sidebarBtn.click();
 };
 
-const closeChat = (settings: SettingsT) => {
-  if (!settings?.autoCloseChat) return;
+const closeChat = (settings: boolean) => {
+  if (!settings) return;
 
   // Close Chat Replay
   debounce(() => {
@@ -71,10 +71,12 @@ const closeChat = (settings: SettingsT) => {
     isChatClosed =
       !document.querySelector<HTMLDivElement>("#channel-chatroom")?.offsetWidth;
 
-    if (chatCloseBtn && !isChatClosed) {
-      chatCloseBtn.click();
-      isChatClosed = true;
-    }
+    if (!chatCloseBtn || isChatClosed) return null;
+
+    clog("closing chat");
+
+    chatCloseBtn.click();
+    isChatClosed = true;
   });
   // clearTimeout(timeoutCloseChat);
   // timeoutCloseChat = setTimeout(() => {
@@ -165,8 +167,6 @@ export default defineContentScript({
     getSettings().then((settings) => {
       if (Object.keys(settings).length) {
         currentSettings = settings;
-        closeChat(settings);
-        closeSidebar(settings);
       } else {
         chrome.storage.local.set(initialSettings);
       }
@@ -188,6 +188,11 @@ export default defineContentScript({
         videoId = getVideoId(url);
         streamerPath = url.split("/")[3];
 
+        if (firstRun) {
+          closeChat(currentSettings.autoCloseChat);
+          closeSidebar(currentSettings.autoCloseSidebar);
+        }
+
         until(() => {
           if (document.readyState !== "complete") return;
 
@@ -197,13 +202,17 @@ export default defineContentScript({
           );
 
           if (fullData && !isProgressBarRendered) {
-            addProgressBar(fullData, streamerPath, currentSettings);
+            addProgressBar(
+              fullData,
+              streamerPath,
+              currentSettings.showProgressBar,
+            );
           }
 
           const isTagRendered = checkElement("div", "#kb2-now-playing-tag");
 
           if (!isTagRendered) {
-            addNowPlayingTag(currentSettings);
+            addNowPlayingTag(currentSettings.showNowPlayingTag);
             return false;
           }
 
@@ -225,7 +234,7 @@ export default defineContentScript({
 
           devFunc(video);
 
-          if (!firstRun) return true; // Run code bellow ONLY on first real full page load
+          if (!firstRun) return true; // Code bellow ONLY runs on first real full page load
 
           createClickVideoEvent(video, currentSettings);
 
@@ -252,17 +261,21 @@ export default defineContentScript({
         if (!currentSettings) return;
 
         if (res.autoCloseChat?.newValue === true) {
-          closeChat(currentSettings);
+          closeChat(currentSettings.autoCloseChat);
         }
 
         if (res.autoCloseSidebar?.newValue === true) {
-          closeSidebar(currentSettings);
+          closeSidebar(currentSettings.autoCloseSidebar);
         }
 
         if (res.showProgressBar?.newValue === false) {
           removeProgressBar();
         } else {
-          addProgressBar(fullData, streamerPath, currentSettings);
+          addProgressBar(
+            fullData,
+            streamerPath,
+            currentSettings.showProgressBar,
+          );
         }
 
         if (!videoId) return; // Only run code below when a video is loaded
@@ -270,7 +283,7 @@ export default defineContentScript({
         if (res.showNowPlayingTag?.newValue === false) {
           removeNowPlayingTag();
         } else {
-          addNowPlayingTag(currentSettings);
+          addNowPlayingTag(currentSettings.showNowPlayingTag);
         }
       }, 100);
     });

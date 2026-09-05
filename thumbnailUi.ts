@@ -1,4 +1,4 @@
-import type { FullCache, SettingsT } from "@/types";
+import type { FullCache } from "@/types";
 import { getVideoId } from "./helper";
 
 export const removeProgressBar = () => {
@@ -15,8 +15,8 @@ export const removeNowPlayingTag = () => {
   });
 };
 
-export const addNowPlayingTag = (currentSettings: SettingsT | null): void => {
-  if (!currentSettings?.showNowPlayingTag) return;
+export const addNowPlayingTag = (currentSettings: boolean): void => {
+  if (!currentSettings) return;
 
   const currentId = getVideoId(
     document.querySelector<HTMLLinkElement>("link[rel='canonical']")?.href ||
@@ -41,7 +41,7 @@ export const addNowPlayingTag = (currentSettings: SettingsT | null): void => {
 export const addProgressBar = (
   fullData: FullCache | null,
   streamerPath: string | undefined,
-  currentSettings: SettingsT | null,
+  currentSettings: boolean,
 ): void => {
   if (!streamerPath) return;
 
@@ -58,7 +58,7 @@ export const addProgressBar = (
     const id = getVideoId(thumbnailEl.href);
     if (!id) return;
 
-    if (!currentSettings?.showProgressBar) return;
+    if (!currentSettings) return;
 
     const data = fullData[id];
     if (!data) return;
