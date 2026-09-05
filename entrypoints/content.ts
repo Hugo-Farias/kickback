@@ -24,7 +24,7 @@ let lastTimeUpdate = 0;
 let firstRun = true;
 let timeoutMain: ReturnType<typeof setTimeout>;
 let timeoutSaveTime: ReturnType<typeof setTimeout>;
-let timeoutCloseChat: ReturnType<typeof setTimeout>;
+// let timeoutCloseChat: ReturnType<typeof setTimeout>;
 let isChatClosed = false;
 let fullData: FullCache | null = null;
 let isVideoRestored = false;
@@ -63,8 +63,7 @@ const closeChat = (settings: SettingsT) => {
   if (!settings?.autoCloseChat) return;
 
   // Close Chat Replay
-  clearTimeout(timeoutCloseChat);
-  timeoutCloseChat = setTimeout(() => {
+  debounce(() => {
     const chatCloseBtn = document.querySelector<HTMLButtonElement>(
       "#channel-chatroom > div > div > button",
     );
@@ -76,7 +75,11 @@ const closeChat = (settings: SettingsT) => {
       chatCloseBtn.click();
       isChatClosed = true;
     }
-  }, 300);
+  });
+  // clearTimeout(timeoutCloseChat);
+  // timeoutCloseChat = setTimeout(() => {
+  //
+  // }, 300);
 };
 
 const resumeVideo = (
@@ -164,9 +167,9 @@ export default defineContentScript({
         currentSettings = settings;
         closeChat(settings);
         closeSidebar(settings);
-        return;
+      } else {
+        chrome.storage.local.set(initialSettings);
       }
-      chrome.storage.local.set(initialSettings);
     });
 
     window.navigation.addEventListener("navigate", () => {

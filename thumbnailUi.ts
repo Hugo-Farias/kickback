@@ -28,7 +28,7 @@ export const addNowPlayingTag = (currentSettings: SettingsT | null): void => {
   // Adds 'now playing' tag
   nowPlayingTag.setAttribute("id", "kb2-now-playing-tag");
   nowPlayingTag.className =
-    "z-controls state-layer-surface bg-surface-lowest tv:text-xs absolute rounded px-1 text-sm font-semibold top-1.5 right-1.5";
+    "tv:text-xs absolute z-controls rounded bg-surface-bg-lowest state-layer px-1 text-sm font-semibold top-1.5 right-1.5";
   nowPlayingTag.textContent = i18n.t("nowPlaying");
   const thumbnailEl = document.querySelector(
     `section > div > a[href$=${`'/videos/${currentId}'`}]`,
