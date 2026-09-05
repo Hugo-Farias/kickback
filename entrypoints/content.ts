@@ -65,7 +65,7 @@ const closeChat = (settings: SettingsT) => {
   // Close Chat Replay
   debounce(() => {
     const chatCloseBtn = document.querySelector<HTMLButtonElement>(
-      "#channel-chatroom > div > div > button",
+      "div.h-fit.w-fit.cursor-pointer > button",
     );
 
     isChatClosed =
